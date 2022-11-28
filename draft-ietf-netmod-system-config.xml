@@ -1,0 +1,1819 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!-- This template is for creating an Internet Draft using xml2rfc,
+     which is available here: http://xml.resource.org. -->
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+<!-- One method to get references from the online citation libraries.
+     There has to be one entity for each item to be referenced.
+     An alternate method (rfc include) is described in the references. -->
+<!ENTITY RFC2119 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
+<!ENTITY RFC6241 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6241.xml">
+<!ENTITY RFC7950 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7950.xml">
+<!ENTITY RFC7149 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7149.xml">
+<!ENTITY RFC7426 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7426.xml">
+<!ENTITY RFC8299 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8299.xml">
+<!ENTITY RFC8309 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8309.xml">
+<!ENTITY RFC8340 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8340.xml">
+<!ENTITY RFC8453 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8453.xml">
+<!ENTITY RFC8174 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8174.xml">
+<!ENTITY RFC8345 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8345.xml">
+]>
+<?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
+<!-- used by XSLT processors -->
+<!-- For a complete list and description of processing instructions (PIs),
+     please see http://xml.resource.org/authoring/README.html. -->
+<!-- Below are generally applicable Processing Instructions (PIs) that most I-Ds might want to use.
+     (Here they are set differently than their defaults in xml2rfc v1.32) -->
+<?rfc strict="yes" ?>
+<!-- give errors regarding ID-nits and DTD validation -->
+<!-- control the table of contents (ToC) -->
+<?rfc toc="yes"?>
+<!-- generate a ToC -->
+<?rfc tocdepth="4"?>
+<!-- the number of levels of subsections in ToC. default: 3 -->
+<!-- control references -->
+<?rfc symrefs="yes"?>
+<!-- use symbolic references tags, i.e, [RFC2119] instead of [1] -->
+<?rfc sortrefs="yes" ?>
+<!-- sort the reference entries alphabetically -->
+<!-- control vertical white space
+     (using these PIs as follows is recommended by the RFC Editor) -->
+<?rfc compact="yes" ?>
+<!-- do not start each main section on a new page -->
+<?rfc subcompact="no" ?>
+<!-- keep one blank line between list items -->
+<!-- end of list of popular I-D processing instructions -->
+<rfc category="std" docName="draft-ietf-netmod-system-config-00"
+     ipr="trust200902" updates="RFC8342,RFC6241,RFC8526,RFC8040">
+  <front>
+    <title abbrev="System-defined Configuration">System-defined
+    Configuration</title>
+
+    <author fullname="Qiufang Ma" initials="Q." role="editor" surname="Ma">
+      <organization>Huawei</organization>
+
+      <address>
+        <postal>
+          <street>101 Software Avenue, Yuhua District</street>
+
+          <city>Nanjing</city>
+
+          <region>Jiangsu</region>
+
+          <code>210012</code>
+
+          <country>China</country>
+        </postal>
+
+        <email>maqiufang1@huawei.com</email>
+      </address>
+    </author>
+
+    <author fullname="Kent Watsen" initials="K." surname="Watsen">
+      <organization>Watsen Networks</organization>
+
+      <address>
+        <email>kent+ietf@watsen.net</email>
+      </address>
+    </author>
+
+    <author fullname="Qin Wu" initials="Q." surname="Wu">
+      <organization>Huawei</organization>
+
+      <address>
+        <postal>
+          <street>101 Software Avenue, Yuhua District</street>
+
+          <city>Nanjing</city>
+
+          <region>Jiangsu</region>
+
+          <code>210012</code>
+
+          <country>China</country>
+        </postal>
+
+        <email>bill.wu@huawei.com</email>
+      </address>
+    </author>
+
+    <author fullname="Feng Chong" initials="C." surname="Feng">
+      <organization>Huawei</organization>
+
+      <address>
+        <postal>
+          <street>101 Software Avenue, Yuhua District</street>
+
+          <city>Nanjing</city>
+
+          <region>Jiangsu</region>
+
+          <code>210012</code>
+
+          <country>China</country>
+        </postal>
+
+        <email>frank.fengchong@huawei.com</email>
+      </address>
+    </author>
+
+    <author fullname="Jan Lindblad" initials="J." surname="Lindblad">
+      <organization>Cisco Systems</organization>
+
+      <address>
+        <email>jlindbla@cisco.com</email>
+      </address>
+    </author>
+
+    <date year="2022"/>
+
+    <area>ops</area>
+
+    <workgroup>NETMOD</workgroup>
+
+    <keyword>With System NETMOD</keyword>
+
+    <abstract>
+      <t>This document updates NMDA to define a read-only conventional
+      configuration datastore called "system" to hold system-defined
+      configurations. To avoid clients' explicit copy/paste of referenced
+      system-defined configuration into the target configuration datastore
+      (e.g., &lt;running&gt;), a "resolve-system" parameter has been defined
+      to allow the server acting as a "system client" to copy referenced
+      system-defined nodes automatically. The solution enables clients
+      manipulating the target configuration datastore (e.g., &lt;running&gt;)
+      to overlay and reference nodes defined in &lt;system&gt;, override
+      values of configurations defined in &lt;system&gt;, and configure
+      descendant nodes of system-defined nodes.</t>
+    </abstract>
+  </front>
+
+  <middle>
+    <section anchor="Introduction" title="Introduction">
+      <t>NMDA [RFC8342] defines system configuration as the configuration that
+      is supplied by the device itself and appears in &lt;operational&gt; when
+      it is in use.</t>
+
+      <t>However, there is a desire to enable a server to better document the
+      system configuration. Clients can benefit from a standard mechanism to
+      see what system configuration is available in a server.</t>
+
+      <t>In some cases, the client references a system configuration which
+      isn't present in the target datastore (e.g., &lt;running&gt;). Having to
+      copy the entire contents of the system configuration into the target
+      datastore should be avoided or reduced when possible while ensuring that
+      all referential integrity constraints are satisfied.</t>
+
+      <t>In some other cases, configuration of descendant nodes of
+      system-defined configuration needs to be supported. For example, the
+      system configuration contains an almost empty physical interface, while
+      the client needs to be able to add, modify, remove a number of
+      descendant nodes. Some descendant nodes may not be modifiable (e.g.,
+      "name" and "type" set by the system).</t>
+
+      <t>This document updates NMDA <xref target="RFC8342"/> to define a
+      read-only conventional configuration datastore called "system" to hold
+      system-defined configurations. To avoid clients' explicit copy/paste of
+      referenced system-defined configuration into the target configuration
+      datastore (e.g., &lt;running&gt;), a "resolve-system" parameter has been
+      defined to allow the server acting as a "system client" to copy
+      referenced system-defined nodes automatically. The solution enables
+      clients manipulating the target configuration datastore (e.g.,
+      &lt;running&gt;) to overlay and reference nodes defined in
+      &lt;system&gt;, override values of configurations defined in
+      &lt;system&gt;, and configure descendant nodes of system-defined
+      nodes.</t>
+
+      <t>Conformance to this document requires servers to implement the
+      "ietf-system-datastore" YANG module.</t>
+
+      <section anchor="terminology" title="Terminology">
+        <t>This document assumes that the reader is familiar with the contents
+        of <xref target="RFC6241"/>, <xref target="RFC7950"/>, <xref
+        target="RFC8342"/>, <xref target="RFC8407"/>, and <xref
+        target="RFC8525"/> and uses terminologies from those documents.</t>
+
+        <t>The following terms are defined in this document as follows:<list
+            style="hanging">
+            <t hangText="System configuration: ">Configuration that is
+            provided by the system itself. System configuration is present in
+            &lt;system&gt; once it's created (regardless of being applied by
+            the device), and appears in &lt;intended&gt; which is subject to
+            validation. Applied system configuration also appears in
+            &lt;operational&gt; with origin="system".<vspace
+            blankLines="1"/></t>
+
+            <t hangText="System configuration datastore: ">A configuration
+            datastore holding the complete configuration provided by the
+            system itself. This datastore is referred to as
+            "&lt;system&gt;".</t>
+          </list>This document redefines the term "conventional configuration
+        datastore" from RFC 8342 to add "system" to the list of conventional
+        configuration datastores:<list style="hanging">
+            <t hangText="Conventional configuration datastore: ">One of the
+            following set of configuration datastores: &lt;running&gt;,
+            &lt;startup&gt;, &lt;candidate&gt;, &lt;system&gt;, and
+            &lt;intended&gt;. These datastores share a common datastore
+            schema, and protocol operations allow copying data between these
+            datastores. The term "conventional" is chosen as a generic
+            umbrella term for these datastores. <vspace blankLines="1"/></t>
+          </list></t>
+      </section>
+
+      <section title="Requirements Language">
+        <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+        "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+        "OPTIONAL" in this document are to be interpreted as described in BCP
+        14 <xref target="RFC2119"/> <xref target="RFC8174"/> when, and only
+        when, they appear in all capitals, as shown here.</t>
+      </section>
+
+      <section title="Updates to RFC 8342">
+        <t>This document updates RFC 8342 to define a configuration datastore
+        called "system" to hold system configuration, it also redefines the
+        term "conventional configuration datastore" from RFC 8342 to add
+        "system" to the list of conventional configuration datastores. The
+        contents of &lt;system&gt; datastore are read-only to clients but may
+        change dynamically. The &lt;system&gt; aware client may retrieve all
+        three types of system configuration defined in <xref
+        target="categories"/>, reference nodes defined in &lt;system&gt;,
+        override values of configurations defined in &lt;system&gt;, and
+        configure descendant nodes of system-defined nodes.</t>
+
+        <t>The server will merge &lt;running&gt; and &lt;system&gt; to create
+        &lt;intended&gt;. As always, system configuration will appear in
+        &lt;operational&gt; with origin="system" when it is in use.</t>
+
+        <t>The &lt;system&gt; datastore makes system configuration visible to
+        clients in order for being referenced or configurable prior to present
+        in &lt;operational&gt;.</t>
+      </section>
+
+      <section title="Updates to RFC 6241, RFC 8526">
+        <t>This document augments &lt;edit-config&gt; and &lt;edit-data&gt;
+        RPC operations defined in <xref target="RFC6241"/> and <xref
+        target="RFC8526"/> respectively, with a new additional input parameter
+        "resolve-system". The &lt;copy-config&gt; RPC operation defined in
+        <xref target="RFC6241"/> is also augmented to support "resolve-system"
+        parameter.</t>
+
+        <t>The "resolve-system" parameter is optional and has no value. When
+        it is provided and the server detects that there is a reference to a
+        system-defined node during the validation, the server will
+        automatically copy the referenced system configuration into the
+        validated datastore to make the configuration valid without the client
+        doing so explicitly. Legacy Clients interacting with servers that
+        support this parameter don't see any changes in
+        &lt;edit-config&gt;/&lt;edit-data&gt; and &lt;copy-config&gt;
+        behaviors.</t>
+
+        <t>According to the NETCONF constraint enforcement model defined in
+        the section 8.3 of [RFC7950], if the target datastore of the
+        &lt;edit-config&gt;/&lt;edit-data&gt; or &lt;copy-config&gt; is
+        "running" or "startup", the server's copy referenced nodes from
+        &lt;system&gt; to the target datastore MUST be enforced at the end of
+        the &lt;edit-config&gt;/&lt;edit-data&gt; or &lt;copy-config&gt;
+        operations during the validation. If the target datastore of the
+        &lt;edit-config&gt;/&lt;edit-data&gt; or &lt;copy-config&gt; is
+        "candidate", the server's copy referenced nodes from &lt;system&gt; to
+        the target datastore is delayed until a &lt;commit&gt; or
+        &lt;validate&gt; operation takes place.</t>
+      </section>
+
+      <section title="Updates to RFC 8040">
+        <t>This document extends Section 4.8 and Section 9.1.1 of [RFC8040] to
+        add a new query parameter "resolve-system" and corresponding query
+        parameter capability URI.</t>
+
+        <section title="Query Parameter">
+          <t>The "resolve-system" parameter controls whether to allow a server
+          copy any referenced system-defined configuration automatically
+          without the client doing so explicitly. This parameter is only
+          allowed with no values carried. If this parameter has any unexpected
+          value, then a "400 Bad Request" status-line is returned.<figure>
+              <artwork>+----------------+---------+-----------------------------------------+
+| Name           | Methods | Description                             |
++----------------+---------+-----------------------------------------+
+|resolve-system  | POST,   | resolve any references not resolved by  |
+|                | PUT     | the client and copy referenced          |
+|                |         | system configuration into &lt;running&gt;     |
+|                |         | automatically. This parameter can be    |
+|                |         | given in any order.                     |
++----------------+---------+-----------------------------------------+</artwork>
+            </figure></t>
+        </section>
+
+        <section title="Query Parameter URI">
+          <t>To enable the RESTCONF client to discover if the "resolve-system"
+          query parameter is supported by the server, the following capability
+          URI is defined, which is advertised by the server if supported,
+          using the "ietf-restconf-monitoring" module defined in RFC
+          8040:<figure>
+              <artwork>urn:ietf:params:restconf:capability:resolve-system:1.0</artwork>
+            </figure></t>
+        </section>
+      </section>
+    </section>
+
+    <section anchor="categories" title="Kinds of System Configuration">
+      <t>There are three types of system configurations: immediately-active
+      system configuration, conditionally-active system configuration and
+      inactive-until-referenced system configuration.</t>
+
+      <section title="Immediately-Active">
+        <t>Immediately-active system configurations are those generated in
+        &lt;system&gt; and applied immediately when the device is powered on
+        (e.g., a loop-back interface) , irrespective of physical resource
+        present or not, a special functionality enabled or not.</t>
+      </section>
+
+      <section title="Conditionally-Active">
+        <t>System configurations which are generated in &lt;system&gt; and
+        applied based on specific conditions being met in a system, e.g., if a
+        physical resource is present (e.g., insert interface card), the system
+        will automatically detect it and load pre-provisioned configuration;
+        when the physical resource is not present( remove interface card), the
+        system configuration will be automatically cleared. Another example is
+        when a special functionality is enabled, e.g., when QoS function is
+        enabled, QoS policies are automatically created by the system.</t>
+      </section>
+
+      <section title="Inactive-Until-Referenced">
+        <t>There are some system configurations predefined (e.g., application
+        ids, anti-x signatures, trust anchor certs, etc.) as a convenience for
+        the clients, which must be referenced to be active. The clients can
+        also define their own configurations for their unique requirements.
+        Inactive-until-referenced system configurations are generated in
+        &lt;system&gt; immediately when the device is powered on, but they are
+        not applied and active until being referenced.</t>
+      </section>
+    </section>
+
+    <section title="Static Characteristics">
+      <section title="Read-only to Clients">
+        <t>The &lt;system&gt; configuration datastore is a read-only
+        configuration datastore (i.e., edits towards &lt;system&gt; directly
+        MUST be denied), though the client may be allowed to override the
+        value of a system-initialized data node (see <xref
+        target="modifying"/>). Configuration defined in &lt;system&gt; is
+        merged into &lt;intended&gt;, and present in &lt;operational&gt; if it
+        is actively in use by the device. Thus unless the resource is no
+        longer available (e.g., the interface removed physically), there is no
+        way to actually delete system configuration from a server, even if a
+        client may be allowed to delete the configuration copied from
+        &lt;system&gt; into &lt;running&gt;. Any deletable system-provided
+        configuration must be defined in &lt;factory-default&gt; [RFC8808],
+        which is used to initialize &lt;running&gt; when the device is
+        first-time powered on or reset to its factory default condition.</t>
+      </section>
+
+      <section title="May Change via Software Upgrades">
+        <t>System configuration MAY change dynamically, e.g., depending on
+        factors like device upgrade or if system-controlled resources(e.g., HW
+        available) change. In some implementations, when QoS function is
+        enabled, QoS-related policies are created by system. If the system
+        configuration gets changed, YANG notification (e.g.,
+        "push-change-update" notification) [RFC8641][RFC8639][RFC6470] can be
+        used to notify the client. Any update of the contents in
+        &lt;system&gt; will not cause the automatic update of &lt;running&gt;,
+        even if some of the system configuration has already been copied into
+        &lt;running&gt; explicitly or automatically before the update.</t>
+      </section>
+
+      <section title="No Impact to &lt;operational&gt;">
+        <t>This work intends to have no impact to &lt;operational&gt;. As
+        always, system configuration will appear in &lt;operational&gt; with
+        "origin=system". This work enables a subset of those system generated
+        nodes to be defined like configuration, i.e., made visible to clients
+        in order for being referenced or configurable prior to present in
+        &lt;operational&gt;. "Config false" nodes are out of scope, hence
+        existing "config false" nodes are not impacted by this work.</t>
+      </section>
+    </section>
+
+    <section title="Dynamic Behavior">
+      <section title="Conceptual Model ">
+        <t>This document introduces a mandatory datastore named "system" which
+        is used to hold all three types of system configurations defined in
+        <xref target="categories"/>.</t>
+
+        <t>When the device is powered on, immediately-active system
+        configuration will be generated in &lt;system&gt; and applied
+        immediately but inactive-until-referenced system configuration only
+        becomes active if it is referenced by client-defined configuration.
+        While conditionally-active system configuration will be created and
+        immediately applied if the condition on system resources is met when
+        the device is powered on or running.</t>
+
+        <t>All above three types of system configurations will appear in
+        &lt;system&gt;. Clients MAY reference nodes defined in &lt;system&gt;,
+        override values of configurations defined in &lt;system&gt;, and
+        configure descendant nodes of system-defined nodes, by copying or
+        writing intended configurations into the target configuration
+        datastore (e.g., &lt;running&gt;).</t>
+
+        <t>The server will merge &lt;running&gt; and &lt;system&gt; to create
+        &lt;intended&gt;, in which process, the data node appears in
+        &lt;running&gt; takes precedence over the same node in &lt;system&gt;
+        if the server allows the node to be modifiable; additional nodes to a
+        list entry or new list/leaf-list entries appear in &lt;running&gt;
+        extends the list entry or the whole list/leaf-list defined in
+        &lt;system&gt; if the server allows the list/leaf-list to be updated.
+        In addition, the &lt;intended&gt; configuration datastore represents
+        the configuration after all configuration transformation to
+        &lt;system&gt; are performed (e.g., system-defined template expansion,
+        removal of inactive system configuration). If a server implements
+        &lt;intended&gt;, &lt;system&gt; MUST be merged into
+        &lt;intended&gt;.</t>
+
+        <t>Servers MUST enforce that configuration references in
+        &lt;running&gt; are resolved within the &lt;running&gt; datastore and
+        ensure that &lt;running&gt; contains any referenced system
+        configuration. Clients MUST either explicitly copy system-defined
+        nodes into &lt;running&gt; or use the "resolve-system" parameter. The
+        server MUST enforce that the referenced system nodes configured into
+        &lt;running&gt; by the client is consistent with &lt;system&gt;. Note
+        that &lt;system&gt; aware clients know how to discover what nodes
+        exist in &lt;system&gt;. How clients unaware of the &lt;system&gt;
+        datastore can find appropriate configurations is beyond the scope of
+        this document.</t>
+
+        <t>No matter how the referenced system configurations are copied into
+        &lt;running&gt;, the nodes copied into &lt;running&gt; would always be
+        returned after a read of &lt;running&gt;, regardless if the client is
+        &lt;system&gt; aware.</t>
+      </section>
+
+      <section title="Explicit Declaration of System Configuration">
+        <t>It is possible for a client to explicitly declare system
+        configuration nodes in the target datastore (e.g., &lt;running&gt;)
+        with the same values as in &lt;system&gt;, by configuring a node
+        (list/leaf-list entry, leaf, etc) in the target datastore (e.g.,
+        &lt;running&gt;) that matches the same node and value in
+        &lt;system&gt;.</t>
+
+        <t>This explicit configuration of system-defined nodes in
+        &lt;running&gt; can be useful, for example, when the client doesn't
+        want a "system client" to have a role or hasn't implemented the
+        "resolve-system" parameter. The client can explicitly declare (i.e.
+        configure in &lt;running&gt;) the list entries (with at least the
+        keys) for any system configuration list entries that are referenced
+        elsewhere in &lt;running&gt;. The client does not necessarily need to
+        declare all the contents of the list entry (i.e. the descendant nodes)
+        &ndash; only the parts that are required to make the &lt;running&gt;
+        appear valid.</t>
+      </section>
+
+      <section title="Servers Auto-configuring Referenced System Configuration">
+        <t>This document defines a new parameter "resolve-system" to the input
+        for the &lt;edit-config&gt;, &lt;edit-data&gt; and &lt;copy-config&gt;
+        operations. Clients that are aware of the "resolve-system" parameter
+        MAY use this parameter to avoid the requirement to provide a
+        referentially complete configuration in &lt;running&gt;.</t>
+
+        <t>If the "resolve-system" is present, the server MUST copy relevant
+        referenced system-defined nodes into the target datastore (e.g.,
+        &lt;running&gt;) without the client doing the copy/paste explicitly,
+        to resolve any references not resolved by the client. The server
+        acting as a "system client" like any other remote clients copies the
+        referenced system-defined nodes when triggered by the "resolve-system"
+        parameter.</t>
+
+        <t>If the "resolve-system" parameter is not given by the client, the
+        server should not modify &lt;running&gt; in any way otherwise not
+        specified by the client. Not using capitalized "SHOULD NOT" in the
+        previous sentence is intentional. The intention is bring awareness to
+        the general need to not surprise clients with unexpected changes. It
+        is desirable for clients to always opt into using mechanisms having
+        server-side changes. This document enables a client to opt into this
+        behavior using the "resolve-system" parameter. RFC 7317 enables a
+        client to opt into its behavior using a "$0$" prefix (see
+        ianach:crypt-hash type defined in <xref target="RFC7317"/>).</t>
+
+        <t>The server may automatically configure the list entries (with at
+        least the keys) in the target datastore (e.g., &lt;running&gt;) for
+        any system configuration list entries that are referenced elsewhere by
+        the clients. Similarly, not all the contents of the list entry (i.e.,
+        the descendant nodes) are necessarily copied by the server - only the
+        parts that are required to make the &lt;running&gt; valid. A read back
+        of &lt;running&gt; (i.e., &lt;get&gt;, &lt;get-config&gt; or
+        &lt;get-data&gt; operation) returns those automatically copied
+        nodes.</t>
+      </section>
+
+      <section anchor="modifying"
+               title="Modifying (overriding) System Configuration">
+        <t>In some cases, a server may allow some parts of system
+        configuration to be modified. List keys in system configuration can't
+        be changed by a client, but other descendant nodes in a list entry may
+        be modifiable or non-modifiable. Leafs and leaf-lists outside of lists
+        may also be modifiable or non-modifiable. Even if some system
+        configuration has been copied into &lt;running&gt; earlier, whether it
+        is modifiable or not in &lt;running&gt; follows general YANG and NACM
+        rules, and other server-internal restrictions. If a system
+        configuration node is non-modifiable, then writing a different value
+        for that node in &lt;running&gt; MUST return an error. The
+        immutability of system configuration is further defined in <xref
+        target="I-D.ma-netmod-immutable-flag"/>.</t>
+
+        <t>Modification of system configuration is achieved by the client
+        writing configuration to &lt;running&gt; that overrides the system
+        configuration. Configurations defined in &lt;running&gt; take
+        precedence over system configuration nodes in &lt;system&gt; if the
+        server allows the nodes to be modified.</t>
+
+        <t>A server may also allow a client to add data nodes to a list entry
+        in &lt;system&gt; by writing those additional nodes in
+        &lt;running&gt;. Those additional data nodes may not exist in
+        &lt;system&gt; (i.e. an *addition* rather than an override).</t>
+
+        <t>While modifying (overriding) system configuration nodes may be
+        supported by a server, there is no mechanism for deleting a system
+        configuration node in &lt;system&gt; unless the resource is no longer
+        available. For example, a "mandatory true" leaf may have a value in
+        &lt;system&gt; which can be modified (overridden) by a client setting
+        that leaf to a value in &lt;running&gt;. But the leaf could not be
+        deleted. Another example of this might be that system initializes a
+        value for a particular leaf which is overridden by the client with
+        intended value in &lt;running&gt;. The client may delete the leaf in
+        &lt;running&gt;, but system-initialized value defined in
+        &lt;system&gt; will be in use and appear in &lt;operational&gt;.</t>
+
+        <t>Comment 1: What if &lt;system&gt; contains a set of values for a
+        leaf-list, and a client configures another set of values for that
+        leaf-list in &lt;running&gt;, will the set of values in
+        &lt;running&gt; completely replace the set of values in
+        &lt;system&gt;? Or the two sets of values are merged together?</t>
+
+        <t>Comment 2: how "ordered-by user" lists and leaf-lists are merged?
+        Do the &lt;running&gt; values go before or after, or is this a case
+        where a full-replace is needed.</t>
+      </section>
+
+      <section title="Examples">
+        <t>This section shows the examples of server-configuring of
+        &lt;running&gt; automatically, declaring a system-defined node in
+        &lt;running&gt; explicitly, modifying a system-instantiated leaf's
+        value and configuring descendant nodes of a system-defined node. For
+        each example, the corresponding XML snippets are provided.</t>
+
+        <section title="Server Configuring of &lt;running&gt; Automatically">
+          <t>In this subsection, the following fictional module is used:</t>
+
+          <t><figure>
+              <artwork>         module example-application {
+           yang-version 1.1;
+           namespace "urn:example:application";
+           prefix "app";
+           
+           import ietf-inet-types {
+             prefix "inet";
+           }
+           container applications {
+             list application {
+               key "name";
+               leaf name {
+                 type string;
+               }
+               leaf protocol {
+                 type enumeration {
+                   enum tcp;
+                   enum udp;
+                 }
+               }
+               leaf destination-port {
+                 type inet:port-number;
+               }
+             }
+           }
+         }  </artwork>
+            </figure></t>
+
+          <t>The server may predefine some applications as a convenience for
+          the clients. These predefined configurations are applied only after
+          being referenced by other configurations, which fall into the
+          "inactive-until-referenced" system configuration as defined in <xref
+          target="categories"/>. The system-instantiated application entries
+          may be present in &lt;system&gt; as follows:</t>
+
+          <figure>
+            <artwork>        &lt;applications xmlns="urn:example:application"&gt;
+          &lt;application&gt;
+            &lt;name&gt;ftp&lt;/name&gt;
+            &lt;protocol&gt;tcp&lt;/protocol&gt;
+            &lt;destination-port&gt;21&lt;/destination-port&gt;
+          &lt;/application&gt;
+          &lt;application&gt;
+            &lt;name&gt;tftp&lt;/name&gt;
+            &lt;protocol&gt;udp&lt;/protocol&gt;
+            &lt;destination-port&gt;69&lt;/destination-port&gt;
+          &lt;/application&gt;
+          &lt;application&gt;
+            &lt;name&gt;smtp&lt;/name&gt;
+            &lt;protocol&gt;tcp&lt;/protocol&gt;
+            &lt;destination-port&gt;25&lt;/destination-port&gt;
+          &lt;/application&gt;
+          ...
+        &lt;/applications&gt;</artwork>
+          </figure>
+
+          <t>The client may also define its customized applications. Suppose
+          the configuration of applications is present in &lt;running&gt; as
+          follows:<figure>
+              <artwork>        &lt;applications xmlns="urn:example:application"&gt;
+          &lt;application&gt;
+            &lt;name&gt;my-app-1&lt;/name&gt;
+            &lt;protocol&gt;tcp&lt;/protocol&gt;
+            &lt;destination-port&gt;2345&lt;/destination-port&gt;
+          &lt;/application&gt;
+          &lt;application&gt;
+            &lt;name&gt;my-app-2&lt;/name&gt;
+            &lt;protocol&gt;udp&lt;/protocol&gt;
+            &lt;destination-port&gt;69&lt;/destination-port&gt;
+          &lt;/application&gt;
+        &lt;/applications&gt;</artwork>
+            </figure></t>
+
+          <t>A fictional ACL YANG module is used as follows, which defines a
+          leafref for the leaf-list "application" data node to refer to an
+          existing application name.<figure>
+              <artwork>         module example-acl {  
+           yang-version 1.1;
+           namespace "urn:example:acl";
+           prefix "acl";
+           
+           import example-application {
+             prefix "app";
+           }
+           import ietf-inet-types {
+             prefix "inet";
+           }
+           
+           container acl {
+             list acl_rule {
+               key "name";
+               leaf name {
+                 type string;
+               }
+               container matches {
+                 choice l3 {
+                   container ipv4 {
+                     leaf source_address {
+                       type inet:ipv4-prefix;
+                     }
+                     leaf dest_address {
+                       type inet:ipv4-prefix;
+                     }
+                   }
+                 }
+                 choice applications {
+                   leaf-list application {
+                     type leafref {
+                     path "/app:applications/app:application/app:name";
+                     }
+                   }
+                 }
+               }
+               leaf packet_action {
+                 type enumeration {
+                   enum forward;
+                   enum drop;
+                   enum redirect;
+                 }
+               }
+             }
+           }
+         }  </artwork>
+            </figure></t>
+
+          <t>If a client configures an ACL rule referencing system predefined
+          nodes which are not present in &lt;running&gt;, the client MAY issue
+          an &lt;edit-config&gt; operation with the parameter "resolve-system"
+          as follows:<figure>
+              <artwork>        &lt;rpc message-id="101"
+             xmlns="urn:ietf:params:xml:ns:netconf:base:1.0"&gt;  
+          &lt;edit-config&gt; 
+            &lt;target&gt; 
+              &lt;running/&gt; 
+            &lt;/target&gt;  
+            &lt;config&gt; 
+              &lt;acl xmlns="urn:example:acl"&gt;
+                &lt;acl_rule&gt; 
+                  &lt;name&gt;allow_access_to_ftp_tftp&lt;/name&gt;  
+                  &lt;matches&gt; 
+                    &lt;ipv4&gt; 
+                      &lt;source_address&gt;198.51.100.0/24&lt;/source_address&gt;  
+                      &lt;dest_address&gt;192.0.2.0/24&lt;/dest_address&gt; 
+                    &lt;/ipv4&gt;  
+                    &lt;application&gt;ftp&lt;/application&gt;  
+                    &lt;application&gt;tftp&lt;/application&gt; 
+                    &lt;application&gt;my-app-1&lt;/application&gt; 
+                  &lt;/matches&gt;  
+                  &lt;packet_action&gt;forward&lt;/packet_action&gt; 
+                &lt;/acl_rule&gt; 
+              &lt;/acl&gt; 
+            &lt;/config&gt;
+            &lt;resolve-system/&gt; 
+          &lt;/edit-config&gt; 
+        &lt;/rpc&gt;</artwork>
+            </figure></t>
+
+          <t>Then following gives the configuration of applications in
+          &lt;running&gt; which is returned in the response to a follow-up
+          &lt;get-config&gt; operation:<figure>
+              <artwork>        &lt;applications xmlns="urn:example:application"&gt;
+          &lt;application&gt;
+            &lt;name&gt;my-app-1&lt;/name&gt;
+            &lt;protocol&gt;tcp&lt;/protocol&gt;
+            &lt;destination-port&gt;2345&lt;/destination-port&gt;
+          &lt;/application&gt;
+          &lt;application&gt;
+            &lt;name&gt;my-app-2&lt;/name&gt;
+            &lt;protocol&gt;udp&lt;/protocol&gt;
+            &lt;destination-port&gt;69&lt;/destination-port&gt;
+          &lt;/application&gt;
+          &lt;application&gt;
+            &lt;name&gt;ftp&lt;/name&gt;
+          &lt;/application&gt;
+          &lt;application&gt;
+            &lt;name&gt;tftp&lt;/name&gt;
+          &lt;/application&gt;
+        &lt;/applications&gt;</artwork>
+            </figure></t>
+
+          <t>Then the configuration of applications is present in
+          &lt;operational&gt; as follows:<figure>
+              <artwork>        &lt;applications xmlns="urn:example:application"
+                      xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
+                      or:origin="or:intended"&gt;
+          &lt;application&gt;
+            &lt;name&gt;my-app-1&lt;/name&gt;
+            &lt;protocol&gt;tcp&lt;/protocol&gt;
+            &lt;destination-port&gt;2345&lt;/destination-port&gt;
+          &lt;/application&gt;
+          &lt;application&gt;
+            &lt;name&gt;my-app-2&lt;/name&gt;
+            &lt;protocol&gt;udp&lt;/protocol&gt;
+            &lt;destination-port&gt;69&lt;/destination-port&gt;
+          &lt;/application&gt;
+          &lt;application or:origin="or:system"&gt;
+            &lt;name&gt;ftp&lt;/name&gt;
+            &lt;protocol&gt;tcp&lt;/protocol&gt;
+            &lt;destination-port&gt;21&lt;/destination-port&gt;
+          &lt;/application&gt;
+          &lt;application or:origin="or:system"&gt;
+            &lt;name&gt;tftp&lt;/name&gt;
+            &lt;protocol&gt;udp&lt;/protocol&gt;
+            &lt;destination-port&gt;69&lt;/destination-port&gt;
+          &lt;/application&gt;            
+        &lt;/applications&gt;</artwork>
+            </figure>Since the configuration of application "smtp" is not
+          referenced by the client, it does not appear in &lt;operational&gt;
+          but only in &lt;system&gt;.</t>
+        </section>
+
+        <section title="Declaring a System-defined Node in &lt;running&gt; Explicitly">
+          <t>It's also possible for a client to explicitly declare the
+          system-defined configurations that are referenced. For instance, in
+          the above example, the client MAY also explicitly configure the
+          following system defined applications "ftp" and "tftp" only with the
+          list key "name" before referencing:<figure>
+              <artwork>          &lt;rpc message-id="101"
+               xmlns="urn:ietf:params:xml:ns:netconf:base:1.0"&gt;
+             &lt;edit-config&gt;
+               &lt;target&gt;
+                 &lt;running/&gt;
+               &lt;/target&gt;
+               &lt;config&gt;
+                 &lt;applications xmlns="urn:example:application"&gt;
+                   &lt;application&gt;
+                     &lt;name&gt;ftp&lt;/name&gt;
+                   &lt;/application&gt;
+                   &lt;application&gt;
+                     &lt;name&gt;tftp&lt;/name&gt;
+                   &lt;/application&gt;
+                 &lt;/applications&gt;
+               &lt;/config&gt;
+             &lt;/edit-config&gt;
+           &lt;/rpc&gt;</artwork>
+            </figure></t>
+
+          <t>Then the client issues an &lt;edit-config&gt; operation to
+          configure an ACL rule referencing applications "ftp" and "tftp"
+          without the parameter "resolve-system" as follows:<figure>
+              <artwork>        &lt;rpc message-id="101"
+             xmlns="urn:ietf:params:xml:ns:netconf:base:1.0"&gt;  
+          &lt;edit-config&gt; 
+            &lt;target&gt; 
+              &lt;running/&gt; 
+            &lt;/target&gt;  
+            &lt;config&gt; 
+              &lt;acl xmlns="urn:example:acl"&gt; 
+                &lt;acl_rule&gt; 
+                  &lt;name&gt;allow_access_to_ftp_tftp&lt;/name&gt;  
+                  &lt;matches&gt; 
+                    &lt;ipv4&gt; 
+                      &lt;source_address&gt;198.51.100.0/24&lt;/source_address&gt;  
+                      &lt;dest_address&gt;192.0.2.0/24&lt;/dest_address&gt; 
+                    &lt;/ipv4&gt;  
+                    &lt;application&gt;ftp&lt;/application&gt;  
+                    &lt;application&gt;tftp&lt;/application&gt; 
+                    &lt;application&gt;my-app-1&lt;/application&gt; 
+                  &lt;/matches&gt;  
+                  &lt;packet_action&gt;forward&lt;/packet_action&gt; 
+                &lt;/acl_rule&gt; 
+              &lt;/acl&gt; 
+            &lt;/config&gt;
+          &lt;/edit-config&gt; 
+        &lt;/rpc&gt;</artwork>
+            </figure></t>
+
+          <t>Then following gives the configuration of applications in
+          &lt;running&gt; which is returned in the response to a follow-up
+          &lt;get-config&gt; operation, all the configuration of applications
+          are explicitly configured by the client:<figure>
+              <artwork>        &lt;applications xmlns="urn:example:application"&gt;
+          &lt;application&gt;
+            &lt;name&gt;my-app-1&lt;/name&gt;
+            &lt;protocol&gt;tcp&lt;/protocol&gt;
+            &lt;destination-port&gt;2345&lt;/destination-port&gt;
+          &lt;/application&gt;
+          &lt;application&gt;
+            &lt;name&gt;my-app-2&lt;/name&gt;
+            &lt;protocol&gt;udp&lt;/protocol&gt;
+            &lt;destination-port&gt;69&lt;/destination-port&gt;
+          &lt;/application&gt;
+          &lt;application&gt;
+            &lt;name&gt;ftp&lt;/name&gt;
+          &lt;/application&gt;
+          &lt;application&gt;
+            &lt;name&gt;tftp&lt;/name&gt;
+          &lt;/application&gt;
+        &lt;/applications&gt;</artwork>
+            </figure></t>
+
+          <t>Then the configuration of applications is present in
+          &lt;operational&gt; as follows:<figure>
+              <artwork>        &lt;applications xmlns="urn:example:application"
+                      xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
+                      or:origin="or:intended"&gt;
+          &lt;application&gt;
+            &lt;name&gt;my-app-1&lt;/name&gt;
+            &lt;protocol&gt;tcp&lt;/protocol&gt;
+            &lt;destination-port&gt;2345&lt;/destination-port&gt;
+          &lt;/application&gt;
+          &lt;application&gt;
+            &lt;name&gt;my-app-2&lt;/name&gt;
+            &lt;protocol&gt;udp&lt;/protocol&gt;
+            &lt;destination-port&gt;69&lt;/destination-port&gt;
+          &lt;/application&gt;
+          &lt;application&gt;
+            &lt;name&gt;ftp&lt;/name&gt;
+            &lt;protocol or:origin="or:system"&gt;tcp&lt;/protocol&gt;
+            &lt;destination-port or:origin="or:system"&gt;21&lt;/destination-port&gt;
+          &lt;/application&gt;
+          &lt;application&gt;
+            &lt;name&gt;tftp&lt;/name&gt;
+            &lt;protocol or:origin="or:system"&gt;udp&lt;/protocol&gt;
+            &lt;destination-port or:origin="or:system"&gt;69&lt;/destination-port&gt;
+          &lt;/application&gt;            
+        &lt;/applications&gt;</artwork>
+            </figure>Since the application names "ftp" and "tftp" are
+          explicitly configured by the client, they take precedence over the
+          values in &lt;system&gt;, the "origin" attribute will be set to
+          "intended".</t>
+        </section>
+
+        <section title="Modifying a System-instantiated Leaf's Value">
+          <t>In this subsection, we will use this fictional QoS data
+          model:</t>
+
+          <t><figure>
+              <artwork>       module example-qos-policy {  
+         yang-version 1.1;
+         namespace "urn:example:qos";
+         prefix "qos";
+         
+         container qos-policies {
+            list policy {
+              key "name";
+              leaf name {
+              type string;
+            }
+              list queue {
+                key "queue-id";
+                  leaf queue-id {
+                    type int32 {
+                      range "1..32";
+                    }
+                  }
+                  leaf maximum-burst-size {
+                    type int32 {
+                      range "0..100";
+                    }
+                  }
+                }
+              }
+            }
+          } </artwork>
+            </figure></t>
+
+          <t>Suppose a client creates a qos policy "my-policy" with 4 system
+          instantiated queues(1~4). The Configuration of qos-policies is
+          present in &lt;system&gt; as follows:</t>
+
+          <figure>
+            <artwork>        &lt;qos-policies xmlns="urn:example:qos"&gt;
+          &lt;name&gt;my-policy&lt;/name&gt;
+          &lt;queue&gt;
+            &lt;queue-id&gt;1&lt;/queue-id&gt;
+            &lt;maximum-burst-size&gt;50&lt;/maximum-burst-size&gt;
+          &lt;/queue&gt;
+          &lt;queue&gt;
+            &lt;queue-id&gt;2&lt;/queue-id&gt;
+            &lt;maximum-burst-size&gt;60&lt;/maximum-burst-size&gt;
+          &lt;/queue&gt;
+          &lt;queue&gt;
+            &lt;queue-id&gt;3&lt;/queue-id&gt;
+            &lt;maximum-burst-size&gt;70&lt;/maximum-burst-size&gt;
+          &lt;/queue&gt;
+          &lt;queue&gt;
+            &lt;queue-id&gt;4&lt;/queue-id&gt;
+            &lt;maximum-burst-size&gt;80&lt;/maximum-burst-size&gt;
+          &lt;/queue&gt;
+        &lt;/qos-policies&gt;</artwork>
+          </figure>
+
+          <t>A client modifies the value of maximum-burst-size to 55 in
+          queue-id 1:</t>
+
+          <figure>
+            <artwork>        &lt;rpc message-id="101"
+             xmlns="urn:ietf:params:xml:ns:netconf:base:1.0"&gt;
+          &lt;edit-config&gt;
+            &lt;target&gt;
+              &lt;running/&gt;
+            &lt;/target&gt;
+            &lt;config&gt;
+              &lt;qos-policies xmlns="urn:example:qos"&gt;
+                &lt;name&gt;my-policy&lt;/name&gt;
+                &lt;queue&gt;
+                  &lt;queue-id&gt;1&lt;/queue-id&gt;
+                  &lt;maximum-burst-size&gt;55&lt;/maximum-burst-size&gt;
+                &lt;/queue&gt;
+              &lt;/qos-policies&gt;
+            &lt;/config&gt;
+          &lt;/edit-config&gt;
+        &lt;/rpc&gt;</artwork>
+          </figure>
+
+          <t>Then the configuration of qos-policies is present in
+          &lt;operational&gt; as follows:<figure>
+              <artwork>        &lt;qos-policies  xmlns="urn:example:qos"
+                       xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
+                       or:origin="or:intended"&gt;
+          &lt;name&gt;my-policy&lt;/name&gt;
+          &lt;queue&gt;
+            &lt;queue-id&gt;1&lt;/queue-id&gt;
+            &lt;maximum-burst-size&gt;55&lt;/maximum-burst-size&gt;
+          &lt;/queue&gt;
+          &lt;queue or:origin="or:system"&gt;
+            &lt;queue-id&gt;2&lt;/queue-id&gt;
+            &lt;maximum-burst-size&gt;60&lt;/maximum-burst-size&gt;
+          &lt;/queue&gt;
+           &lt;queue or:origin="or:system"&gt;
+            &lt;queue-id&gt;3&lt;/queue-id&gt;
+            &lt;maximum-burst-size&gt;70&lt;/maximum-burst-size&gt;
+          &lt;/queue&gt;
+           &lt;queue or:origin="or:system"&gt;
+            &lt;queue-id&gt;4&lt;/queue-id&gt;
+            &lt;maximum-burst-size&gt;80&lt;/maximum-burst-size&gt;
+          &lt;/queue&gt;
+        &lt;/qos-policies&gt;</artwork>
+            </figure></t>
+        </section>
+
+        <section title="Configuring Descendant Nodes of a System-defined Node">
+          <t>This subsection also uses the fictional interface YANG module
+          defined in Appendix C.3 of [RFC8342]. Suppose the system provides a
+          loopback interface (named "lo0") with a default IPv4 address of
+          "127.0.0.1" and a default IPv6 address of "::1".</t>
+
+          <t>The configuration of "lo0" interface is present in &lt;system&gt;
+          as follows:<figure>
+              <artwork>      &lt;interfaces&gt;
+        &lt;interface&gt;
+          &lt;name&gt;lo0&lt;/name&gt;
+          &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
+          &lt;ip-address&gt;::1&lt;/ip-address&gt;
+        &lt;/interface&gt;
+      &lt;/interfaces&gt;</artwork>
+            </figure></t>
+
+          <t>The configuration of "lo0" interface is present in
+          &lt;operational&gt; as follows:</t>
+
+          <figure>
+            <artwork>     &lt;interfaces xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
+                 or:origin="or:system"&gt;
+       &lt;interface&gt;
+         &lt;name&gt;lo0&lt;/name&gt;
+         &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
+         &lt;ip-address&gt;::1&lt;/ip-address&gt;
+       &lt;/interface&gt;
+     &lt;/interfaces&gt;</artwork>
+          </figure>
+
+          <t>Later on, the client further configures the description node of a
+          "lo0" interface as follows:</t>
+
+          <figure>
+            <artwork>     &lt;rpc message-id="101"
+          xmlns="urn:ietf:params:xml:ns:netconf:base:1.0"&gt;
+       &lt;edit-config&gt;
+         &lt;target&gt;
+           &lt;running/&gt;
+         &lt;/target&gt;
+         &lt;config&gt;
+           &lt;interfaces&gt;
+             &lt;interface&gt;
+               &lt;name&gt;lo0&lt;/name&gt;
+               &lt;description&gt;loopback&lt;/description&gt;
+             &lt;/interface&gt;
+           &lt;/interfaces&gt;
+         &lt;/config&gt;
+       &lt;/edit-config&gt;
+     &lt;/rpc&gt;</artwork>
+          </figure>
+
+          <t>Then the configuration of interface "lo0" is present in
+          &lt;operational&gt; as follows:<figure>
+              <artwork>        &lt;interfaces xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
+                    or:origin="or:intended"&gt;
+          &lt;interface&gt;
+            &lt;name&gt;lo0&lt;/name&gt;
+            &lt;description&gt;loopback&lt;/description&gt;
+            &lt;ip-address or:origin="or:system"&gt;127.0.0.1&lt;/ip-address&gt;
+            &lt;ip-address or:origin="or:system"&gt;::1&lt;/ip-address&gt;
+          &lt;/interface&gt;
+        &lt;/interfaces&gt;</artwork>
+            </figure></t>
+        </section>
+      </section>
+    </section>
+
+    <section title="The &lt;system&gt; Configuration Datastore">
+      <t>NMDA servers claiming to support this document MUST implement a
+      &lt;system&gt; configuration datastore, and they SHOULD also implement
+      the &lt;intended&gt; datastore.</t>
+
+      <t>Following guidelines for defining datastores in the appendix A of
+      [RFC8342], this document introduces a new datastore resource named
+      'system' that represents the system configuration. A device MAY
+      implement the mechanism defined in this document without implementing
+      the "system" datastore, which would only eliminate the ability to
+      programmatically determine the system configuration.</t>
+
+      <t><list style="symbols">
+          <t>Name: "system"</t>
+
+          <t>YANG modules: all</t>
+
+          <t>YANG nodes: all "config true" data nodes up to the root of the
+          tree, generated by the system</t>
+
+          <t>Management operations: The content of the datastore is set by the
+          server in an implementation dependent manner. The content can not be
+          changed by management operations via NETCONF, RESTCONF, the CLI,
+          etc, but may change itself by upgrades and/or when
+          resource-conditions are met. The datastore can be read using the
+          standard NETCONF/RESTCONF protocol operations.</t>
+
+          <t>Origin: This document does not define any new origin identity
+          when it interacts with &lt;intended&gt; datastore and flows into
+          &lt;operational&gt;. The "system" origin Metadata Annotation
+          [RFC7952] is used to indicate the origin of a data item is system.
+          <vspace blankLines="1"/></t>
+
+          <t>Protocols: YANG-driven management protocols, such as NETCONF and
+          RESTCONF.</t>
+
+          <t>Defining YANG module: "ietf-system-datastore".</t>
+        </list></t>
+
+      <t>The datastore's content is defined by the server and read-only to
+      clients. Upon the content is created or changed, it will be merged into
+      &lt;intended&gt; datastore. Unlike &lt;factory-default&gt;<xref
+      target="RFC8808"/>, it MAY change dynamically, e.g., depending on
+      factors like device upgrade or system-controlled resources change (e.g.,
+      HW available). The &lt;system&gt; datastore doesn't persist across
+      reboots; the contents of &lt;system&gt; will be lost upon reboot and
+      recreated by the system with the same or changed contents.
+      &lt;factory-reset&gt; RPC operation defined in [RFC8808] can reset it to
+      its factory default configuration without including configuration
+      generated due to the system update or client-enabled functionality.</t>
+
+      <t>The &lt;system&gt; datastore is defined as a conventional
+      configuration datastore and shares a common datastore schema with other
+      conventional datastores. The &lt;system&gt; configuration datastore must
+      always be valid, as defined in Section 8.1 of <xref
+      target="RFC7950"/>.</t>
+    </section>
+
+    <section title="The &quot;ietf-system-datastore&quot; Module">
+      <section title="Data Model Overview">
+        <t>This YANG module defines a new YANG identity named "system" that
+        uses the "ds:datastore" identity defined in [RFC8342]. A client can
+        discover the &lt;system&gt; datastore support on the server by reading
+        the YANG library information from the operational state datastore.
+        Note that no new origin identity is defined in this document, the
+        "or:system" origin Metadata Annotation [RFC7952] is used to indicate
+        the origin of a data item is system. Support for the "origin"
+        annotation is identified with the feature "origin" defined in
+        [RFC8526].</t>
+
+        <t>The following diagram illustrates the relationship amongst the
+        "identity" statements defined in the "ietf-system-datastore" and
+        "ietf-datastores" YANG modules:</t>
+
+        <figure>
+          <artwork>Identities:
+    +--- datastore
+    |  +--- conventional
+    |  |  +--- running
+    |  |  +--- candidate
+    |  |  +--- startup
+    |  |  +--- system
+    |  |  +--- intended
+    |  +--- dynamic
+    |  +--- operational
+ The diagram above uses syntax that is similar to but not defined in [RFC8340].</artwork>
+        </figure>
+      </section>
+
+      <section title="Example Usage">
+        <t>This section gives an example of data retrieval from
+        &lt;system&gt;. The YANG module used are shown in Appendix C.2 of
+        [RFC8342]. All the messages are presented in a protocol-independent
+        manner. JSON is used only for its conciseness.</t>
+
+        <t>Suppose the following data is added to &lt;running&gt;:</t>
+
+        <figure>
+          <artwork>{
+    "bgp": {
+        "local-as": "64501", 
+        "peer-as": "64502", 
+        "peer": {
+            "name": "2001:db8::2:3"
+        }
+    }
+}</artwork>
+        </figure>
+
+        <t>REQUEST (a &lt;get-data&gt; or GET request sent from the NETCONF or
+        RESTCONF client):</t>
+
+        <figure>
+          <artwork>Datastore: &lt;system&gt;
+Target:/bgp</artwork>
+        </figure>
+
+        <t>An example of RESTCONF request:</t>
+
+        <figure>
+          <artwork>      GET /restconf/ds/system/bgp HTTP/1.1
+      Host: example.com
+      Accept: application/yang-data+xml</artwork>
+        </figure>
+
+        <t>RESPONSE ("local-port" leaf value is supplied by the system):</t>
+
+        <figure>
+          <artwork>{
+    "bgp": {
+        "peer": {
+            "name": "2001:db8::2:3",
+            "local-port": "60794"
+        }
+    }
+}</artwork>
+        </figure>
+      </section>
+
+      <section title="YANG Module">
+            <figure>
+              <preamble>&lt;CODE BEGINS&gt; file "yang/ietf-system-datastore@YYYY-MM-DD.yang"</preamble>
+              <artwork><![CDATA[
+INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
+]]></artwork>
+              <postamble>&lt;CODE ENDS&gt;</postamble>
+            </figure>
+      </section>
+    </section>
+
+    <section title="The &quot;ietf-netconf-resolve-system&quot; Module">
+      <t>This YANG module is optional to implement.</t>
+
+      <section title="Data Model Overview">
+        <t>This YANG module augments NETCONF &lt;edit-config&gt;,
+        &lt;edit-data&gt; and &lt;copy-config&gt; operations with a new
+        parameter "resolve-system" in the input parameters. If the
+        "resolve-system" parameter is present, the server will copy the
+        referenced system configuration into target datastore automatically. A
+        NETCONF client can discover the "resolve-system" parameter support on
+        the server by checking the YANG library information with
+        "ietf-netconf-resolve-system" included from the operational state
+        datastore.</t>
+
+        <t>The following tree diagram [RFC8340] illustrates the
+        "ietf-netconf-resolve-system" module:</t>
+
+        <figure>
+          <artwork>module: ietf-netconf-resolve-system
+  augment /nc:edit-config/nc:input:
+    +---w resolve-system?   empty
+  augment /nc:copy-config/nc:input:
+    +---w resolve-system?   empty
+  augment /ncds:edit-data/ncds:input:
+    +---w resolve-system?   empty</artwork>
+        </figure>
+
+        <t>The following tree diagram [RFC8340] illustrates "edit-config",
+        "copy-config" and "edit-data" rpcs defined in "ietf-netconf" and
+        "ietf-netconf-nmda" respectively, augmented by
+        "ietf-netconf-resolve-system" YANG module :</t>
+
+        <figure>
+          <artwork>  rpcs:
+    +---x edit-config
+    |  +---w input
+    |     +---w target
+    |     |  +---w (config-target)
+    |     |     +--:(candidate)
+    |     |     |  +---w candidate?   empty {candidate}?
+    |     |     +--:(running)
+    |     |        +---w running?     empty {writable-running}?
+    |     +---w default-operation?   enumeration
+    |     +---w test-option?         enumeration {validate}?
+    |     +---w error-option?        enumeration
+    |     +---w (edit-content)
+    |     |   +--:(config)
+    |     |   |  +---w config?        &lt;anyxml&gt;
+    |     |   +--:(url)
+    |     |     +---w url?           inet:uri {url}?
+    |     +---w resolve-system?      empty
+    +---x copy-config
+    |  +---w input
+    |     +---w target
+    |     |  +---w (config-target)
+    |     |     +--:(candidate)
+    |     |     |  +---w candidate?   empty {candidate}?
+    |     |     +--:(running)
+    |     |     |  +---w running?     empty {writable-running}?
+    |     |     +--:(startup)
+    |     |     |  +---w startup?     empty {startup}?
+    |     |     +--:(url)
+    |     |        +---w url?         inet:uri {url}?
+    |     +---w source
+    |     |  +---w (config-source)
+    |     |     +--:(candidate)
+    |     |     |  +---w candidate?   empty {candidate}?
+    |     |     +--:(running)
+    |     |     |  +---w running?     empty
+    |     |     +--:(startup)
+    |     |     |  +---w startup?     empty {startup}?
+    |     |     +--:(url)
+    |     |     |  +---w url?         inet:uri {url}?
+    |     |     +--:(config)
+    |     |        +---w config?      &lt;anyxml&gt;
+    |     +---w resolve-system?       empty
+    +---x edit-data
+       +---w input
+          +---w datastore            ds:datastore-ref
+          +---w default-operation?   enumeration
+          +---w (edit-content)
+          |  +--:(config)
+          |  |  +---w config?        &lt;anydata&gt;
+          |  +--:(url)
+          |     +---w url?           inet:uri {nc:url}?
+          +---w resolve-system?      empty</artwork>
+        </figure>
+      </section>
+
+      <section title="Example Usage">
+        <t>This section gives an example of an &lt;edit-config&gt; request to
+        reference system-defined data nodes which are not present in
+        &lt;running&gt; with a "resolve-system" parameter. A retrieval of
+        &lt;running&gt; to show the auto-copied referenced system
+        configurations after the &lt;edit-config&gt; request is also given.
+        The YANG module used is shown as follows, leafrefs refer to an
+        existing name and address of an interface:</t>
+
+        <figure>
+          <artwork>    module example-interface-management {
+      yang-version 1.1;
+      namespace "urn:example:interfacemgmt";
+      prefix "inm";
+      
+      container interfaces {
+        list interface {
+          key name;
+          leaf name {
+            type string;
+          }
+          leaf description {
+            type string;
+          }
+          leaf mtu {
+            type uint16;
+          }
+          leaf ip-address {
+            type inet:ip-address;
+          }
+        }
+      }
+      container default-address {
+        leaf ifname {
+          type leafref {
+            path "../../interfaces/interface/name";
+          }
+        }
+        leaf address {
+          type leafref {
+            path "../../interfaces/interface[name = current()/../ifname]"
+               + "/ip-address";
+          }
+        }
+      }
+    }         </artwork>
+        </figure>
+
+        <t>Image that the system provides a loopback interface (named "lo0")
+        with a predefined MTU value of "1500" and a predefined IP address of
+        "127.0.0.1". The &lt;system&gt; datastore shows the following
+        configuration of loopback interface:</t>
+
+        <figure>
+          <artwork>&lt;interfaces xmlns="urn:example:interfacemgmt"&gt; 
+  &lt;interface&gt; 
+    &lt;name&gt;lo0&lt;/name&gt;  
+    &lt;mtu&gt;1500&lt;/mtu&gt;  
+    &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;  
+  &lt;/interface&gt; 
+&lt;/interfaces&gt;</artwork>
+        </figure>
+
+        <t>The client sends an &lt;edit-config&gt; operation to add the
+        configuration of default-address with a "resolve-system"
+        parameter:</t>
+
+        <figure>
+          <artwork>&lt;rpc xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="101"&gt;
+  &lt;edit-config&gt; 
+    &lt;target&gt; 
+      &lt;running/&gt; 
+    &lt;/target&gt;  
+    &lt;config&gt; 
+      &lt;default-address xmlns="urn:example:interfacemgmt"&gt; 
+        &lt;if-name&gt;lo0&lt;/if-name&gt;   
+        &lt;address&gt;127.0.0.1&lt;/address&gt; 
+      &lt;/default-address&gt; 
+    &lt;/config&gt; 
+   &lt;resolve-system/&gt; 
+  &lt;/edit-config&gt;  
+&lt;/rpc&gt;</artwork>
+        </figure>
+
+        <t>Since the "resolve-system" parameter is provided, the server will
+        resolve any leafrefs to system configurations and copy the referenced
+        system-defined nodes into &lt;running&gt; automatically with the same
+        value (i.e., the name and ip-address data nodes of lo0 interface) in
+        &lt;system&gt; at the end of &lt;edit-config&gt; operation constraint
+        enforcement. After the processing, a positive resonse is returned:</t>
+
+        <figure>
+          <artwork>&lt;rpc-reply message-id="101"
+     xmlns="urn:ietf:params:xml:ns:netconf:base:1.0"&gt;
+  &lt;ok/&gt;
+&lt;/rpc-reply&gt;</artwork>
+        </figure>
+
+        <t>Then the client sends a &lt;get-config&gt; operation towards
+        &lt;running&gt;:</t>
+
+        <figure>
+          <artwork>&lt;rpc message-id="101"
+     xmlns="urn:ietf:params:xml:ns:netconf:base:1.0"&gt;  
+  &lt;get-config&gt; 
+    &lt;source&gt; 
+      &lt;running/&gt; 
+    &lt;/source&gt;  
+    &lt;filter type="subtree"&gt; 
+      &lt;interfaces xmlns="urn:example:interfacemgmt"/&gt; 
+    &lt;/filter&gt; 
+  &lt;/get-config&gt; 
+&lt;/rpc&gt;</artwork>
+        </figure>
+
+        <t>Given that the referenced interface "name" and "ip-address" of lo0
+        are configured by the server, the following response is returned:</t>
+
+        <figure>
+          <artwork>&lt;rpc-reply message-id="101"
+     xmlns="urn:ietf:params:xml:ns:netconf:base:1.0"&gt;
+  &lt;data&gt; 
+    &lt;interfaces xmlns="urn:example:interfacemgmt"&gt; 
+      &lt;interface&gt; 
+        &lt;name&gt;lo0&lt;/name&gt;   
+        &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;  
+      &lt;/interface&gt; 
+    &lt;/interfaces&gt; 
+  &lt;/data&gt; 
+&lt;/rpc-reply&gt;</artwork>
+        </figure>
+      </section>
+
+      <section title="YANG Module">
+            <figure>
+              <preamble>&lt;CODE BEGINS&gt; file "yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang"</preamble>
+              <artwork><![CDATA[
+INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
+]]></artwork>
+              <postamble>&lt;CODE ENDS&gt;</postamble>
+            </figure>
+      </section>
+    </section>
+
+    <section anchor="IANA" title="IANA Considerations">
+      <section title="The &quot;IETF XML&quot; Registry">
+        <t>This document registers two XML namespace URNs in the 'IETF XML
+        registry', following the format defined in [RFC3688].</t>
+
+        <figure>
+          <artwork>   URI: urn:ietf:params:xml:ns:yang:ietf-system-datastore
+   Registrant Contact: The IESG.
+   XML: N/A, the requested URIs are XML namespaces.
+
+   URI: urn:ietf:params:xml:ns:yang:ietf-netconf-resolve-system
+   Registrant Contact: The IESG.
+   XML: N/A, the requested URIs are XML namespaces.</artwork>
+        </figure>
+      </section>
+
+      <section title="The &quot;YANG Module Names&quot; Registry">
+        <t>This document registers two module names in the 'YANG Module Names'
+        registry, defined in [RFC6020] .</t>
+
+        <figure>
+          <artwork>      name: ietf-system-datastore
+      prefix: sys
+      namespace: urn:ietf:params:xml:ns:yang:ietf-system-datatstore
+      RFC: XXXX // RFC Ed.: replace XXXX and remove this comment
+
+      name: ietf-netconf-resolve-system
+      prefix: ncrs
+      namespace: urn:ietf:params:xml:ns:yang:ietf-netconf-resolve-system
+      RFC: XXXX // RFC Ed.: replace XXXX and remove this comment</artwork>
+        </figure>
+      </section>
+
+      <section title="RESTCONF Capability URN Registry">
+        <t>This document registers a capability in the "RESTCONF Capability
+        URNs" registry [RFC8040]:<figure>
+            <artwork>   Index            Capability Identifier
+   -----------------------------------------------------------------------
+   :resolve-system  urn:ietf:params:restconf:capability:resolve-system:1.0</artwork>
+          </figure></t>
+      </section>
+    </section>
+
+    <section anchor="scecurity" title="Security Considerations">
+      <section title="Regarding the &quot;ietf-system-datastore&quot; YANG Module">
+        <t>The YANG module defined in this document extends the base
+        operations for NETCONF [RFC6241] and RESTCONF [RFC8040]. The lowest
+        NETCONF layer is the secure transport layer, and the
+        mandatory-to-implement secure transport is Secure Shell (SSH)
+        [RFC6242]. The lowest RESTCONF layer is HTTPS, and the
+        mandatory-to-implement secure transport is TLS [RFC8446].</t>
+
+        <t>The Network Configuration Access Control Model (NACM) [RFC8341]
+        provides the means to restrict access for particular NETCONF users to
+        a preconfigured subset of all available NETCONF protocol operations
+        and content.</t>
+      </section>
+
+      <section title="Regarding the &quot;ietf-netconf-resolve-system&quot; YANG Module">
+        <t>The YANG module defined in this document extends the base
+        operations for NETCONF [RFC6241] and [RFC8526]. The lowest NETCONF
+        layer is the secure transport layer, and the mandatory-to-implement
+        secure transport is Secure Shell (SSH) [RFC6242]. The lowest RESTCONF
+        layer is HTTPS, and the mandatory-to-implement secure transport is TLS
+        [RFC8446].</t>
+
+        <t>The Network Configuration Access Control Model (NACM) [RFC8341]
+        provides the means to restrict access for particular NETCONF users to
+        a preconfigured subset of all available NETCONF protocol operations
+        and content.</t>
+
+        <t>The security considerations for the base NETCONF protocol
+        operations (see Section 9 of [RFC6241] apply to the new extended RPC
+        operations defined in this document.</t>
+      </section>
+    </section>
+
+    <section title="Contributors">
+      <figure>
+        <artwork>      Chongfeng Xie
+      China Telecom
+      Beijing
+      China
+
+      Email: xiechf@chinatelecom.cn
+
+      Jason Sterne
+      Nokia
+
+      Email: jason.sterne@nokia.com</artwork>
+      </figure>
+    </section>
+
+    <section anchor="Acknowledgements" numbered="no" title="Acknowledgements">
+      <t>Thanks to Robert Wilton, Balazs Lengyel, Andy Bierman, Juergen
+      Schoenwaelder, Alex Clemm, Martin Bjorklund, Timothy Carey for
+      reviewing, and providing important input to, this document.</t>
+    </section>
+  </middle>
+
+  <back>
+    <references title="Normative References">
+      <?rfc include="reference.RFC.2119.xml"?>
+
+      <?rfc include="reference.RFC.6241.xml"?>
+
+      <?rfc include="reference.RFC.7950.xml"?>
+
+      <?rfc include="reference.RFC.8342.xml"?>
+
+      <?rfc include="reference.RFC.8526.xml"?>
+    </references>
+
+    <references title="Informative References">
+      <?rfc include="reference.RFC.7317.xml"?>
+
+      <?rfc include="reference.RFC.8407.xml"?>
+
+      <?rfc include="reference.RFC.8525.xml"?>
+
+      <?rfc include="reference.RFC.8174.xml"?>
+
+      <?rfc include="reference.RFC.8808.xml"?>
+
+      <?rfc include="reference.I-D.ma-netmod-immutable-flag"?>
+    </references>
+
+    <section title="Key Use Cases">
+      <t>Following provides three use cases related to system-defined
+      configuration lifecycle management. The simple interface data model
+      defined in Appendix C.3 of [RFC8342] is used. For each use case,
+      snippets of &lt;running&gt;, &lt;system&gt;, &lt;intended&gt; and
+      &lt;operational&gt; are shown.</t>
+
+      <section title="Device Powers On">
+        <t>&lt;running&gt;:</t>
+
+        <figure>
+          <artwork>No configuration for "lo0" appears in &lt;running&gt;;</artwork>
+        </figure>
+
+        <t>&lt;system&gt;:</t>
+
+        <figure>
+          <artwork>     &lt;interfaces&gt;
+       &lt;interface&gt;
+         &lt;name&gt;lo0&lt;/name&gt;
+         &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
+         &lt;ip-address&gt;::1&lt;/ip-address&gt;
+       &lt;/interface&gt;
+     &lt;/interfaces&gt;</artwork>
+        </figure>
+
+        <t>&lt;intended&gt;:</t>
+
+        <figure>
+          <artwork>     &lt;interfaces&gt;
+       &lt;interface&gt;
+         &lt;name&gt;lo0&lt;/name&gt;
+         &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
+         &lt;ip-address&gt;::1&lt;/ip-address&gt;
+       &lt;/interface&gt;
+     &lt;/interfaces&gt;
+</artwork>
+        </figure>
+
+        <t>&lt;operational&gt;:</t>
+
+        <figure>
+          <artwork>     &lt;interfaces xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
+                 or:origin="or:system"&gt;
+       &lt;interface&gt;
+         &lt;name&gt;lo0&lt;/name&gt;
+         &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
+         &lt;ip-address&gt;::1&lt;/ip-address&gt;
+       &lt;/interface&gt;
+     &lt;/interfaces&gt;</artwork>
+        </figure>
+      </section>
+
+      <section title="Client Commits Configuration">
+        <t>If a client creates an interface "et-0/0/0" but the interface does
+        not physically exist at this point:</t>
+
+        <t>&lt;running&gt;:</t>
+
+        <figure>
+          <artwork>     &lt;interfaces&gt;
+       &lt;interface&gt;
+         &lt;name&gt;et-0/0/0&lt;/name&gt;
+         &lt;description&gt;Test interface&lt;/description&gt;
+       &lt;/interface&gt;
+     &lt;/interfaces&gt;</artwork>
+        </figure>
+
+        <t>&lt;system&gt;:</t>
+
+        <figure>
+          <artwork>     &lt;interfaces&gt;
+       &lt;interface&gt;
+         &lt;name&gt;lo0&lt;/name&gt;
+         &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
+         &lt;ip-address&gt;::1&lt;/ip-address&gt;
+       &lt;/interface&gt;
+     &lt;/interfaces&gt;</artwork>
+        </figure>
+
+        <t>&lt;intended&gt;:</t>
+
+        <figure>
+          <artwork>     &lt;interfaces&gt;
+         &lt;name&gt;lo0&lt;/name&gt;
+         &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
+         &lt;ip-address&gt;::1&lt;/ip-address&gt;
+       &lt;/interface&gt;
+       &lt;interface&gt;
+         &lt;name&gt;et-0/0/0&lt;/name&gt;
+         &lt;description&gt;Test interface&lt;/description&gt;
+       &lt;/interface&gt;
+       &lt;interface&gt;
+     &lt;/interfaces&gt;</artwork>
+        </figure>
+
+        <t>&lt;operational&gt;:</t>
+
+        <figure>
+          <artwork>     &lt;interfaces xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
+                 or:origin="or:intended"&gt;
+       &lt;interface or:origin="or:system"&gt;
+         &lt;name&gt;lo0&lt;/name&gt;
+         &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
+         &lt;ip-address&gt;::1&lt;/ip-address&gt;
+       &lt;/interface&gt;
+     &lt;/interfaces&gt;</artwork>
+        </figure>
+      </section>
+
+      <section title="Operator Installs Card into a Chassis">
+        <t>&lt;running&gt;:</t>
+
+        <figure>
+          <artwork>     &lt;interfaces&gt;
+       &lt;interface&gt;
+         &lt;name&gt;et-0/0/0&lt;/name&gt;
+         &lt;description&gt;Test interface&lt;/description&gt;
+       &lt;/interface&gt;
+     &lt;/interfaces&gt;</artwork>
+        </figure>
+
+        <t>&lt;system&gt;:</t>
+
+        <figure>
+          <artwork>     &lt;interfaces&gt;
+       &lt;interface&gt;
+         &lt;name&gt;lo0&lt;/name&gt;
+         &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
+         &lt;ip-address&gt;::1&lt;/ip-address&gt;
+       &lt;/interface&gt;
+       &lt;interface&gt;
+         &lt;name&gt;et-0/0/0&lt;/name&gt;
+         &lt;mtu&gt;1500&lt;/mtu&gt;
+       &lt;/interface&gt;
+     &lt;/interfaces&gt;</artwork>
+        </figure>
+
+        <t>&lt;intended&gt;:</t>
+
+        <figure>
+          <artwork>     &lt;interfaces&gt;
+         &lt;name&gt;lo0&lt;/name&gt;
+         &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
+         &lt;ip-address&gt;::1&lt;/ip-address&gt;
+       &lt;/interface&gt;
+       &lt;interface&gt;
+         &lt;name&gt;et-0/0/0&lt;/name&gt;
+         &lt;description&gt;Test interface&lt;/description&gt;
+         &lt;mtu&gt;1500&lt;/mtu&gt;
+       &lt;/interface&gt;
+       &lt;interface&gt;
+     &lt;/interfaces&gt;</artwork>
+        </figure>
+
+        <t>&lt;operational&gt;:</t>
+
+        <figure>
+          <artwork>     &lt;interfaces xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
+                 or:origin="or:intended"&gt;
+       &lt;interface or:origin="or:system"&gt;
+         &lt;name or:origin&gt;lo0&lt;/name&gt;
+         &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
+         &lt;ip-address&gt;::1&lt;/ip-address&gt;
+       &lt;/interface&gt;
+      &lt;interface&gt;
+         &lt;name&gt;et-0/0/0&lt;/name&gt;
+         &lt;description&gt;Test interface&lt;/description&gt;
+         &lt;mtu or:origin="or:system"&gt;1500&lt;/mtu&gt;
+       &lt;/interface&gt;
+       &lt;interface&gt;
+     &lt;/interfaces&gt;</artwork>
+        </figure>
+      </section>
+    </section>
+
+    <section title="Changes between Revisions">
+      <t>v03 - v04<list style="symbols">
+          <t>Clarify the "should not" statement;</t>
+
+          <t>Editorial changes, like avoid using "object";</t>
+        </list></t>
+
+      <t>v02 - v03<list style="symbols">
+          <t>Define a RESTCONF capability URI for "resolve-system" RESTCONF
+          query parameter;</t>
+
+          <t>Augment &lt;copy-config&gt; RPC operation to support
+          "resolve-system" for input parameter;</t>
+
+          <t>Editorial changes for clarification and explanation. E.g.,
+          definition of system configuration, is &lt;system&gt; always valid?
+          Will the update of &lt;system&gt; be reflected into &lt;running&gt;?
+          Clarify "read-only to clients" and "modifying system configuration",
+          non-deletable system configuration, etc</t>
+        </list></t>
+
+      <t>v00 - v02<list style="symbols">
+          <t>Remove the "with-system" parameter to retrieve &lt;running&gt;
+          with system configuration merged in.</t>
+
+          <t>Add a new parameter named "resolve-system" to allow the server to
+          populate referenced system configuration into &lt;running&gt;
+          automatically in order to make &lt;running&gt; valid.</t>
+
+          <t>Usage examples refinement.</t>
+        </list></t>
+
+      <t>v02 - v00<list style="symbols">
+          <t>Restructure the document content based on input in the system
+          defined configuration interim meeting.</t>
+
+          <t>Updates NMDA to define a read-only conventional configuration
+          datastore called "system".</t>
+
+          <t>Retrieval of implicit hidden system configuration via
+          &lt;get&gt;&lt;get-config&gt; with "with-system" parameter to
+          support non-NMDA servers.</t>
+
+          <t>Provide system defined configuration classification.</t>
+
+          <t>Define Static Characteristics and dynamic behavior for system
+          defined configuration.</t>
+
+          <t>Separate "ietf-system-datastore" Module from
+          "ietf-netconf-with-system" Module.</t>
+
+          <t>Provide usage examples for dynamic behaviors.</t>
+
+          <t>Provide usage examples for two YANG modules.</t>
+
+          <t>Provide three use cases related to system-defined configuration
+          lifecycle management.</t>
+
+          <t>Classify the relation with &lt;factory-default&gt;.</t>
+        </list></t>
+    </section>
+
+    <section title="Open Issues tracking">
+      <t><list style="symbols">
+          <t>Should the "with-origin" parameter be supported for
+          &lt;intended&gt;?</t>
+        </list></t>
+    </section>
+  </back>
+</rfc>
