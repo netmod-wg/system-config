@@ -42,8 +42,9 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="std" docName="draft-ietf-netmod-system-config-00"
-     ipr="trust200902" updates="RFC8342,RFC6241,RFC8526,RFC8040">
+<rfc  xmlns:xi="http://www.w3.org/2001/XInclude"
+      category="std" docName="draft-ietf-netmod-system-config-latest"
+      ipr="trust200902" updates="RFC8342,RFC6241,RFC8526,RFC8040">
   <front>
     <title abbrev="System-defined Configuration">System-defined
     Configuration</title>
@@ -1202,7 +1203,7 @@ Target:/bgp</artwork>
 
       <section title="YANG Module">
             <figure>
-              <preamble>&lt;CODE BEGINS&gt; file "yang/ietf-system-datastore@YYYY-MM-DD.yang"</preamble>
+              <preamble>&lt;CODE BEGINS&gt; file "ietf-system-datastore@YYYY-MM-DD.yang"</preamble>
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
 ]]></artwork>
@@ -1435,7 +1436,7 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
 
       <section title="YANG Module">
             <figure>
-              <preamble>&lt;CODE BEGINS&gt; file "yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang"</preamble>
+              <preamble>&lt;CODE BEGINS&gt; file "ietf-netconf-resolve-system@YYYY-MM-DD.yang"</preamble>
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
 ]]></artwork>
@@ -1568,7 +1569,7 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
 
       <?rfc include="reference.RFC.8808.xml"?>
 
-      <?rfc include="reference.I-D.ma-netmod-immutable-flag"?>
+      <xi:include href="https://datatracker.ietf.org/doc/bibxml3/reference.I-D.ma-netmod-immutable-flag.xml"/>
     </references>
 
     <section title="Key Use Cases">
@@ -1817,3 +1818,4 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
     </section>
   </back>
 </rfc>
+
