@@ -1,4 +1,4 @@
-# system-defined configuration
+# System-defined Configuration
 This is the working area for the individual Internet-Draft, "System-defined Configuration".
 
 ## Building the Draft
