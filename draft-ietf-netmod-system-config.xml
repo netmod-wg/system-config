@@ -69,14 +69,6 @@
       </address>
     </author>
 
-    <author fullname="Kent Watsen" initials="K." surname="Watsen">
-      <organization>Watsen Networks</organization>
-
-      <address>
-        <email>kent+ietf@watsen.net</email>
-      </address>
-    </author>
-
     <author fullname="Qin Wu" initials="Q." surname="Wu">
       <organization>Huawei</organization>
 
@@ -114,14 +106,6 @@
         </postal>
 
         <email>frank.fengchong@huawei.com</email>
-      </address>
-    </author>
-
-    <author fullname="Jan Lindblad" initials="J." surname="Lindblad">
-      <organization>Cisco Systems</organization>
-
-      <address>
-        <email>jlindbla@cisco.com</email>
       </address>
     </author>
 
@@ -1524,7 +1508,17 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
 
     <section title="Contributors">
       <figure>
-        <artwork>      Chongfeng Xie
+        <artwork>      Kent Watsen
+      Watsen Networks
+
+      Email: kent+ietf@watsen.net
+
+      Jan Lindblad
+      Cisco Systems
+
+      Email: jlindbla@cisco.com
+
+      Chongfeng Xie
       China Telecom
       Beijing
       China
