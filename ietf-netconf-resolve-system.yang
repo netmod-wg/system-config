@@ -1,6 +1,7 @@
  module ietf-netconf-resolve-system {
     yang-version 1.1;
-    namespace "urn:ietf:params:xml:ns:yang:ietf-netconf-resolve-system";
+    namespace 
+      "urn:ietf:params:xml:ns:yang:ietf-netconf-resolve-system";
     prefix ncrs;
 
     import ietf-netconf {
@@ -20,18 +21,15 @@
       "IETF NETMOD (Network Modeling) Working Group";
 
     contact
-      "WG Web:   <http://tools.ietf.org/wg/netmod/>
+      "WG Web:   <https://datatracker.ietf.org/wg/netmod/>
        WG List:  <mailto:netmod@ietf.org>
+       
        Author: Qiufang Ma
                <mailto:maqiufang1@huawei.com>
-       Author: Kent Watsen
-               <mailto:kent+ietf@watsen.net>
        Author: Qin Wu
                <mailto:bill.wu@huawei.com>
        Author: Chong Feng
-               <mailto:frank.fengchong@huawei.com>
-       Author: Jan Lindblad
-               <mailto:jlindbla@cisco.com>";
+               <mailto:frank.fengchong@huawei.com>";
 
     description
       "This module defines an extension to the NETCONF protocol
@@ -66,19 +64,25 @@
       reference
         "RFC XXXX: System-defined Configuration";
     }
+    
+    grouping resolve-system-grouping {
+      description
+        "Define the resolve-system parameter grouping.";
+      leaf resolve-system {
+        type empty;
+        description
+          "When present, the server is allowed to automatically
+           configure referenced system configuration into the 
+           target configuration datastore."; 
+      }
+    }
 
   augment /nc:edit-config/nc:input {
     description 
       "Allows the server to automatically configure
        referenced system configuration to make configuration
        valid.";
-     leaf resolve-system {
-       type empty ;
-       description
-         "When present, the server is allowed to automatically
-          configure referenced system configuration into the 
-          target configuration datastore.";    
-      }
+    uses resolve-system-grouping;
    }
 
   augment /nc:copy-config/nc:input {
@@ -86,13 +90,7 @@
       "Allows the server to automatically configure
        referenced system configuration to make configuration
        valid.";
-     leaf resolve-system {
-       type empty ;
-       description
-         "When present, the server is allowed to automatically
-          configure referenced system configuration into the 
-          target configuration datastore.";    
-      }
+    uses resolve-system-grouping;
    }
 
   augment /ncds:edit-data/ncds:input {
@@ -100,12 +98,6 @@
       "Allows the server to automatically configure
        referenced system configuration to make configuration
        valid.";
-     leaf resolve-system {
-       type empty ;
-       description
-         "When present, the server is allowed to automatically
-          configure referenced system configuration into the
-          target configuration datastore.";    
-     }
+    uses resolve-system-grouping;
    }
  }

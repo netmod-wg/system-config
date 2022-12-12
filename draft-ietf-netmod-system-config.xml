@@ -1,22 +1,8 @@
 <?xml version="1.0" encoding="US-ASCII"?>
 <!-- This template is for creating an Internet Draft using xml2rfc,
      which is available here: http://xml.resource.org. -->
-<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
-<!-- One method to get references from the online citation libraries.
-     There has to be one entity for each item to be referenced.
-     An alternate method (rfc include) is described in the references. -->
-<!ENTITY RFC2119 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
-<!ENTITY RFC6241 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6241.xml">
-<!ENTITY RFC7950 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7950.xml">
-<!ENTITY RFC7149 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7149.xml">
-<!ENTITY RFC7426 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7426.xml">
-<!ENTITY RFC8299 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8299.xml">
-<!ENTITY RFC8309 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8309.xml">
-<!ENTITY RFC8340 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8340.xml">
-<!ENTITY RFC8453 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8453.xml">
-<!ENTITY RFC8174 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8174.xml">
-<!ENTITY RFC8345 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8345.xml">
-]>
+<!DOCTYPE rfc>
+
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 <!-- used by XSLT processors -->
 <!-- For a complete list and description of processing instructions (PIs),
@@ -42,9 +28,10 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc  xmlns:xi="http://www.w3.org/2001/XInclude"
-      category="std" docName="draft-ietf-netmod-system-config-latest"
-      ipr="trust200902" updates="RFC8342,RFC6241,RFC8526,RFC8040">
+<rfc category="std" consensus="true"
+     docName="draft-ietf-netmod-system-config-latest"
+     ipr="trust200902" submissionType="IETF" 
+     updates="RFC8342,RFC6241,RFC8526,RFC8040">
   <front>
     <title abbrev="System-defined Configuration">System-defined
     Configuration</title>
@@ -118,40 +105,46 @@
     <keyword>With System NETMOD</keyword>
 
     <abstract>
-      <t>This document updates NMDA to define a read-only conventional
-      configuration datastore called "system" to hold system-defined
-      configurations. To avoid clients' explicit copy/paste of referenced
-      system-defined configuration into the target configuration datastore
-      (e.g., &lt;running&gt;), a "resolve-system" parameter has been defined
-      to allow the server acting as a "system client" to copy referenced
-      system-defined nodes automatically. The solution enables clients
-      manipulating the target configuration datastore (e.g., &lt;running&gt;)
-      to overlay and reference nodes defined in &lt;system&gt;, override
-      values of configurations defined in &lt;system&gt;, and configure
-      descendant nodes of system-defined nodes.</t>
+      <t>This document updates Network Management Datastore Architecture
+      (NMDA) to define a read-only conventional configuration datastore called
+      "system" to hold system-defined configurations. To avoid clients'
+      explicit copy/paste of referenced system-defined configuration into the
+      target configuration datastore (e.g., &lt;running&gt;), a
+      "resolve-system" parameter is defined to allow the server acting as a
+      "system client" to copy referenced system-defined nodes automatically.
+      This solution enables clients manipulating the target configuration
+      datastore (e.g., &lt;running&gt;) to overlay and reference nodes defined
+      in &lt;system&gt;, override values of configurations defined in
+      &lt;system&gt;, and configure descendant nodes of system-defined
+      nodes.</t>
+
+      <t>This document updates RFC 8342, RFC 6241, RFC 8526 and RFC 8040.</t>
     </abstract>
   </front>
 
   <middle>
     <section anchor="Introduction" title="Introduction">
-      <t>NMDA [RFC8342] defines system configuration as the configuration that
-      is supplied by the device itself and appears in &lt;operational&gt; when
-      it is in use.</t>
+      <t>Network Management Datastore Architecture (NMDA) <xref
+      target="RFC8342"/> defines system configuration as the configuration
+      that is supplied by the device itself and appears in &lt;operational&gt;
+      when it is in use (Figure 2 in <xref target="RFC8342"/>).</t>
 
-      <t>However, there is a desire to enable a server to better document the
-      system configuration. Clients can benefit from a standard mechanism to
-      see what system configuration is available in a server.</t>
+      <t>However, there is a desire to enable a server to better structure and
+      expose the system configuration. NETCONF/RESTCONF clients can benefit
+      from a standard mechanism to retrieve what system configuration is
+      available on a server.</t>
 
-      <t>In some cases, the client references a system configuration which
-      isn't present in the target datastore (e.g., &lt;running&gt;). Having to
-      copy the entire contents of the system configuration into the target
-      datastore should be avoided or reduced when possible while ensuring that
-      all referential integrity constraints are satisfied.</t>
+      <t>In some cases, the NETCONF/RESTCONF client references a system
+      configuration which isn't present in the target datastore (e.g.,
+      &lt;running&gt;). Having to copy the entire contents of the system
+      configuration into the target datastore should be avoided or reduced
+      when possible while ensuring that all referential integrity constraints
+      are satisfied.</t>
 
       <t>In some other cases, configuration of descendant nodes of
       system-defined configuration needs to be supported. For example, the
       system configuration contains an almost empty physical interface, while
-      the client needs to be able to add, modify, remove a number of
+      the client needs to be able to add, modify, or remove a number of
       descendant nodes. Some descendant nodes may not be modifiable (e.g.,
       "name" and "type" set by the system).</t>
 
@@ -169,7 +162,8 @@
       nodes.</t>
 
       <t>Conformance to this document requires servers to implement the
-      "ietf-system-datastore" YANG module.</t>
+      "ietf-system-datastore" YANG module (<xref
+      target="system-datastore"/>).</t>
 
       <section anchor="terminology" title="Terminology">
         <t>This document assumes that the reader is familiar with the contents
@@ -177,11 +171,11 @@
         target="RFC8342"/>, <xref target="RFC8407"/>, and <xref
         target="RFC8525"/> and uses terminologies from those documents.</t>
 
-        <t>The following terms are defined in this document as follows:<list
+        <t>The following terms are defined in this document:<list
             style="hanging">
             <t hangText="System configuration: ">Configuration that is
             provided by the system itself. System configuration is present in
-            &lt;system&gt; once it's created (regardless of being applied by
+            &lt;system&gt; once it is created (regardless of being applied by
             the device), and appears in &lt;intended&gt; which is subject to
             validation. Applied system configuration also appears in
             &lt;operational&gt; with origin="system".<vspace
@@ -192,8 +186,9 @@
             system itself. This datastore is referred to as
             "&lt;system&gt;".</t>
           </list>This document redefines the term "conventional configuration
-        datastore" from RFC 8342 to add "system" to the list of conventional
-        configuration datastores:<list style="hanging">
+        datastore" in Section 3 of <xref target="RFC8342"/> to add "system" to
+        the list of conventional configuration datastores:<list
+            style="hanging">
             <t hangText="Conventional configuration datastore: ">One of the
             following set of configuration datastores: &lt;running&gt;,
             &lt;startup&gt;, &lt;candidate&gt;, &lt;system&gt;, and
@@ -233,7 +228,7 @@
         in &lt;operational&gt;.</t>
       </section>
 
-      <section title="Updates to RFC 6241, RFC 8526">
+      <section title="Updates to RFC 6241 and RFC 8526">
         <t>This document augments &lt;edit-config&gt; and &lt;edit-data&gt;
         RPC operations defined in <xref target="RFC6241"/> and <xref
         target="RFC8526"/> respectively, with a new additional input parameter
@@ -246,14 +241,14 @@
         system-defined node during the validation, the server will
         automatically copy the referenced system configuration into the
         validated datastore to make the configuration valid without the client
-        doing so explicitly. Legacy Clients interacting with servers that
+        doing so explicitly. Legacy clients interacting with servers that
         support this parameter don't see any changes in
         &lt;edit-config&gt;/&lt;edit-data&gt; and &lt;copy-config&gt;
         behaviors.</t>
 
         <t>According to the NETCONF constraint enforcement model defined in
-        the section 8.3 of [RFC7950], if the target datastore of the
-        &lt;edit-config&gt;/&lt;edit-data&gt; or &lt;copy-config&gt; is
+        the Section 8.3 of <xref target="RFC7950"/>, if the target datastore
+        of the &lt;edit-config&gt;/&lt;edit-data&gt; or &lt;copy-config&gt; is
         "running" or "startup", the server's copy referenced nodes from
         &lt;system&gt; to the target datastore MUST be enforced at the end of
         the &lt;edit-config&gt;/&lt;edit-data&gt; or &lt;copy-config&gt;
@@ -265,9 +260,9 @@
       </section>
 
       <section title="Updates to RFC 8040">
-        <t>This document extends Section 4.8 and Section 9.1.1 of [RFC8040] to
-        add a new query parameter "resolve-system" and corresponding query
-        parameter capability URI.</t>
+        <t>This document extends Sections 4.8 and 9.1.1 of <xref
+        target="RFC8040"/> to add a new query parameter "resolve-system" and
+        corresponding query parameter capability URI.</t>
 
         <section title="Query Parameter">
           <t>The "resolve-system" parameter controls whether to allow a server
@@ -288,7 +283,7 @@
         </section>
 
         <section title="Query Parameter URI">
-          <t>To enable the RESTCONF client to discover if the "resolve-system"
+          <t>To enable a RESTCONF client to discover if the "resolve-system"
           query parameter is supported by the server, the following capability
           URI is defined, which is advertised by the server if supported,
           using the "ietf-restconf-monitoring" module defined in RFC
@@ -301,13 +296,13 @@
 
     <section anchor="categories" title="Kinds of System Configuration">
       <t>There are three types of system configurations: immediately-active
-      system configuration, conditionally-active system configuration and
+      system configuration, conditionally-active system configuration, and
       inactive-until-referenced system configuration.</t>
 
       <section title="Immediately-Active">
         <t>Immediately-active system configurations are those generated in
         &lt;system&gt; and applied immediately when the device is powered on
-        (e.g., a loop-back interface) , irrespective of physical resource
+        (e.g., a loopback interface), irrespective of physical resource
         present or not, a special functionality enabled or not.</t>
       </section>
 
@@ -316,10 +311,11 @@
         applied based on specific conditions being met in a system, e.g., if a
         physical resource is present (e.g., insert interface card), the system
         will automatically detect it and load pre-provisioned configuration;
-        when the physical resource is not present( remove interface card), the
+        when the physical resource is not present(remove interface card), the
         system configuration will be automatically cleared. Another example is
-        when a special functionality is enabled, e.g., when QoS function is
-        enabled, QoS policies are automatically created by the system.</t>
+        when a special functionality is enabled, e.g., when a QoS feature is
+        enabled, related QoS policies are automatically created by the
+        system.</t>
       </section>
 
       <section title="Inactive-Until-Referenced">
@@ -339,37 +335,40 @@
         configuration datastore (i.e., edits towards &lt;system&gt; directly
         MUST be denied), though the client may be allowed to override the
         value of a system-initialized data node (see <xref
-        target="modifying"/>). Configuration defined in &lt;system&gt; is
-        merged into &lt;intended&gt;, and present in &lt;operational&gt; if it
-        is actively in use by the device. Thus unless the resource is no
-        longer available (e.g., the interface removed physically), there is no
-        way to actually delete system configuration from a server, even if a
-        client may be allowed to delete the configuration copied from
-        &lt;system&gt; into &lt;running&gt;. Any deletable system-provided
-        configuration must be defined in &lt;factory-default&gt; [RFC8808],
-        which is used to initialize &lt;running&gt; when the device is
-        first-time powered on or reset to its factory default condition.</t>
+        target="modifying"/>).</t>
+
+        <t>Configuration defined in &lt;system&gt; is merged into
+        &lt;intended&gt;, and present in &lt;operational&gt; if it is actively
+        in use by the device. Thus, unless the resource is no longer available
+        (e.g., the interface removed physically), there is no way to delete
+        system configuration from a server, even if a client may be allowed to
+        delete the configuration copied from &lt;system&gt; into
+        &lt;running&gt;. Any deletable system-provided configuration must be
+        defined in &lt;factory-default&gt; <xref target="RFC8808"/>, which is
+        used to initialize &lt;running&gt; when the device is first-time
+        powered on or reset to its factory default condition.</t>
       </section>
 
       <section title="May Change via Software Upgrades">
-        <t>System configuration MAY change dynamically, e.g., depending on
-        factors like device upgrade or if system-controlled resources(e.g., HW
-        available) change. In some implementations, when QoS function is
-        enabled, QoS-related policies are created by system. If the system
-        configuration gets changed, YANG notification (e.g.,
-        "push-change-update" notification) [RFC8641][RFC8639][RFC6470] can be
-        used to notify the client. Any update of the contents in
-        &lt;system&gt; will not cause the automatic update of &lt;running&gt;,
-        even if some of the system configuration has already been copied into
-        &lt;running&gt; explicitly or automatically before the update.</t>
+        <t>System configuration may change dynamically, e.g., depending on
+        factors like device upgrade or if system-controlled resources (e.g.,
+        HW available) change. In some implementations, when a QoS feature is
+        enabled, QoS-related policies are created by the system. If the system
+        configuration gets changed, YANG notifications (e.g.,
+        "push-change-update" notification) <xref target="RFC6470"/><xref
+        target="RFC8639"/><xref target="RFC8641"/> can be used to notify the
+        client. Any update of the contents in &lt;system&gt; will not cause
+        the automatic update of &lt;running&gt;, even if some of the system
+        configuration has already been copied into &lt;running&gt; explicitly
+        or automatically before the update.</t>
       </section>
 
       <section title="No Impact to &lt;operational&gt;">
-        <t>This work intends to have no impact to &lt;operational&gt;. As
-        always, system configuration will appear in &lt;operational&gt; with
-        "origin=system". This work enables a subset of those system generated
-        nodes to be defined like configuration, i.e., made visible to clients
-        in order for being referenced or configurable prior to present in
+        <t>This work intends to have no impact to &lt;operational&gt;. System
+        configuration will appear in &lt;operational&gt; with "origin=system".
+        This document enables a subset of those system generated nodes to be
+        defined like configuration, i.e., made visible to clients in order for
+        being referenced or configurable prior to present in
         &lt;operational&gt;. "Config false" nodes are out of scope, hence
         existing "config false" nodes are not impacted by this work.</t>
       </section>
@@ -377,9 +376,9 @@
 
     <section title="Dynamic Behavior">
       <section title="Conceptual Model ">
-        <t>This document introduces a mandatory datastore named "system" which
-        is used to hold all three types of system configurations defined in
-        <xref target="categories"/>.</t>
+        <t>This document introduces a datastore named "system" which is used
+        to hold all three types of system configurations defined in <xref
+        target="categories"/>.</t>
 
         <t>When the device is powered on, immediately-active system
         configuration will be generated in &lt;system&gt; and applied
@@ -432,43 +431,44 @@
         <t>It is possible for a client to explicitly declare system
         configuration nodes in the target datastore (e.g., &lt;running&gt;)
         with the same values as in &lt;system&gt;, by configuring a node
-        (list/leaf-list entry, leaf, etc) in the target datastore (e.g.,
+        (list/leaf-list entry, leaf, etc.) in the target datastore (e.g.,
         &lt;running&gt;) that matches the same node and value in
         &lt;system&gt;.</t>
 
         <t>This explicit configuration of system-defined nodes in
         &lt;running&gt; can be useful, for example, when the client doesn't
         want a "system client" to have a role or hasn't implemented the
-        "resolve-system" parameter. The client can explicitly declare (i.e.
+        "resolve-system" parameter. The client can explicitly declare (i.e.,
         configure in &lt;running&gt;) the list entries (with at least the
         keys) for any system configuration list entries that are referenced
         elsewhere in &lt;running&gt;. The client does not necessarily need to
         declare all the contents of the list entry (i.e. the descendant nodes)
-        &ndash; only the parts that are required to make the &lt;running&gt;
-        appear valid.</t>
+        , only the parts that are required to make the &lt;running&gt; appear
+        valid.</t>
       </section>
 
       <section title="Servers Auto-configuring Referenced System Configuration">
         <t>This document defines a new parameter "resolve-system" to the input
-        for the &lt;edit-config&gt;, &lt;edit-data&gt; and &lt;copy-config&gt;
-        operations. Clients that are aware of the "resolve-system" parameter
-        MAY use this parameter to avoid the requirement to provide a
-        referentially complete configuration in &lt;running&gt;.</t>
+        for the &lt;edit-config&gt;, &lt;edit-data&gt;, and
+        &lt;copy-config&gt; operations. Clients that are aware of the
+        "resolve-system" parameter MAY use this parameter to avoid the
+        requirement to provide a referentially complete configuration in
+        &lt;running&gt;.</t>
 
-        <t>If the "resolve-system" is present, the server MUST copy relevant
-        referenced system-defined nodes into the target datastore (e.g.,
-        &lt;running&gt;) without the client doing the copy/paste explicitly,
-        to resolve any references not resolved by the client. The server
-        acting as a "system client" like any other remote clients copies the
-        referenced system-defined nodes when triggered by the "resolve-system"
-        parameter.</t>
+        <t>If the "resolve-system" is present, and the server supports this
+        capability, the server MUST copy relevant referenced system-defined
+        nodes into the target datastore (e.g., &lt;running&gt;) without the
+        client doing the copy/paste explicitly, to resolve any references not
+        resolved by the client. The server acting as a "system client" like
+        any other remote clients copies the referenced system-defined nodes
+        when triggered by the "resolve-system" parameter.</t>
 
         <t>If the "resolve-system" parameter is not given by the client, the
         server should not modify &lt;running&gt; in any way otherwise not
         specified by the client. Not using capitalized "SHOULD NOT" in the
-        previous sentence is intentional. The intention is bring awareness to
-        the general need to not surprise clients with unexpected changes. It
-        is desirable for clients to always opt into using mechanisms having
+        previous sentence is intentional. The intention is to bring awareness
+        to the general need to not surprise clients with unexpected changes.
+        It is desirable for clients to always opt into using mechanisms having
         server-side changes. This document enables a client to opt into this
         behavior using the "resolve-system" parameter. RFC 7317 enables a
         client to opt into its behavior using a "$0$" prefix (see
@@ -509,7 +509,7 @@
         <t>A server may also allow a client to add data nodes to a list entry
         in &lt;system&gt; by writing those additional nodes in
         &lt;running&gt;. Those additional data nodes may not exist in
-        &lt;system&gt; (i.e. an *addition* rather than an override).</t>
+        &lt;system&gt; (i.e., an *addition* rather than an override).</t>
 
         <t>While modifying (overriding) system configuration nodes may be
         supported by a server, there is no mechanism for deleting a system
@@ -535,7 +535,7 @@
       </section>
 
       <section title="Examples">
-        <t>This section shows the examples of server-configuring of
+        <t>This section shows some examples of server-configuring of
         &lt;running&gt; automatically, declaring a system-defined node in
         &lt;running&gt; explicitly, modifying a system-instantiated leaf's
         value and configuring descendant nodes of a system-defined node. For
@@ -671,7 +671,7 @@
             </figure></t>
 
           <t>If a client configures an ACL rule referencing system predefined
-          nodes which are not present in &lt;running&gt;, the client MAY issue
+          nodes which are not present in &lt;running&gt;, the client may issue
           an &lt;edit-config&gt; operation with the parameter "resolve-system"
           as follows:<figure>
               <artwork>        &lt;rpc message-id="101"
@@ -903,7 +903,7 @@
             </figure></t>
 
           <t>Suppose a client creates a qos policy "my-policy" with 4 system
-          instantiated queues(1~4). The Configuration of qos-policies is
+          instantiated queues(1~4). The configuration of qos-policies is
           present in &lt;system&gt; as follows:</t>
 
           <figure>
@@ -951,7 +951,7 @@
         &lt;/rpc&gt;</artwork>
           </figure>
 
-          <t>Then the configuration of qos-policies is present in
+          <t>Then, the configuration of qos-policies is present in
           &lt;operational&gt; as follows:<figure>
               <artwork>        &lt;qos-policies  xmlns="urn:example:qos"
                        xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
@@ -1069,7 +1069,7 @@
           <t>Management operations: The content of the datastore is set by the
           server in an implementation dependent manner. The content can not be
           changed by management operations via NETCONF, RESTCONF, the CLI,
-          etc, but may change itself by upgrades and/or when
+          etc., but may change itself by upgrades and/or when
           resource-conditions are met. The datastore can be read using the
           standard NETCONF/RESTCONF protocol operations.</t>
 
@@ -1104,7 +1104,8 @@
       target="RFC7950"/>.</t>
     </section>
 
-    <section title="The &quot;ietf-system-datastore&quot; Module">
+    <section anchor="system-datastore"
+             title="The &quot;ietf-system-datastore&quot; Module">
       <section title="Data Model Overview">
         <t>This YANG module defines a new YANG identity named "system" that
         uses the "ds:datastore" identity defined in [RFC8342]. A client can
@@ -1186,13 +1187,16 @@ Target:/bgp</artwork>
       </section>
 
       <section title="YANG Module">
-            <figure>
-              <preamble>&lt;CODE BEGINS&gt; file "ietf-system-datastore@YYYY-MM-DD.yang"</preamble>
+        <figure>
+          <preamble>&lt;CODE BEGINS&gt; file
+          "ietf-system-datastore@YYYY-MM-DD.yang"</preamble>
+
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
 ]]></artwork>
-              <postamble>&lt;CODE ENDS&gt;</postamble>
-            </figure>
+
+          <postamble>&lt;CODE ENDS&gt;</postamble>
+        </figure>
       </section>
     </section>
 
@@ -1226,7 +1230,7 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
         <t>The following tree diagram [RFC8340] illustrates "edit-config",
         "copy-config" and "edit-data" rpcs defined in "ietf-netconf" and
         "ietf-netconf-nmda" respectively, augmented by
-        "ietf-netconf-resolve-system" YANG module :</t>
+        "ietf-netconf-resolve-system" YANG module:</t>
 
         <figure>
           <artwork>  rpcs:
@@ -1374,7 +1378,8 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
         system-defined nodes into &lt;running&gt; automatically with the same
         value (i.e., the name and ip-address data nodes of lo0 interface) in
         &lt;system&gt; at the end of &lt;edit-config&gt; operation constraint
-        enforcement. After the processing, a positive resonse is returned:</t>
+        enforcement. After the processing, a positive response is
+        returned:</t>
 
         <figure>
           <artwork>&lt;rpc-reply message-id="101"
@@ -1419,13 +1424,16 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
       </section>
 
       <section title="YANG Module">
-            <figure>
-              <preamble>&lt;CODE BEGINS&gt; file "ietf-netconf-resolve-system@YYYY-MM-DD.yang"</preamble>
+        <figure>
+          <preamble>&lt;CODE BEGINS&gt; file
+          "ietf-netconf-resolve-system@YYYY-MM-DD.yang"</preamble>
+
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
 ]]></artwork>
-              <postamble>&lt;CODE ENDS&gt;</postamble>
-            </figure>
+
+          <postamble>&lt;CODE ENDS&gt;</postamble>
+        </figure>
       </section>
     </section>
 
@@ -1453,11 +1461,14 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
           <artwork>      name: ietf-system-datastore
       prefix: sys
       namespace: urn:ietf:params:xml:ns:yang:ietf-system-datatstore
+      maintained by IANA: N
       RFC: XXXX // RFC Ed.: replace XXXX and remove this comment
+
 
       name: ietf-netconf-resolve-system
       prefix: ncrs
       namespace: urn:ietf:params:xml:ns:yang:ietf-netconf-resolve-system
+      maintained by IANA: N
       RFC: XXXX // RFC Ed.: replace XXXX and remove this comment</artwork>
         </figure>
       </section>
@@ -1545,11 +1556,19 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
 
       <?rfc include="reference.RFC.6241.xml"?>
 
+      <?rfc include="reference.RFC.6470.xml"?>
+
       <?rfc include="reference.RFC.7950.xml"?>
+
+      <?rfc include="reference.RFC.8040.xml"?>
 
       <?rfc include="reference.RFC.8342.xml"?>
 
       <?rfc include="reference.RFC.8526.xml"?>
+
+      <?rfc include="reference.RFC.8639.xml"?>
+
+      <?rfc include="reference.RFC.8641.xml"?>
     </references>
 
     <references title="Informative References">
@@ -1563,7 +1582,8 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
 
       <?rfc include="reference.RFC.8808.xml"?>
 
-      <xi:include href="https://datatracker.ietf.org/doc/bibxml3/reference.I-D.ma-netmod-immutable-flag.xml"/>
+      <xi:include href="https://datatracker.ietf.org/doc/bibxml3/reference.I-D.ma-netmod-immutable-flag.xml"
+                  xmlns:xi="http://www.w3.org/2001/XInclude"/>
     </references>
 
     <section title="Key Use Cases">
@@ -1812,4 +1832,3 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
     </section>
   </back>
 </rfc>
-

@@ -10,21 +10,18 @@
     }
 
     organization
-      "IETF NETMDOD (Network Modeling) Working Group";
+      "IETF NETDOD (Network Modeling) Working Group";
 
     contact
-      "WG Web:   <http://tools.ietf.org/wg/netmod/>
-       WG List:  <mailto:netmod@ietf.org>
+      "WG Web:   https://datatracker.ietf.org/wg/netmod/
+       WG List:  NETMOD WG list <mailto:netmod@ietf.org>
+       
        Author: Qiufang Ma
                <mailto:maqiufang1@huawei.com>
-       Author: Kent Watsen
-               <mailto:kent+ietf@watsen.net>
        Author: Qin Wu
                <mailto:bill.wu@huawei.com>
        Author: Chong Feng
-               <mailto:frank.fengchong@huawei.com>
-       Author: Jan Lindblad
-               <mailto:jlindbla@cisco.com>";
+               <mailto:frank.fengchong@huawei.com>";
 
     description
      "This module defines a new YANG identity that uses the 
@@ -62,7 +59,7 @@
     identity system {
       base ds:conventional;
       description
-        "This read-only datastore contains the complete configuration 
+        "This read-only datastore contains the configuration 
          provided by the system itself.";
     }
 }
