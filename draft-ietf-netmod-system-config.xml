@@ -136,10 +136,11 @@
 
       <t>In some cases, the NETCONF/RESTCONF client references a system
       configuration which isn't present in the target datastore (e.g.,
-      &lt;running&gt;). Having to copy the entire contents of the system
-      configuration into the target datastore should be avoided or reduced
-      when possible while ensuring that all referential integrity constraints
-      are satisfied.</t>
+      &lt;running&gt;), thus the configuration is considered invalid. To
+      facilitate manipulation of the client, having to copy the entire
+      contents of the system configuration into the target datastore should be
+      avoided or reduced when possible while ensuring that all referential
+      integrity constraints are satisfied.</t>
 
       <t>In some other cases, configuration of descendant nodes of
       system-defined configuration needs to be supported. For example, the
@@ -246,17 +247,10 @@
         &lt;edit-config&gt;/&lt;edit-data&gt; and &lt;copy-config&gt;
         behaviors.</t>
 
-        <t>According to the NETCONF constraint enforcement model defined in
-        the Section 8.3 of <xref target="RFC7950"/>, if the target datastore
-        of the &lt;edit-config&gt;/&lt;edit-data&gt; or &lt;copy-config&gt; is
-        "running" or "startup", the server's copy referenced nodes from
-        &lt;system&gt; to the target datastore MUST be enforced at the end of
-        the &lt;edit-config&gt;/&lt;edit-data&gt; or &lt;copy-config&gt;
-        operations during the validation. If the target datastore of the
-        &lt;edit-config&gt;/&lt;edit-data&gt; or &lt;copy-config&gt; is
-        "candidate", the server's copy referenced nodes from &lt;system&gt; to
-        the target datastore is delayed until a &lt;commit&gt; or
-        &lt;validate&gt; operation takes place.</t>
+        <t>The server's copy referenced nodes from &lt;system&gt; to the
+        target datastore MUST be enforced at the end of the
+        &lt;edit-config&gt;/&lt;edit-data&gt; or &lt;copy-config&gt;
+        operations, regardless of which target datastore it is.</t>
       </section>
 
       <section title="Updates to RFC 8040">
@@ -295,9 +289,17 @@
     </section>
 
     <section anchor="categories" title="Kinds of System Configuration">
-      <t>There are three types of system configurations: immediately-active
-      system configuration, conditionally-active system configuration, and
-      inactive-until-referenced system configuration.</t>
+      <t>There are three types of system configurations defined in this
+      document: immediately-active system configuration, conditionally-active
+      system configuration, and inactive-until-referenced system
+      configuration.</t>
+
+      <t>Active system configuration refers to configuration that is in use by
+      a device. As per definition of the operational state datastore in <xref
+      target="RFC8342"/>, if system configuration is inactive, it should not
+      appear in &lt;operational&gt;. However, system configuration is present
+      in &lt;system&gt; once it is generated, regardless of whether it is
+      active or not. </t>
 
       <section title="Immediately-Active">
         <t>Immediately-active system configurations are those generated in
@@ -1211,8 +1213,8 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
         referenced system configuration into target datastore automatically. A
         NETCONF client can discover the "resolve-system" parameter support on
         the server by checking the YANG library information with
-        "ietf-netconf-resolve-system" included from the operational state
-        datastore.</t>
+        "ietf-netconf-resolve-system" YANG module included from the
+        operational state datastore.</t>
 
         <t>The following tree diagram [RFC8340] illustrates the
         "ietf-netconf-resolve-system" module:</t>
@@ -1544,9 +1546,10 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
     </section>
 
     <section anchor="Acknowledgements" numbered="no" title="Acknowledgements">
-      <t>Thanks to Robert Wilton, Balazs Lengyel, Andy Bierman, Juergen
-      Schoenwaelder, Alex Clemm, Martin Bjorklund, Timothy Carey for
-      reviewing, and providing important input to, this document.</t>
+      <t>The authors would like to thank for following for discussions and
+      providing input to this document (ordered by first name): Alex Clemm,
+      Andy Bierman, Balazs Lengyel, Juergen Schoenwaelder, Martin Bjorklund,
+      Mohamed Boucadair, Robert Wilton and Timothy Carey. </t>
     </section>
   </middle>
 
@@ -1763,64 +1766,16 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
     </section>
 
     <section title="Changes between Revisions">
-      <t>v03 - v04<list style="symbols">
-          <t>Clarify the "should not" statement;</t>
+      <t>v00 - v01<list style="symbols">
+          <t>Clarify why client's explicit copy is not preferred but cannot be
+          avoided if resolve-system parameter is not defined</t>
 
-          <t>Editorial changes, like avoid using "object";</t>
-        </list></t>
+          <t>Clarify active system configuration </t>
 
-      <t>v02 - v03<list style="symbols">
-          <t>Define a RESTCONF capability URI for "resolve-system" RESTCONF
-          query parameter;</t>
+          <t>Update the timing when the server's auto copy should be enforced
+          if a resolve-system parameter is used</t>
 
-          <t>Augment &lt;copy-config&gt; RPC operation to support
-          "resolve-system" for input parameter;</t>
-
-          <t>Editorial changes for clarification and explanation. E.g.,
-          definition of system configuration, is &lt;system&gt; always valid?
-          Will the update of &lt;system&gt; be reflected into &lt;running&gt;?
-          Clarify "read-only to clients" and "modifying system configuration",
-          non-deletable system configuration, etc</t>
-        </list></t>
-
-      <t>v00 - v02<list style="symbols">
-          <t>Remove the "with-system" parameter to retrieve &lt;running&gt;
-          with system configuration merged in.</t>
-
-          <t>Add a new parameter named "resolve-system" to allow the server to
-          populate referenced system configuration into &lt;running&gt;
-          automatically in order to make &lt;running&gt; valid.</t>
-
-          <t>Usage examples refinement.</t>
-        </list></t>
-
-      <t>v02 - v00<list style="symbols">
-          <t>Restructure the document content based on input in the system
-          defined configuration interim meeting.</t>
-
-          <t>Updates NMDA to define a read-only conventional configuration
-          datastore called "system".</t>
-
-          <t>Retrieval of implicit hidden system configuration via
-          &lt;get&gt;&lt;get-config&gt; with "with-system" parameter to
-          support non-NMDA servers.</t>
-
-          <t>Provide system defined configuration classification.</t>
-
-          <t>Define Static Characteristics and dynamic behavior for system
-          defined configuration.</t>
-
-          <t>Separate "ietf-system-datastore" Module from
-          "ietf-netconf-with-system" Module.</t>
-
-          <t>Provide usage examples for dynamic behaviors.</t>
-
-          <t>Provide usage examples for two YANG modules.</t>
-
-          <t>Provide three use cases related to system-defined configuration
-          lifecycle management.</t>
-
-          <t>Classify the relation with &lt;factory-default&gt;.</t>
+          <t>Editorial changes</t>
         </list></t>
     </section>
 
