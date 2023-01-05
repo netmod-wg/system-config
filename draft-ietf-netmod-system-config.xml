@@ -126,8 +126,8 @@
       "resolve-system" parameter is defined to allow the server acting as a
       "system client" to copy referenced system-defined nodes automatically.
       This solution enables clients manipulating the target configuration
-      datastore (e.g., &lt;running&gt;) to overlay and reference nodes defined
-      in &lt;system&gt;, override values of configurations defined in
+      datastore (e.g., &lt;running&gt;) to reference nodes defined in
+      &lt;system&gt;, override values of configurations defined in
       &lt;system&gt;, and configure descendant nodes of system-defined
       nodes.</t>
 
@@ -150,10 +150,10 @@
       <t>In some cases, the NETCONF/RESTCONF client references a system
       configuration which isn't present in the target datastore (e.g.,
       &lt;running&gt;), thus the configuration is considered invalid. To
-      facilitate manipulation of the client, having to copy the entire
-      contents of the system configuration into the target datastore should be
-      avoided or reduced when possible while ensuring that all referential
-      integrity constraints are satisfied.</t>
+      facilitate manipulation of the client configuration, having to copy the
+      entire contents of the system configuration into the target datastore
+      should be avoided or reduced when possible while ensuring that all
+      referential integrity constraints are satisfied.</t>
 
       <t>In some other cases, configuration of descendant nodes of
       system-defined configuration needs to be supported. For example, the
@@ -346,7 +346,7 @@
     </section>
 
     <section title="The &lt;system&gt; Configuration Datastore">
-      <t>NMDA servers claiming to support this document MUST implement a
+      <t>NMDA servers compliant with this document MUST implement a
       &lt;system&gt; configuration datastore, and they SHOULD also implement
       the &lt;intended&gt; datastore.</t>
 
@@ -537,7 +537,7 @@
         datastore(e.g., &lt;running&gt;) when the "resolve-system" parameter
         is used; otherwise it is an implementation decision where to copy
         referenced system configuration into the target datastore(e.g.,
-        &lt;running&gt;). </t>
+        &lt;running&gt;).</t>
 
         <t>If the "resolve-system" is present, and the server supports this
         capability, the server MUST copy relevant referenced system-defined

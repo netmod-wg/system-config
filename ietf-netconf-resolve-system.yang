@@ -1,7 +1,6 @@
  module ietf-netconf-resolve-system {
     yang-version 1.1;
-    namespace 
-      "urn:ietf:params:xml:ns:yang:ietf-netconf-resolve-system";
+    namespace "urn:ietf:params:xml:ns:yang:ietf-netconf-resolve-system";
     prefix ncrs;
 
     import ietf-netconf {
