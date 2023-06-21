@@ -201,7 +201,7 @@
             the system configuration datastore (regardless of being applied by
             the device or referenced by other configuration nodes), and
             appears in the intended configuration datastore. System
-            configuration that is considered applied (according to the NMDA
+            configuration that is considered active (according to the NMDA
             defined in RFC 8342) appears in &lt;operational&gt; with
             origin="system", regardless of whether that system configuration
             is referenced by user created configuration or not. System
@@ -209,6 +209,22 @@
             default configuration defined in RFC 8808 (which represents a
             preset initial configuration that is used to initialize the
             configuration of a server).<vspace blankLines="1"/></t>
+
+            <t hangText="Referenced system configuration: ">A system-defined
+            node in &lt;system&gt; is referred in one of the following cases:
+            <list>
+                <t>present in a leafref "path" statement and as the leafref
+                value</t>
+
+                <t>present in an Xpath expression of "when" or "must"
+                statement</t>
+
+                <t>used as an "instance-identifier" type</t>
+
+                <t>defined as "mandatory true"</t>
+
+                <t>exactly satisfy the "min-element" constraints</t>
+              </list><vspace blankLines="1"/></t>
 
             <t hangText="System configuration datastore: ">A configuration
             datastore holding configuration provided by the system itself.
@@ -355,11 +371,11 @@
         also define their own configurations for their unique requirements.
         Inactive-until-referenced system configurations are generated in
         &lt;system&gt; immediately when the device is powered on, but they are
-        not applied and active until being referenced.</t>
+        not active until being referenced.</t>
       </section>
     </section>
 
-    <section title="The System Configuration Datastore">
+    <section title="The System Configuration Datastore (&lt;system&gt;)">
       <t>NMDA servers compliant with this document MUST implement a system
       configuration datastore, and they SHOULD also implement
       &lt;intended&gt;.</t>
@@ -415,7 +431,7 @@
       be valid, as defined in Section 8.1 of <xref target="RFC7950"/>.</t>
     </section>
 
-    <section title="Static Characteristics of the System Configuration Datastore">
+    <section title="Static Characteristics of &lt;system&gt;">
       <section title="Read-only to Clients">
         <t>The system configuration datastore is a read-only configuration
         datastore (i.e., edits towards &lt;system&gt; directly MUST be
@@ -456,7 +472,7 @@
 
         <t>When the device is powered on, immediately-active system
         configuration will be generated in &lt;system&gt; and applied
-        immediately but inactive-until-referenced system configuration only
+        immediately, but inactive-until-referenced system configuration only
         becomes active if it is referenced by client-defined configuration.
         While conditionally-active system configuration will be created and
         immediately applied if the condition on system resources is met when
@@ -538,23 +554,13 @@
         valid.</t>
       </section>
 
-      <section title="Servers Auto-configuring Referenced System Configuration">
+      <section title="Servers Auto-configuring Referenced System Configuration (&quot;resolve-system&quot; parameter)">
         <t>This document defines a new parameter "resolve-system" to the input
         for the &lt;edit-config&gt;, &lt;edit-data&gt;, and
         &lt;copy-config&gt; operations. Clients that are aware of the
         "resolve-system" parameter MAY use this parameter to avoid the
         requirement to provide a referentially complete configuration in
         &lt;running&gt;.</t>
-
-        <t>Non-NMDA servers MAY implement this parameter without implementing
-        the system configuration datastore, which would only eliminate the
-        ability to expose the system configuration via protocol operations. If
-        a server implements &lt;system&gt;, referenced system configuration is
-        copied from &lt;system&gt; into the target datastore(e.g.,
-        &lt;running&gt;) when the "resolve-system" parameter is used;
-        otherwise it is an implementation decision where to copy referenced
-        system configuration into the target datastore (e.g.,
-        &lt;running&gt;).</t>
 
         <t>If the "resolve-system" is present, and the server supports this
         capability, the server MUST copy relevant referenced system-defined
@@ -563,6 +569,37 @@
         resolved by the client. The server acting as a "system client" like
         any other remote clients copies the referenced system-defined nodes
         when triggered by the "resolve-system" parameter.</t>
+
+        <t>The server may automatically configure the list entries (with at
+        least the keys) in the target datastore (e.g., &lt;running&gt;) for
+        any system configuration list entries that are referenced elsewhere by
+        the clients. Similarly, not all the contents of the list entry (i.e.,
+        the descendant nodes) are necessarily copied by the server - only the
+        parts that are required to make &lt;running&gt; valid.</t>
+
+        <t>There is no distinction between the referenced system configuration
+        which is automatically configured by the server and explicitly
+        declared by the client once it is configured in the target datastore,
+        e.g., a read back of &lt;running&gt; (i.e., &lt;get&gt;,
+        &lt;get-config&gt; or &lt;get-data&gt; operation) returns
+        automatically configured nodes. Note that even a referenced data node
+        is allowed to be deleted from the target datastore by the client, the
+        operation request (e.g., &lt;edit-config&gt;) may not succeed due to
+        incomplete referential integrity, it is also possible that the system
+        automatically configures the deleted node again to make configuration
+        valid, when a "resolve-system" parameter is carried. Once configured,
+        referenced system configuration is not removed or updated
+        automatically by the server even in cases like all references to it
+        are deleted by the client or system configuration is no longer present
+        in &lt;system&gt; due to factors like device upgrade or
+        system-controlled resources (e.g., HW unavailable) change.</t>
+
+        <t>Comment: Should the server update configuration in &lt;running&gt;
+        that is copied from &lt;system&gt; automatically (and manually?)
+        during an upgrade? Jason: I think maybe servers that convert
+        configuration during upgrade (a common approach) would want to
+        convert/upgrade system config as well as any copied system config that
+        exists in running.</t>
 
         <t>If the "resolve-system" parameter is not given by the client, the
         server should not modify &lt;running&gt; in any way otherwise not
@@ -576,20 +613,25 @@
         client to opt into its behavior using a "$0$" prefix (see
         ianach:crypt-hash type defined in <xref target="RFC7317"/>).</t>
 
-        <t>The server may automatically configure the list entries (with at
-        least the keys) in the target datastore (e.g., &lt;running&gt;) for
-        any system configuration list entries that are referenced elsewhere by
-        the clients. Similarly, not all the contents of the list entry (i.e.,
-        the descendant nodes) are necessarily copied by the server - only the
-        parts that are required to make &lt;running&gt; valid. A read back of
-        &lt;running&gt; (i.e., &lt;get&gt;, &lt;get-config&gt; or
-        &lt;get-data&gt; operation) returns those automatically copied
-        nodes.</t>
+        <t>Support for the "resolve-system" parameter is OPTIONAL. Non-NMDA
+        servers MAY also implement this parameter without implementing the
+        system configuration datastore, which would only eliminate the ability
+        to expose the system configuration via protocol operations. If a
+        server implements &lt;system&gt;, referenced system configuration is
+        copied from &lt;system&gt; into the target datastore(e.g.,
+        &lt;running&gt;) when the "resolve-system" parameter is used;
+        otherwise it is an implementation decision where to copy referenced
+        system configuration into the target datastore (e.g.,
+        &lt;running&gt;).</t>
 
-        <t>Note that even a referenced data node can be deleted from
-        &lt;running&gt;, the system will still copy that referenced node into
-        &lt;running&gt; again to make configuration valid, when a
-        "resolve-system" parameter is carried.</t>
+        <t>Comments from Jason: Overall the resolve-system function may mean
+        an expensive (time consuming) operation on the server side.
+        Conceptually it may mean doing a validation on the running, and then
+        when an error is hit, searching the 'system' datastore for something
+        that could resolve that invalid aspect. Then running validation again
+        and hitting the next error. It may require multiple passes (since some
+        errors are dependent on the previous error being present or
+        'fixed').</t>
       </section>
 
       <section anchor="modifying"
@@ -669,7 +711,7 @@
             </figure></t>
 
           <t>The server may predefine some applications as a convenience for
-          the clients. These predefined configurations are applied only after
+          the clients. These predefined configurations are active only after
           being referenced by other configurations, which fall into the
           "inactive-until-referenced" system configuration as defined in <xref
           target="categories"/>. The system-instantiated application entries
@@ -1802,6 +1844,14 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
     </section>
 
     <section title="Changes between Revisions">
+      <t>v01 - v02<list style="symbols">
+          <t>Define referenced system configuration</t>
+
+          <t>better clarify "resolve-system" parameter</t>
+
+          <t>Editorial changes</t>
+        </list></t>
+
       <t>v00 - v01<list style="symbols">
           <t>Clarify why client's explicit copy is not preferred but cannot be
           avoided if resolve-system parameter is not defined</t>
