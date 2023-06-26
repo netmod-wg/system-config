@@ -184,6 +184,22 @@
       &lt;system&gt;, and configure descendant nodes of system-defined
       nodes.</t>
 
+      <t>If a system-defined node is referenced, it refers to one of the
+      following cases throughout this document:<list style="symbols">
+          <t>It is present in a leafref "path" statement and referred as the
+          leafref value</t>
+
+          <t>It is present in an Xpath expression of "when" or "must"
+          statement</t>
+
+          <t>It is used as an "instance-identifier" type value</t>
+
+          <t>It is defined as "mandatory true"</t>
+
+          <t>It is defined to exactly satisfy the "min-element"
+          constraints</t>
+        </list></t>
+
       <t>Conformance to this document requires the NMDA servers to implement
       the "ietf-system-datastore" YANG module (<xref
       target="system-datastore"/>).</t>
@@ -209,22 +225,6 @@
             default configuration defined in RFC 8808 (which represents a
             preset initial configuration that is used to initialize the
             configuration of a server).<vspace blankLines="1"/></t>
-
-            <t hangText="Referenced system configuration: ">A system-defined
-            node in &lt;system&gt; is referred in one of the following cases:
-            <list>
-                <t>present in a leafref "path" statement and as the leafref
-                value</t>
-
-                <t>present in an Xpath expression of "when" or "must"
-                statement</t>
-
-                <t>used as an "instance-identifier" type</t>
-
-                <t>defined as "mandatory true"</t>
-
-                <t>exactly satisfy the "min-element" constraints</t>
-              </list><vspace blankLines="1"/></t>
 
             <t hangText="System configuration datastore: ">A configuration
             datastore holding configuration provided by the system itself.
@@ -306,7 +306,8 @@
           copy any referenced system-defined configuration automatically
           without the client doing so explicitly. This parameter is only
           allowed with no values carried. If this parameter has any unexpected
-          value, then a "400 Bad Request" status-line is returned.<figure>
+          value, then a "400 Bad Request" status-line is returned.<figure
+              title="RESTCONF &quot;resolve-system&quot; Query Parameter">
               <artwork>+----------------+---------+-----------------------------------------+
 | Name           | Methods | Description                             |
 +----------------+---------+-----------------------------------------+
@@ -427,8 +428,7 @@
 
       <t>The system configuration datastore is defined as a conventional
       configuration datastore and shares a common datastore schema with other
-      conventional datastores. The system configuration datastore must always
-      be valid, as defined in Section 8.1 of <xref target="RFC7950"/>.</t>
+      conventional datastores.</t>
     </section>
 
     <section title="Static Characteristics of &lt;system&gt;">
@@ -498,6 +498,48 @@
         inactive system configuration). If a server implements
         &lt;intended&gt;, &lt;system&gt; MUST be merged into
         &lt;intended&gt;.</t>
+
+        <t>As a result, Figure 2 in Section 5 of RFC 8342 is updated with the
+        below conceptual model of datastores which incorporates the system
+        configuration datastore.<figure
+            title="Architectural Model of Datastores">
+            <artwork>                +-------------+                 +-----------+
+                | &lt;candidate&gt; |                 | &lt;startup&gt; |
+                |  (ct, rw)   |&lt;---+       +---&gt;| (ct, rw)  |
+                +-------------+    |       |    +-----------+
+                       |           |       |           |
+         +-----------+ |         +-----------+         |
+         | &lt;system&gt;  | +--------&gt;| &lt;running&gt; |&lt;--------+
+         | (ct, ro)  |           | (ct, rw)  |
+         +-----+-----+           +----+------+
+               |                      |
+               +--------+      +------+  // configuration transformations,
+                        |      |         // e.g., removal of nodes marked
+                        |      |         // as "inactive", expansion of
+                        |      |         // templates
+                        V      V
+                     +------------+
+                     | &lt;intended&gt; | // subject to validation
+                     | (ct, ro)   |
+                     +------------+
+                           |        // changes applied, subject to
+                           |        // local factors, e.g., missing
+                           |        // resources, delays
+                           |
+      dynamic              |
+      configuration        |   +-------- learned configuration
+      datastores -----+    |   +-------- default configuration
+                      |    |   |
+                      v    v   v
+                   +---------------+
+                   | &lt;operational&gt; | &lt;-- system state
+                   | (ct + cf, ro) |
+                   +---------------+
+
+    ct = config true; cf = config false
+    rw = read-write; ro = read-only
+    boxes denote named datastores</artwork>
+          </figure></t>
 
         <t>Servers MUST enforce that configuration references in
         &lt;running&gt; are resolved within &lt;running&gt; and ensure that
