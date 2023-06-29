@@ -470,12 +470,12 @@
         target="categories"/>.</t>
 
         <t>When the device is powered on, immediately-active system
-        configuration will be generated in &lt;system&gt; and applied
+        configuration will be generated in &lt;system&gt; and active
         immediately, but inactive-until-referenced system configuration only
         becomes active if it is referenced by client-defined configuration.
-        While conditionally-active system configuration will be created and
-        immediately applied if the condition on system resources is met when
-        the device is powered on or running.</t>
+        While conditionally-active system configuration will only be created
+        and active if the condition on system resources is met when the device
+        is powered on or running.</t>
 
         <t>All above three types of system configurations will appear in
         &lt;system&gt;. Clients MAY reference nodes defined in &lt;system&gt;,
@@ -558,14 +558,13 @@
 
         <t>Configuration defined in &lt;system&gt; is merged into
         &lt;intended&gt;. It is also present in &lt;operational&gt; if it is
-        actively in use by the device, even if a client may delete the
-        configuration which is copied from &lt;system&gt; into
-        &lt;running&gt;. For example, system initializes a value for a
-        particular leaf which is overridden by the client with a different
-        value in &lt;running&gt;. The client may delete that node in
-        &lt;running&gt;, in which case system-initialized value defined in
-        &lt;system&gt; can be still in use and appear in
-        &lt;operational&gt;.</t>
+        in use by the device, even if a client may delete the configuration
+        which is copied from &lt;system&gt; into &lt;running&gt;. For example,
+        system initializes a value for a particular leaf which is overridden
+        by the client with a different value in &lt;running&gt;. The client
+        may delete that node in &lt;running&gt;, in which case
+        system-initialized value defined in &lt;system&gt; can be still in use
+        and appear in &lt;operational&gt;.</t>
 
         <t>Any deletable system-provided configuration that is placed into
         &lt;running&gt; by the system at bootup, without being part of the

@@ -531,12 +531,12 @@ Internet-Draft        System-defined Configuration             June 2023
    hold all three types of system configurations defined in Section 2.
 
    When the device is powered on, immediately-active system
-   configuration will be generated in <system> and applied immediately,
+   configuration will be generated in <system> and active immediately,
    but inactive-until-referenced system configuration only becomes
    active if it is referenced by client-defined configuration.  While
-   conditionally-active system configuration will be created and
-   immediately applied if the condition on system resources is met when
-   the device is powered on or running.
+   conditionally-active system configuration will only be created and
+   active if the condition on system resources is met when the device is
+   powered on or running.
 
    All above three types of system configurations will appear in
    <system>.  Clients MAY reference nodes defined in <system>, override
@@ -680,10 +680,10 @@ Internet-Draft        System-defined Configuration             June 2023
    aware.
 
    Configuration defined in <system> is merged into <intended>.  It is
-   also present in <operational> if it is actively in use by the device,
-   even if a client may delete the configuration which is copied from
-   <system> into <running>.  For example, system initializes a value for
-   a particular leaf which is overridden by the client with a different
+   also present in <operational> if it is in use by the device, even if
+   a client may delete the configuration which is copied from <system>
+   into <running>.  For example, system initializes a value for a
+   particular leaf which is overridden by the client with a different
    value in <running>.  The client may delete that node in <running>, in
    which case system-initialized value defined in <system> can be still
    in use and appear in <operational>.
