@@ -43,8 +43,7 @@
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
 <rfc category="std" docName="draft-ietf-netmod-system-config-latest"
-     ipr="trust200902" submissionType="IETF"
-     updates="RFC8342,RFC6241,RFC8526,RFC8040">
+     ipr="trust200902" submissionType="IETF" updates="8342,6241,8526,8040">
   <front>
     <title abbrev="System-defined Configuration">System-defined
     Configuration</title>
@@ -189,12 +188,12 @@
           <t>It is present in a leafref "path" statement and referred as the
           leafref value</t>
 
-          <t>It is present in an Xpath expression of "when" or "must"
-          statement</t>
-
           <t>It is used as an "instance-identifier" type value</t>
 
-          <t>It is defined as "mandatory true"</t>
+          <t>It is present in an Xpath expression of "when" or "must"
+          constraints</t>
+
+          <t>It is defined to satisfy the "mandatory" constraints</t>
 
           <t>It is defined to exactly satisfy the "min-element"
           constraints</t>
@@ -219,12 +218,11 @@
             appears in the intended configuration datastore. System
             configuration that is considered active (according to the NMDA
             defined in RFC 8342) appears in &lt;operational&gt; with
-            origin="system", regardless of whether that system configuration
-            is referenced by user created configuration or not. System
-            configuration is a different and separate concept from factory
-            default configuration defined in RFC 8808 (which represents a
-            preset initial configuration that is used to initialize the
-            configuration of a server).<vspace blankLines="1"/></t>
+            origin="system". It is a different and separate concept from
+            factory default configuration defined in RFC 8808 (which
+            represents a preset initial configuration that is used to
+            initialize the configuration of a server).<vspace
+            blankLines="1"/></t>
 
             <t hangText="System configuration datastore: ">A configuration
             datastore holding configuration provided by the system itself.
@@ -443,8 +441,9 @@
         <t>System configuration may change dynamically, e.g., depending on
         factors like device upgrade or if system-controlled resources (e.g.,
         HW available) change. In some implementations, when a QoS feature is
-        enabled, QoS-related policies are created by the system. If the system
-        configuration gets changed, YANG notifications (e.g.,
+        enabled, QoS-related policies are created by the system.</t>
+
+        <t>If the system configuration gets changed, YANG notifications (e.g.,
         "push-change-update" notification) <xref target="RFC6470"/><xref
         target="RFC8639"/><xref target="RFC8641"/> can be used to notify the
         client. Any update of the contents in &lt;system&gt; will not cause
@@ -503,42 +502,42 @@
         below conceptual model of datastores which incorporates the system
         configuration datastore.<figure
             title="Architectural Model of Datastores">
-            <artwork>                +-------------+                 +-----------+
-                | &lt;candidate&gt; |                 | &lt;startup&gt; |
-                |  (ct, rw)   |&lt;---+       +---&gt;| (ct, rw)  |
-                +-------------+    |       |    +-----------+
-                       |           |       |           |
-         +-----------+ |         +-----------+         |
-         | &lt;system&gt;  | +--------&gt;| &lt;running&gt; |&lt;--------+
-         | (ct, ro)  |           | (ct, rw)  |
-         +-----+-----+           +----+------+
-               |                      |
-               +--------+      +------+  // configuration transformations,
-                        |      |         // e.g., removal of nodes marked
-                        |      |         // as "inactive", expansion of
-                        |      |         // templates
-                        V      V
-                     +------------+
-                     | &lt;intended&gt; | // subject to validation
-                     | (ct, ro)   |
-                     +------------+
-                           |        // changes applied, subject to
-                           |        // local factors, e.g., missing
-                           |        // resources, delays
-                           |
-      dynamic              |
-      configuration        |   +-------- learned configuration
-      datastores -----+    |   +-------- default configuration
-                      |    |   |
-                      v    v   v
-                   +---------------+
-                   | &lt;operational&gt; | &lt;-- system state
-                   | (ct + cf, ro) |
-                   +---------------+
+            <artwork>             +-------------+                 +-----------+
+             | &lt;candidate&gt; |                 | &lt;startup&gt; |
+             |  (ct, rw)   |&lt;---+       +---&gt;| (ct, rw)  |
+             +-------------+    |       |    +-----------+
+                    |           |       |           |
+      +-----------+ |         +-----------+         |
+      | &lt;system&gt;  | +--------&gt;| &lt;running&gt; |&lt;--------+
+      | (ct, ro)  |           | (ct, rw)  |
+      +-----+-----+           +----+------+
+            |                      |
+            +--------+      +------+  // configuration transformations,
+                     |      |         // e.g., removal of nodes marked
+                     |      |         // as "inactive", expansion of
+                     |      |         // templates
+                     V      V
+                  +------------+
+                  | &lt;intended&gt; | // subject to validation
+                  | (ct, ro)   |
+                  +------------+
+                        |        // changes applied, subject to
+                        |        // local factors, e.g., missing
+                        |        // resources, delays
+                        |
+   dynamic              |
+   configuration        |   +-------- learned configuration
+   datastores -----+    |   +-------- default configuration
+                   |    |   |
+                   v    v   v
+                +---------------+
+                | &lt;operational&gt; | &lt;-- system state
+                | (ct + cf, ro) |
+                +---------------+
 
-    ct = config true; cf = config false
-    rw = read-write; ro = read-only
-    boxes denote named datastores</artwork>
+  ct = config true; cf = config false
+  rw = read-write; ro = read-only
+  boxes denote named datastores</artwork>
           </figure></t>
 
         <t>Servers MUST enforce that configuration references in
@@ -1241,10 +1240,8 @@
 
         <t>The following diagram illustrates the relationship amongst the
         "identity" statements defined in the "ietf-system-datastore" and
-        "ietf-datastores" YANG modules:</t>
-
-        <figure>
-          <artwork>Identities:
+        "ietf-datastores" YANG modules: <figure>
+            <artwork>Identities:
     +--- datastore
     |  +--- conventional
     |  |  +--- running
@@ -1253,9 +1250,9 @@
     |  |  +--- system
     |  |  +--- intended
     |  +--- dynamic
-    |  +--- operational
- The diagram above uses syntax that is similar to but not defined in [RFC8340].</artwork>
-        </figure>
+    |  +--- operational</artwork>
+          </figure>The diagram above uses syntax that is similar to but not
+        defined in [RFC8340].</t>
       </section>
 
       <section title="Example Usage">
@@ -1685,6 +1682,8 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
 
       <?rfc include="reference.RFC.8040.xml"?>
 
+      <?rfc include="reference.RFC.8341.xml"?>
+
       <?rfc include="reference.RFC.8342.xml"?>
 
       <?rfc include="reference.RFC.8526.xml"?>
@@ -1695,13 +1694,25 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
     </references>
 
     <references title="Informative References">
+      <?rfc include="reference.RFC.3688.xml"?>
+
+      <?rfc include="reference.RFC.6020.xml"?>
+
+      <?rfc include="reference.RFC.6242.xml"?>
+
       <?rfc include="reference.RFC.7317.xml"?>
+
+      <?rfc include="reference.RFC.7952.xml"?>
+
+      <?rfc include="reference.RFC.8174.xml"?>
+
+      <?rfc include="reference.RFC.8340.xml"?>
 
       <?rfc include="reference.RFC.8407.xml"?>
 
-      <?rfc include="reference.RFC.8525.xml"?>
+      <?rfc include="reference.RFC.8446.xml"?>
 
-      <?rfc include="reference.RFC.8174.xml"?>
+      <?rfc include="reference.RFC.8525.xml"?>
 
       <?rfc include="reference.RFC.8808.xml"?>
 
@@ -1890,6 +1901,8 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
           <t>Define referenced system configuration</t>
 
           <t>better clarify "resolve-system" parameter</t>
+
+          <t>update Figure 2 in NMDA RFC</t>
 
           <t>Editorial changes</t>
         </list></t>
