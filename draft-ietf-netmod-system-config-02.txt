@@ -15,7 +15,7 @@ Expires: 5 January 2024                                      4 July 2023
 Abstract
 
    This document describes how a management client and server handle
-   YANG-based configuration data that is defined by the server itself.
+   YANG-modeled configuration data that is defined by the server itself.
    The system-defined configuration can be referenced (e.g. leafref) by
    configuration explicitly created by a client.
 
