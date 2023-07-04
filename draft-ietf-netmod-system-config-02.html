@@ -10,23 +10,22 @@
 <meta content="Feng Chong" name="author">
 <meta content='
        This document describes how a management client and server handle
-      YANG-based configuration data that is created, modified or deleted by
-      the server itself. The system created configuration elements can be
-      referenced (e.g. leafref) by configuration that was explicitly created
-      by a client. 
+      YANG-based configuration data that is defined by the server itself. The
+      system-defined configuration can be referenced (e.g. leafref) by
+      configuration explicitly created by a client. 
        The Network Management Datastore Architecture (NMDA) defined in RFC
       8342 is updated with a read-only conventional configuration datastore
       called "system" to hold system-defined configuration. As an alternative
       to clients explicitly copying referenced system-defined configuration
       into the target configuration datastore (e.g., &lt;running&gt;) so that
-      the datastore is valid, a "resolve-system" parameter has been defined to
-      allow the server acting as a "system client" to copy referenced
-      system-defined nodes automatically. This solution enables clients
-      manipulating the target configuration datastore (e.g., &lt;running&gt;)
-      to overlay (e.g., copy system configuration using the same key value as
-      in &lt;system&gt;) and reference nodes defined in &lt;system&gt;,
-      override values of configurations defined in &lt;system&gt;, and
-      configure descendant nodes of system-defined nodes. 
+      the datastore is valid, a "resolve-system" parameter is defined to allow
+      the server acting as a "system client" to copy referenced system-defined
+      nodes automatically. This solution enables clients manipulating the
+      target configuration datastore (e.g., &lt;running&gt;) to overlay (e.g.,
+      copy system configuration using the same key value as in &lt;system&gt;)
+      and reference nodes defined in &lt;system&gt;, override values of
+      configurations defined in &lt;system&gt;, and configure descendant nodes
+      of system-defined nodes. 
        This document updates RFC 8342, RFC 6241, RFC 8526 and RFC 8040. 
     ' name="description">
 <meta content="xml2rfc 3.14.2" name="generator">
@@ -1208,11 +1207,11 @@ li > p:last-of-type {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">System-defined Configuration</td>
-<td class="right">June 2023</td>
+<td class="right">July 2023</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ma, et al.</td>
-<td class="center">Expires 31 December 2023</td>
+<td class="center">Expires 5 January 2024</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1228,12 +1227,12 @@ li > p:last-of-type {
 <a href="https://www.rfc-editor.org/rfc/rfc8342" class="eref">8342</a>, <a href="https://www.rfc-editor.org/rfc/rfc6241" class="eref">6241</a>, <a href="https://www.rfc-editor.org/rfc/rfc8526" class="eref">8526</a>, <a href="https://www.rfc-editor.org/rfc/rfc8040" class="eref">8040</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2023-06-29" class="published">29 June 2023</time>
+<time datetime="2023-07-04" class="published">4 July 2023</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2023-12-31">31 December 2023</time></dd>
+<dd class="expires"><time datetime="2024-01-05">5 January 2024</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1256,23 +1255,22 @@ li > p:last-of-type {
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
 <p id="section-abstract-1">This document describes how a management client and server handle
-      YANG-based configuration data that is created, modified or deleted by
-      the server itself. The system created configuration elements can be
-      referenced (e.g. leafref) by configuration that was explicitly created
-      by a client.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+      YANG-based configuration data that is defined by the server itself. The
+      system-defined configuration can be referenced (e.g. leafref) by
+      configuration explicitly created by a client.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 <p id="section-abstract-2">The Network Management Datastore Architecture (NMDA) defined in RFC
       8342 is updated with a read-only conventional configuration datastore
       called "system" to hold system-defined configuration. As an alternative
       to clients explicitly copying referenced system-defined configuration
       into the target configuration datastore (e.g., &lt;running&gt;) so that
-      the datastore is valid, a "resolve-system" parameter has been defined to
-      allow the server acting as a "system client" to copy referenced
-      system-defined nodes automatically. This solution enables clients
-      manipulating the target configuration datastore (e.g., &lt;running&gt;)
-      to overlay (e.g., copy system configuration using the same key value as
-      in &lt;system&gt;) and reference nodes defined in &lt;system&gt;,
-      override values of configurations defined in &lt;system&gt;, and
-      configure descendant nodes of system-defined nodes.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
+      the datastore is valid, a "resolve-system" parameter is defined to allow
+      the server acting as a "system client" to copy referenced system-defined
+      nodes automatically. This solution enables clients manipulating the
+      target configuration datastore (e.g., &lt;running&gt;) to overlay (e.g.,
+      copy system configuration using the same key value as in &lt;system&gt;)
+      and reference nodes defined in &lt;system&gt;, override values of
+      configurations defined in &lt;system&gt;, and configure descendant nodes
+      of system-defined nodes.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
 <p id="section-abstract-3">This document updates RFC 8342, RFC 6241, RFC 8526 and RFC 8040.<a href="#section-abstract-3" class="pilcrow">¶</a></p>
 </section>
 <div id="status-of-memo">
@@ -1294,7 +1292,7 @@ li > p:last-of-type {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 31 December 2023.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 5 January 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1525,8 +1523,8 @@ li > p:last-of-type {
       expose the system configuration. NETCONF/RESTCONF clients can benefit
       from a standard mechanism to retrieve what system configuration is
       available on a server.<a href="#section-1-2" class="pilcrow">¶</a></p>
-<p id="section-1-3">Some servers allow the NETCONF/RESTCONF client to reference a system
-      configuration object which isn't present in the target datastore (e.g.,
+<p id="section-1-3">Some servers allow the NETCONF/RESTCONF client to reference a
+      system-defined node which isn't present in the target datastore (e.g.,
       &lt;running&gt;). The absence of the system configuration in the
       datastore can render the datastore invalid from the perspective of a
       client or offline tools (e.g., missing leafref targets). This document
@@ -1641,17 +1639,17 @@ li > p:last-of-type {
         term "conventional configuration datastore" from RFC 8342 to add
         "system" to the list of conventional configuration datastores. The
         contents of &lt;system&gt; are read-only to clients but may change
-        dynamically. The &lt;system&gt; aware client may retrieve all three
-        types of system configuration defined in <a href="#categories" class="xref">Section 2</a>,
+        dynamically. &lt;system&gt; aware client may retrieve all three types
+        of system configuration defined in <a href="#categories" class="xref">Section 2</a>,
         reference nodes defined in &lt;system&gt;, override values of
         configurations defined in &lt;system&gt;, and configure descendant
         nodes of system-defined nodes.<a href="#section-1.3-1" class="pilcrow">¶</a></p>
 <p id="section-1.3-2">The server will merge &lt;running&gt; and &lt;system&gt; to create
         &lt;intended&gt;. As always, system configuration will appear in
         &lt;operational&gt; with origin="system" when it is in use.<a href="#section-1.3-2" class="pilcrow">¶</a></p>
-<p id="section-1.3-3">The system configuration datastore makes system configuration
-        visible to clients in order for being referenced or configurable prior
-        to present in &lt;operational&gt;.<a href="#section-1.3-3" class="pilcrow">¶</a></p>
+<p id="section-1.3-3">The system datastore makes system configuration visible to clients
+        in order for being referenced or configurable prior to present in
+        &lt;operational&gt;.<a href="#section-1.3-3" class="pilcrow">¶</a></p>
 </section>
 <section id="section-1.4">
         <h3 id="name-updates-to-rfc-6241-and-rfc">
@@ -1826,9 +1824,9 @@ li > p:last-of-type {
       can reset it to its factory default configuration without including
       configuration generated due to the system update or client-enabled
       functionality.<a href="#section-3-4" class="pilcrow">¶</a></p>
-<p id="section-3-5">The system configuration datastore is defined as a conventional
-      configuration datastore and shares a common datastore schema with other
-      conventional datastores.<a href="#section-3-5" class="pilcrow">¶</a></p>
+<p id="section-3-5">The system datastore is defined as a conventional configuration
+      datastore and shares a common datastore schema with other conventional
+      datastores.<a href="#section-3-5" class="pilcrow">¶</a></p>
 </section>
 <section id="section-4">
       <h2 id="name-static-characteristics-of-s">
@@ -1838,10 +1836,10 @@ li > p:last-of-type {
         <h3 id="name-read-only-to-clients">
 <a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-read-only-to-clients" class="section-name selfRef">Read-only to Clients</a>
         </h3>
-<p id="section-4.1-1">The system configuration datastore is a read-only configuration
-        datastore (i.e., edits towards &lt;system&gt; directly MUST be
-        denied), though the client may be allowed to override the value of a
-        system-initialized data node (see <a href="#modifying" class="xref">Section 5.4</a>).<a href="#section-4.1-1" class="pilcrow">¶</a></p>
+<p id="section-4.1-1">The system datastore is a read-only configuration datastore (i.e.,
+        edits towards &lt;system&gt; directly MUST be denied), though the
+        client may be allowed to override the value of a system-initialized
+        data node (see <a href="#modifying" class="xref">Section 5.4</a>).<a href="#section-4.1-1" class="pilcrow">¶</a></p>
 </section>
 <section id="section-4.2">
         <h3 id="name-may-change-via-software-upg">
@@ -1863,7 +1861,7 @@ li > p:last-of-type {
 <a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-no-impact-to-operational" class="section-name selfRef">No Impact to &lt;operational&gt;</a>
         </h3>
 <p id="section-4.3-1">This work intends to have no impact to &lt;operational&gt;. System
-        configuration will appear in &lt;operational&gt; with "origin=system".
+        configuration appears in &lt;operational&gt; with "origin=system".
         This document enables a subset of those system generated nodes to be
         defined like configuration, i.e., made visible to clients in order for
         being referenced or configurable prior to present in
@@ -1960,8 +1958,8 @@ li > p:last-of-type {
         the referenced system nodes configured into &lt;running&gt; by the
         client is consistent with &lt;system&gt;. Note that &lt;system&gt;
         aware clients know how to discover what nodes exist in &lt;system&gt;.
-        How clients unaware of the &lt;system&gt; datastore can find
-        appropriate configurations is beyond the scope of this document.<a href="#section-5.1-7" class="pilcrow">¶</a></p>
+        How clients unaware of the system datastore can find appropriate
+        configurations is beyond the scope of this document.<a href="#section-5.1-7" class="pilcrow">¶</a></p>
 <p id="section-5.1-8">No matter how the referenced system configurations are copied into
         &lt;running&gt;, the nodes copied into &lt;running&gt; would always be
         returned after a read of &lt;running&gt;, regardless if the client is
@@ -1975,12 +1973,18 @@ li > p:last-of-type {
         may delete that node in &lt;running&gt;, in which case
         system-initialized value defined in &lt;system&gt; can be still in use
         and appear in &lt;operational&gt;.<a href="#section-5.1-9" class="pilcrow">¶</a></p>
-<p id="section-5.1-10">Any deletable system-provided configuration that is placed into
-        &lt;running&gt; by the system at bootup, without being part of the
+<p id="section-5.1-10">Applied system configuration regardless of explicitly or
+        automatically being copied into &lt;running&gt;, appears in
+        &lt;operational&gt; with origin="system".<a href="#section-5.1-10" class="pilcrow">¶</a></p>
+<p id="section-5.1-11">Comment: this might need further discussion: should the
+        origin="system" be required for system configuration copied/pasted
+        into &lt;running&gt;?<a href="#section-5.1-11" class="pilcrow">¶</a></p>
+<p id="section-5.1-12">Any deletable system-provided configuration that is placed into
+        &lt;running&gt; by the system at boot up, without being part of the
         contents of a &lt;startup&gt; datastore, must be defined in
         &lt;factory-default&gt; <span>[<a href="#RFC8808" class="xref">RFC8808</a>]</span>, which is used to
         initialize &lt;running&gt; when the device is first-time powered on or
-        reset to its factory default condition.<a href="#section-5.1-10" class="pilcrow">¶</a></p>
+        reset to its factory default condition.<a href="#section-5.1-12" class="pilcrow">¶</a></p>
 </section>
 <section id="section-5.2">
         <h3 id="name-explicit-declaration-of-sys">
@@ -1992,15 +1996,16 @@ li > p:last-of-type {
         (list/leaf-list entry, leaf, etc.) in the target datastore (e.g.,
         &lt;running&gt;) that matches the same node and value in
         &lt;system&gt;.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
-<p id="section-5.2-2">This explicit configuration of system-defined nodes in
-        &lt;running&gt; can be useful, for example, when the client doesn't
-        want a "system client" to have a role or hasn't implemented the
-        "resolve-system" parameter. The client can explicitly declare (i.e.,
-        configure in &lt;running&gt;) the list entries (with at least the
+<p id="section-5.2-2">The explicit configuration of system-defined nodes in the target
+        datastore (e.g., &lt;running&gt;) can be useful, for example, when the
+        client doesn't want a "system client" to have a role or hasn't
+        implemented the "resolve-system" parameter but need the datastore to
+        be valid. The client can explicitly declare (i.e., configure in the
+        datastore like &lt;running&gt;) the list entries (with at least the
         keys) for any system configuration list entries that are referenced
         elsewhere in &lt;running&gt;. The client does not necessarily need to
         declare all the contents of the list entry (i.e. the descendant nodes)
-        , only the parts that are required to make &lt;running&gt; appear
+        , only the parts that are required to make the datastore appear
         valid.<a href="#section-5.2-2" class="pilcrow">¶</a></p>
 </section>
 <section id="section-5.3">
@@ -2056,7 +2061,7 @@ li > p:last-of-type {
         It is desirable for clients to always opt into using mechanisms having
         server-side changes. This document enables a client to opt into this
         behavior using the "resolve-system" parameter. An example of this type
-        of opt-in behavior can aslo be found in RFC 7317, which enables a
+        of opt-in behavior can also be found in RFC 7317, which enables a
         client to opt into its behavior using a "$0$" prefix (see
         ianach:crypt-hash type defined in <span>[<a href="#RFC7317" class="xref">RFC7317</a>]</span>).<a href="#section-5.3-6" class="pilcrow">¶</a></p>
 <p id="section-5.3-7">Support for the "resolve-system" parameter is OPTIONAL. Non-NMDA
@@ -2109,8 +2114,8 @@ li > p:last-of-type {
         &lt;running&gt; completely replace the set of values in
         &lt;system&gt;? Or the two sets of values are merged together?<a href="#section-5.4-4" class="pilcrow">¶</a></p>
 <p id="section-5.4-5">Comment 2: how "ordered-by user" lists and leaf-lists are merged?
-        Do the &lt;running&gt; values go before or after, or is this a case
-        where a full-replace is needed.<a href="#section-5.4-5" class="pilcrow">¶</a></p>
+        Do &lt;running&gt; values go before or after, or is this a case where
+        a full-replace is needed.<a href="#section-5.4-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <section id="section-5.5">
@@ -2320,15 +2325,15 @@ li > p:last-of-type {
             &lt;protocol&gt;udp&lt;/protocol&gt;
             &lt;destination-port&gt;69&lt;/destination-port&gt;
           &lt;/application&gt;
-          &lt;application&gt;
+          &lt;application or:origin="or:system"&gt;
             &lt;name&gt;ftp&lt;/name&gt;
-            &lt;protocol or:origin="or:system"&gt;tcp&lt;/protocol&gt;
-            &lt;destination-port or:origin="or:system"&gt;21&lt;/destination-port&gt;
+            &lt;protocol&gt;tcp&lt;/protocol&gt;
+            &lt;destination-port&gt;21&lt;/destination-port&gt;
           &lt;/application&gt;
-          &lt;application&gt;
+          &lt;application or:origin="or:system"&gt;
             &lt;name&gt;tftp&lt;/name&gt;
-            &lt;protocol or:origin="or:system"&gt;udp&lt;/protocol&gt;
-            &lt;destination-port or:origin="or:system"&gt;69&lt;/destination-port&gt;
+            &lt;protocol&gt;udp&lt;/protocol&gt;
+            &lt;destination-port&gt;69&lt;/destination-port&gt;
           &lt;/application&gt;
         &lt;/applications&gt;</pre><a href="#section-5.5.1-14" class="pilcrow">¶</a>
 </div>
@@ -2711,7 +2716,7 @@ Target:/bgp</pre><a href="#section-6.2-5" class="pilcrow">¶</a>
 <a href="#section-6.3" class="section-number selfRef">6.3. </a><a href="#name-yang-module" class="section-name selfRef">YANG Module</a>
         </h3>
 <p id="section-6.3-1" class="keepWithNext">&lt;CODE BEGINS&gt; file
-          "ietf-system-datastore@2023-06-29.yang"<a href="#section-6.3-1" class="pilcrow">¶</a></p>
+          "ietf-system-datastore@2023-07-04.yang"<a href="#section-6.3-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-6.3-2">
 <pre>
 module ietf-system-datastore {
@@ -2762,7 +2767,7 @@ module ietf-system-datastore {
      (RFC 8174) when, and only when, they appear in all
      capitals, as shown here.";
 
-  revision 2023-06-29 {
+  revision 2023-07-04 {
     description
       "Initial version.";
     reference
@@ -3001,7 +3006,7 @@ module ietf-system-datastore {
 <a href="#section-7.3" class="section-number selfRef">7.3. </a><a href="#name-yang-module-2" class="section-name selfRef">YANG Module</a>
         </h3>
 <p id="section-7.3-1" class="keepWithNext">&lt;CODE BEGINS&gt; file
-          "ietf-netconf-resolve-system@2023-06-29.yang"<a href="#section-7.3-1" class="pilcrow">¶</a></p>
+          "ietf-netconf-resolve-system@2023-07-04.yang"<a href="#section-7.3-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-7.3-2">
 <pre>
 =============== NOTE: '\' line wrapping per RFC 8792 ================
@@ -3063,7 +3068,7 @@ module ietf-netconf-resolve-system {
       (RFC 8174) when, and only when, they appear in all
       capitals, as shown here.";
 
-  revision 2023-06-29 {
+  revision 2023-07-04 {
     description
       "Initial version.";
     reference

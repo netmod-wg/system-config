@@ -118,24 +118,23 @@
 
     <abstract>
       <t>This document describes how a management client and server handle
-      YANG-based configuration data that is created, modified or deleted by
-      the server itself. The system created configuration elements can be
-      referenced (e.g. leafref) by configuration that was explicitly created
-      by a client.</t>
+      YANG-based configuration data that is defined by the server itself. The
+      system-defined configuration can be referenced (e.g. leafref) by
+      configuration explicitly created by a client.</t>
 
       <t>The Network Management Datastore Architecture (NMDA) defined in RFC
       8342 is updated with a read-only conventional configuration datastore
       called "system" to hold system-defined configuration. As an alternative
       to clients explicitly copying referenced system-defined configuration
       into the target configuration datastore (e.g., &lt;running&gt;) so that
-      the datastore is valid, a "resolve-system" parameter has been defined to
-      allow the server acting as a "system client" to copy referenced
-      system-defined nodes automatically. This solution enables clients
-      manipulating the target configuration datastore (e.g., &lt;running&gt;)
-      to overlay (e.g., copy system configuration using the same key value as
-      in &lt;system&gt;) and reference nodes defined in &lt;system&gt;,
-      override values of configurations defined in &lt;system&gt;, and
-      configure descendant nodes of system-defined nodes.</t>
+      the datastore is valid, a "resolve-system" parameter is defined to allow
+      the server acting as a "system client" to copy referenced system-defined
+      nodes automatically. This solution enables clients manipulating the
+      target configuration datastore (e.g., &lt;running&gt;) to overlay (e.g.,
+      copy system configuration using the same key value as in &lt;system&gt;)
+      and reference nodes defined in &lt;system&gt;, override values of
+      configurations defined in &lt;system&gt;, and configure descendant nodes
+      of system-defined nodes.</t>
 
       <t>This document updates RFC 8342, RFC 6241, RFC 8526 and RFC 8040.</t>
     </abstract>
@@ -153,8 +152,8 @@
       from a standard mechanism to retrieve what system configuration is
       available on a server.</t>
 
-      <t>Some servers allow the NETCONF/RESTCONF client to reference a system
-      configuration object which isn't present in the target datastore (e.g.,
+      <t>Some servers allow the NETCONF/RESTCONF client to reference a
+      system-defined node which isn't present in the target datastore (e.g.,
       &lt;running&gt;). The absence of the system configuration in the
       datastore can render the datastore invalid from the perspective of a
       client or offline tools (e.g., missing leafref targets). This document
@@ -255,8 +254,8 @@
         term "conventional configuration datastore" from RFC 8342 to add
         "system" to the list of conventional configuration datastores. The
         contents of &lt;system&gt; are read-only to clients but may change
-        dynamically. The &lt;system&gt; aware client may retrieve all three
-        types of system configuration defined in <xref target="categories"/>,
+        dynamically. &lt;system&gt; aware client may retrieve all three types
+        of system configuration defined in <xref target="categories"/>,
         reference nodes defined in &lt;system&gt;, override values of
         configurations defined in &lt;system&gt;, and configure descendant
         nodes of system-defined nodes.</t>
@@ -265,9 +264,9 @@
         &lt;intended&gt;. As always, system configuration will appear in
         &lt;operational&gt; with origin="system" when it is in use.</t>
 
-        <t>The system configuration datastore makes system configuration
-        visible to clients in order for being referenced or configurable prior
-        to present in &lt;operational&gt;.</t>
+        <t>The system datastore makes system configuration visible to clients
+        in order for being referenced or configurable prior to present in
+        &lt;operational&gt;.</t>
       </section>
 
       <section title="Updates to RFC 6241 and RFC 8526">
@@ -424,17 +423,17 @@
       configuration generated due to the system update or client-enabled
       functionality.</t>
 
-      <t>The system configuration datastore is defined as a conventional
-      configuration datastore and shares a common datastore schema with other
-      conventional datastores.</t>
+      <t>The system datastore is defined as a conventional configuration
+      datastore and shares a common datastore schema with other conventional
+      datastores.</t>
     </section>
 
     <section title="Static Characteristics of &lt;system&gt;">
       <section title="Read-only to Clients">
-        <t>The system configuration datastore is a read-only configuration
-        datastore (i.e., edits towards &lt;system&gt; directly MUST be
-        denied), though the client may be allowed to override the value of a
-        system-initialized data node (see <xref target="modifying"/>).</t>
+        <t>The system datastore is a read-only configuration datastore (i.e.,
+        edits towards &lt;system&gt; directly MUST be denied), though the
+        client may be allowed to override the value of a system-initialized
+        data node (see <xref target="modifying"/>).</t>
       </section>
 
       <section title="May Change via Software Upgrades">
@@ -454,7 +453,7 @@
 
       <section title="No Impact to &lt;operational&gt;">
         <t>This work intends to have no impact to &lt;operational&gt;. System
-        configuration will appear in &lt;operational&gt; with "origin=system".
+        configuration appears in &lt;operational&gt; with "origin=system".
         This document enables a subset of those system generated nodes to be
         defined like configuration, i.e., made visible to clients in order for
         being referenced or configurable prior to present in
@@ -548,8 +547,8 @@
         the referenced system nodes configured into &lt;running&gt; by the
         client is consistent with &lt;system&gt;. Note that &lt;system&gt;
         aware clients know how to discover what nodes exist in &lt;system&gt;.
-        How clients unaware of the &lt;system&gt; datastore can find
-        appropriate configurations is beyond the scope of this document.</t>
+        How clients unaware of the system datastore can find appropriate
+        configurations is beyond the scope of this document.</t>
 
         <t>No matter how the referenced system configurations are copied into
         &lt;running&gt;, the nodes copied into &lt;running&gt; would always be
@@ -566,8 +565,16 @@
         system-initialized value defined in &lt;system&gt; can be still in use
         and appear in &lt;operational&gt;.</t>
 
+        <t>Applied system configuration regardless of explicitly or
+        automatically being copied into &lt;running&gt;, appears in
+        &lt;operational&gt; with origin="system". </t>
+
+        <t>Comment: this might need further discussion: should the
+        origin="system" be required for system configuration copied/pasted
+        into &lt;running&gt;? </t>
+
         <t>Any deletable system-provided configuration that is placed into
-        &lt;running&gt; by the system at bootup, without being part of the
+        &lt;running&gt; by the system at boot up, without being part of the
         contents of a &lt;startup&gt; datastore, must be defined in
         &lt;factory-default&gt; <xref target="RFC8808"/>, which is used to
         initialize &lt;running&gt; when the device is first-time powered on or
@@ -582,15 +589,16 @@
         &lt;running&gt;) that matches the same node and value in
         &lt;system&gt;.</t>
 
-        <t>This explicit configuration of system-defined nodes in
-        &lt;running&gt; can be useful, for example, when the client doesn't
-        want a "system client" to have a role or hasn't implemented the
-        "resolve-system" parameter. The client can explicitly declare (i.e.,
-        configure in &lt;running&gt;) the list entries (with at least the
+        <t>The explicit configuration of system-defined nodes in the target
+        datastore (e.g., &lt;running&gt;) can be useful, for example, when the
+        client doesn't want a "system client" to have a role or hasn't
+        implemented the "resolve-system" parameter but need the datastore to
+        be valid. The client can explicitly declare (i.e., configure in the
+        datastore like &lt;running&gt;) the list entries (with at least the
         keys) for any system configuration list entries that are referenced
         elsewhere in &lt;running&gt;. The client does not necessarily need to
         declare all the contents of the list entry (i.e. the descendant nodes)
-        , only the parts that are required to make &lt;running&gt; appear
+        , only the parts that are required to make the datastore appear
         valid.</t>
       </section>
 
@@ -649,7 +657,7 @@
         It is desirable for clients to always opt into using mechanisms having
         server-side changes. This document enables a client to opt into this
         behavior using the "resolve-system" parameter. An example of this type
-        of opt-in behavior can aslo be found in RFC 7317, which enables a
+        of opt-in behavior can also be found in RFC 7317, which enables a
         client to opt into its behavior using a "$0$" prefix (see
         ianach:crypt-hash type defined in <xref target="RFC7317"/>).</t>
 
@@ -707,8 +715,8 @@
         &lt;system&gt;? Or the two sets of values are merged together?</t>
 
         <t>Comment 2: how "ordered-by user" lists and leaf-lists are merged?
-        Do the &lt;running&gt; values go before or after, or is this a case
-        where a full-replace is needed.</t>
+        Do &lt;running&gt; values go before or after, or is this a case where
+        a full-replace is needed.</t>
       </section>
 
       <section title="Examples">
@@ -917,15 +925,15 @@
             &lt;protocol&gt;udp&lt;/protocol&gt;
             &lt;destination-port&gt;69&lt;/destination-port&gt;
           &lt;/application&gt;
-          &lt;application&gt;
+          &lt;application or:origin="or:system"&gt;
             &lt;name&gt;ftp&lt;/name&gt;
-            &lt;protocol or:origin="or:system"&gt;tcp&lt;/protocol&gt;
-            &lt;destination-port or:origin="or:system"&gt;21&lt;/destination-port&gt;
+            &lt;protocol&gt;tcp&lt;/protocol&gt;
+            &lt;destination-port&gt;21&lt;/destination-port&gt;
           &lt;/application&gt;
-          &lt;application&gt;
+          &lt;application or:origin="or:system"&gt;
             &lt;name&gt;tftp&lt;/name&gt;
-            &lt;protocol or:origin="or:system"&gt;udp&lt;/protocol&gt;
-            &lt;destination-port or:origin="or:system"&gt;69&lt;/destination-port&gt;
+            &lt;protocol&gt;udp&lt;/protocol&gt;
+            &lt;destination-port&gt;69&lt;/destination-port&gt;
           &lt;/application&gt;            
         &lt;/applications&gt;</artwork>
             </figure>Since the configuration of application "smtp" is not
