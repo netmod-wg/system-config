@@ -698,28 +698,28 @@ Internet-Draft        System-defined Configuration             July 2023
    (i.e., the descendant nodes) are necessarily copied by the server -
    only the parts that are required to make <running> valid.
 
-   There is no distinction between the referenced system configuration
-   which is automatically configured by the server and explicitly
-   declared by the client once it is configured in the target datastore,
-   e.g., a read back of <running> (i.e., <get>, <get-config> or <get-
-   data> operation) returns automatically configured nodes.  Note that
-   even a referenced data node is allowed to be deleted from the target
+   There is no distinction between the configuration in the target
+   datastore (e.g., <running>) which is automatically configured by the
+   server and the one explicitly declared by the client, e.g., a read
+   back of the datastore (i.e., <get>, <get-config> or <get-data>
+   operation) returns automatically configured nodes.  Note that even an
+   auto-configured node is allowed to be deleted from the target
    datastore by the client, the operation request (e.g., <edit-config>)
    may not succeed due to incomplete referential integrity, it is also
    possible that the system automatically configures the deleted node
    again to make configuration valid, when a "resolve-system" parameter
-   is carried.  Once configured, referenced system configuration is not
-   removed or updated automatically by the server even in cases like all
-   references to it are deleted by the client or system configuration is
-   no longer present in <system> due to factors like device upgrade or
-   system-controlled resources (e.g., HW unavailable) change.
+   is carried.  A referenced system node onced auto-configured in the
+   datastore, will not be removed or updated automatically by the server
+   even in cases like all references to it are deleted by the client or
+   system configuration is no longer present in <system> due to factors
+   like device upgrade or system-controlled resources (e.g., HW
+   unavailable) change.
 
    Comment: Should the server update configuration in <running> that is
    copied from <system> automatically (and manually?) during an upgrade?
    Jason: I think maybe servers that convert configuration during
    upgrade (a common approach) would want to convert/upgrade system
    config as well as any copied system config that exists in running.
-
 
 
 
