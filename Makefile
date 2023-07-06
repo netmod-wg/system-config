@@ -54,7 +54,7 @@ $(next).xml: $(draft).xml ietf-system-datastore.yang ietf-netconf-resolve-system
 	sed -e"s/$(basename $<)-latest/$(basename $@)/" -e"s/YYYY-MM-DD/$(shell date +%Y-%m-%d)/" $< > $@
 	mkdir -p yang
 	sed -e 's/YYYY-MM-DD/'$(shell date +%Y-%m-%d)'/g' ietf-system-datastore.yang | (cd yang && pyang --keep-comments -f yang >ietf-system-datastore@$(shell date +%Y-%m-%d).yang )
-	sed -e 's/YYYY-MM-DD/'$(shell date +%Y-%m-%d)'/g' ietf-netconf-resolve-system.yang | (cd yang && pyang --keep-comments -f yang >ietf-netconf-resolve-system@$(shell date +%Y-%m-%d).yang ) 
+	sed -e 's/YYYY-MM-DD/'$(shell date +%Y-%m-%d)'/g' ietf-netconf-resolve-system.yang  > yang/ietf-netconf-resolve-system@$(shell date +%Y-%m-%d).yang 
 #	cd refs && ./validate-all.sh && ./gen-trees.sh && cd ..
 	chmod +x insert-figures.sh && ./insert-figures.sh $@ > tmp && mv tmp $@
 #	rm refs/*-tree*.txt refs/tree-*.txt
