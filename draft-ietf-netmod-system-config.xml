@@ -118,8 +118,8 @@
 
     <abstract>
       <t>This document describes how a management client and server handle
-      YANG-modeled configuration data that is defined by the server itself. The
-      system-defined configuration can be referenced (e.g. leafref) by
+      YANG-modeled configuration data that is defined by the server itself.
+      The system-defined configuration can be referenced (e.g. leafref) by
       configuration explicitly created by a client.</t>
 
       <t>The Network Management Datastore Architecture (NMDA) defined in RFC
@@ -260,9 +260,13 @@
         configurations defined in &lt;system&gt;, and configure descendant
         nodes of system-defined nodes.</t>
 
-        <t>The server will merge &lt;running&gt; and &lt;system&gt; to create
-        &lt;intended&gt;. As always, system configuration will appear in
-        &lt;operational&gt; with origin="system" when it is in use.</t>
+        <t>Configuration in &lt;system&gt; is merged with the current
+        configuration of the device in &lt;running&gt; after the configuration
+        transformations (e.g., template expansion, removal of inactive
+        configuration defined in <xref target="RFC8342"/>) to create the
+        contents of &lt;intended&gt;. As always, system configuration will
+        appear in &lt;operational&gt; with origin="system" when it is in
+        use.</t>
 
         <t>The system datastore makes system configuration visible to clients
         in order for being referenced or configurable prior to present in
@@ -483,17 +487,20 @@
         writing intended configurations into the target configuration
         datastore (e.g., &lt;running&gt;).</t>
 
-        <t>The server will merge &lt;running&gt; and &lt;system&gt; to create
-        &lt;intended&gt;, in which process, the data node appears in
-        &lt;running&gt; takes precedence over the same node in &lt;system&gt;
-        if the server allows the node to be modifiable; additional nodes to a
-        list entry or new list/leaf-list entries appear in &lt;running&gt;
-        extends the list entry or the whole list/leaf-list defined in
-        &lt;system&gt; if the server allows the list/leaf-list to be updated.
-        In addition, the intended configuration datastore represents the
-        configuration after all configuration transformation to &lt;system&gt;
-        are performed (e.g., system-defined template expansion, removal of
-        inactive system configuration). If a server implements
+        <t>Configuration in &lt;system&gt; is merged with the current
+        configuration of the device in &lt;running&gt; after the configuration
+        transformations (e.g., template expansion, removal of inactive
+        configuration defined in <xref target="RFC8342"/>) to create the
+        contents of &lt;intended&gt;, in which process, the data node appears
+        in &lt;running&gt; takes precedence over the same node in
+        &lt;system&gt; if the server allows the node to be modifiable;
+        additional nodes to a list entry or new list/leaf-list entries appear
+        in &lt;running&gt; extends the list entry or the whole list/leaf-list
+        defined in &lt;system&gt; if the server allows the list/leaf-list to
+        be updated. In addition, the intended configuration datastore
+        represents the configuration after all configuration transformation to
+        &lt;system&gt; are performed (e.g., system-defined template expansion,
+        removal of inactive system configuration). If a server implements
         &lt;intended&gt;, &lt;system&gt; MUST be merged into
         &lt;intended&gt;.</t>
 
@@ -635,12 +642,12 @@
         &lt;edit-config&gt;) may not succeed due to incomplete referential
         integrity, it is also possible that the system automatically
         configures the deleted node again to make configuration valid, when a
-        "resolve-system" parameter is carried. A referenced system node onced
-        auto-configured in the datastore, will not be removed or updated
-        automatically by the server even in cases like all references to it
-        are deleted by the client or system configuration is no longer present
-        in &lt;system&gt; due to factors like device upgrade or
-        system-controlled resources (e.g., HW unavailable) change.</t>
+        "resolve-system" parameter is carried. System configuration onced
+        copied into &lt;running&gt; will not be removed or updated
+        automatically by the server even all references to it are deleted or
+        system configuration no longer appears in &lt;system&gt; due to
+        factors like device upgrade or system-controlled resources (e.g., HW
+        unavailable) change.</t>
 
         <t>Comment: Should the server update configuration in &lt;running&gt;
         that is copied from &lt;system&gt; automatically (and manually?)
@@ -691,32 +698,17 @@
         &lt;running&gt; take precedence over system configuration nodes in
         &lt;system&gt; if the server allows the nodes to be modified.</t>
 
-        <t>For instance, list keys in system configuration can't be changed by
-        a client, but other descendant nodes in a list entry may be modifiable
-        or non-modifiable. Leafs and leaf-lists outside of lists may also be
-        modifiable or non-modifiable. Even if some system configuration has
-        been copied into &lt;running&gt; earlier, whether it is modifiable or
-        not in &lt;running&gt; follows general YANG constraints and NACM
-        rules, and other server-internal restrictions. If a system
-        configuration node is non-modifiable, then writing a different value
-        for that node MUST return an error. The immutability of system
-        configuration is further defined in <xref
-        target="I-D.ma-netmod-immutable-flag"/>.</t>
+        <t>For instance, descendant nodes in a system-defined list entry may
+        be modifiable or not, even if some system configuration has been
+        copied into &lt;running&gt; earlier. If a system node is
+        non-modifiable, then writing a different value for that node MUST
+        return an error. The immutability of system configuration is further
+        defined in <xref target="I-D.ma-netmod-immutable-flag"/>.</t>
 
         <t>A server may also allow a client to add data nodes to a list entry
         in &lt;system&gt; by writing those additional nodes in
         &lt;running&gt;. Those additional data nodes may not exist in
         &lt;system&gt; (i.e., an *addition* rather than an override).</t>
-
-        <t>Comment 1: What if &lt;system&gt; contains a set of values for a
-        leaf-list, and a client configures another set of values for that
-        leaf-list in &lt;running&gt;, will the set of values in
-        &lt;running&gt; completely replace the set of values in
-        &lt;system&gt;? Or the two sets of values are merged together?</t>
-
-        <t>Comment 2: how "ordered-by user" lists and leaf-lists are merged?
-        Do &lt;running&gt; values go before or after, or is this a case where
-        a full-replace is needed.</t>
       </section>
 
       <section title="Examples">
@@ -1904,6 +1896,13 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
     </section>
 
     <section title="Changes between Revisions">
+      <t>v02 - v03<list style="symbols">
+          <t>editorial changes to keep it concise</t>
+
+          <t>remove the merge mechanism related comments, as discussed in
+          https://github.com/netconf-wg/netconf-next/issues/19 </t>
+        </list></t>
+
       <t>v01 - v02<list style="symbols">
           <t>Define referenced system configuration</t>
 
