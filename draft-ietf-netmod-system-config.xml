@@ -158,14 +158,14 @@
       datastore can render the datastore invalid from the perspective of a
       client or offline tools (e.g., missing leafref targets). This document
       describes several approaches to bring the datastore to a valid state and
-      ensuing that all referential integrity constraints are satisfied.</t>
+      ensuring that all referential integrity constraints are satisfied.</t>
 
       <t>Some servers allow the descendant nodes of system-defined
       configuration to be configured or modified. For example, the system
       configuration may contain an almost empty physical interface, while the
       client needs to be able to add, modify, or remove a number of descendant
-      nodes. Some descendant nodes may not be modifiable (e.g., "name" and
-      "type" set by the system).</t>
+      nodes. Some descendant nodes may not be modifiable (e.g., the interface
+      "name" and "type" set by the system).</t>
 
       <t>This document updates the Network Management Datastore Architecture
       (NMDA) defined in RFC 8342 with a read-only conventional configuration
@@ -173,12 +173,12 @@
       alternative to clients explicitly copying referenced system-defined
       configuration into the target configuration datastore (e.g.,
       &lt;running&gt;) so that the datastore is valid, a "resolve-system"
-      parameter has been defined to allow the server acting as a "system
-      client" to copy referenced system-defined nodes automatically. This
-      solution enables clients manipulating the target configuration datastore
-      (e.g., &lt;running&gt;) to overlay (e.g., copy system configuration
-      using the same key value as in &lt;system&gt;) and reference nodes
-      defined in &lt;system&gt;, override values of configurations defined in
+      parameter is defined to allow the server acting as a "system client" to
+      copy referenced system-defined nodes automatically. This solution
+      enables clients manipulating the target configuration datastore (e.g.,
+      &lt;running&gt;) to overlay (e.g., copy system configuration using the
+      same key value as in &lt;system&gt;) and reference nodes defined in
+      &lt;system&gt;, override values of configurations defined in
       &lt;system&gt;, and configure descendant nodes of system-defined
       nodes.</t>
 
@@ -254,8 +254,8 @@
         term "conventional configuration datastore" from RFC 8342 to add
         "system" to the list of conventional configuration datastores. The
         contents of &lt;system&gt; are read-only to clients but may change
-        dynamically. &lt;system&gt; aware client may retrieve all three types
-        of system configuration defined in <xref target="categories"/>,
+        dynamically itself. &lt;system&gt; aware client may retrieve all three
+        types of system configuration defined in <xref target="categories"/>,
         reference nodes defined in &lt;system&gt;, override values of
         configurations defined in &lt;system&gt;, and configure descendant
         nodes of system-defined nodes.</t>
@@ -440,7 +440,7 @@
         data node (see <xref target="modifying"/>).</t>
       </section>
 
-      <section title="May Change via Software Upgrades">
+      <section title="May Change via Software Upgrades or Resource Changes">
         <t>System configuration may change dynamically, e.g., depending on
         factors like device upgrade or if system-controlled resources (e.g.,
         HW available) change. In some implementations, when a QoS feature is
@@ -491,17 +491,17 @@
         configuration of the device in &lt;running&gt; after the configuration
         transformations (e.g., template expansion, removal of inactive
         configuration defined in <xref target="RFC8342"/>) to create the
-        contents of &lt;intended&gt;, in which process, the data node appears
-        in &lt;running&gt; takes precedence over the same node in
+        contents of &lt;intended&gt;, in which process, the data node
+        appearing in &lt;running&gt; takes precedence over the same node in
         &lt;system&gt; if the server allows the node to be modifiable;
-        additional nodes to a list entry or new list/leaf-list entries appear
-        in &lt;running&gt; extends the list entry or the whole list/leaf-list
-        defined in &lt;system&gt; if the server allows the list/leaf-list to
-        be updated. In addition, the intended configuration datastore
-        represents the configuration after all configuration transformation to
-        &lt;system&gt; are performed (e.g., system-defined template expansion,
-        removal of inactive system configuration). If a server implements
-        &lt;intended&gt;, &lt;system&gt; MUST be merged into
+        additional nodes to a list entry or new list/leaf-list entries
+        appearing in &lt;running&gt; extends the list entry or the whole
+        list/leaf-list defined in &lt;system&gt; if the server allows the
+        list/leaf-list to be updated. In addition, the intended configuration
+        datastore represents the configuration after all configuration
+        transformation to &lt;system&gt; are performed (e.g., system-defined
+        template expansion, removal of inactive system configuration). If a
+        server implements &lt;intended&gt;, &lt;system&gt; MUST be merged into
         &lt;intended&gt;.</t>
 
         <t>As a result, Figure 2 in Section 5 of RFC 8342 is updated with the
@@ -559,8 +559,8 @@
 
         <t>No matter how the referenced system configurations are copied into
         &lt;running&gt;, the nodes copied into &lt;running&gt; would always be
-        returned after a read of &lt;running&gt;, regardless if the client is
-        &lt;system&gt; aware.</t>
+        returned as the result of a read of &lt;running&gt;, regardless if the
+        client is &lt;system&gt; aware.</t>
 
         <t>Configuration defined in &lt;system&gt; is merged into
         &lt;intended&gt;. It is also present in &lt;operational&gt; if it is
@@ -580,9 +580,9 @@
         origin="system" be required for system configuration copied/pasted
         into &lt;running&gt;?</t>
 
-        <t>Any deletable system-provided configuration that is placed into
-        &lt;running&gt; by the system at boot up, without being part of the
-        contents of a &lt;startup&gt; datastore, must be defined in
+        <t>Any deletable system-provided configuration that is populated as
+        part of &lt;running&gt; by the system at boot up, without being part
+        of the contents of a &lt;startup&gt; datastore, must be defined in
         &lt;factory-default&gt; <xref target="RFC8808"/>, which is used to
         initialize &lt;running&gt; when the device is first-time powered on or
         reset to its factory default condition.</t>
@@ -642,7 +642,7 @@
         &lt;edit-config&gt;) may not succeed due to incomplete referential
         integrity, it is also possible that the system automatically
         configures the deleted node again to make configuration valid, when a
-        "resolve-system" parameter is carried. System configuration onced
+        "resolve-system" parameter is carried. System configuration once
         copied into &lt;running&gt; will not be removed or updated
         automatically by the server even all references to it are deleted or
         system configuration no longer appears in &lt;system&gt; due to
@@ -673,7 +673,7 @@
         system configuration datastore, which would only eliminate the ability
         to expose the system configuration via protocol operations. If a
         server implements &lt;system&gt;, referenced system configuration is
-        copied from &lt;system&gt; into the target datastore(e.g.,
+        copied from &lt;system&gt; into the target datastore (e.g.,
         &lt;running&gt;) when the "resolve-system" parameter is used;
         otherwise it is an implementation decision where to copy referenced
         system configuration into the target datastore (e.g.,
@@ -1897,10 +1897,10 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
 
     <section title="Changes between Revisions">
       <t>v02 - v03<list style="symbols">
-          <t>editorial changes to keep it concise</t>
-
           <t>remove the merge mechanism related comments, as discussed in
-          https://github.com/netconf-wg/netconf-next/issues/19 </t>
+          https://github.com/netconf-wg/netconf-next/issues/19</t>
+
+          <t>Editorial changes</t>
         </list></t>
 
       <t>v01 - v02<list style="symbols">
