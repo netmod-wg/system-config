@@ -89,22 +89,10 @@
     </author>
 
     <author fullname="Feng Chong" initials="C." surname="Feng">
-      <organization>Huawei</organization>
+      <organization/>
 
       <address>
-        <postal>
-          <street>101 Software Avenue, Yuhua District</street>
-
-          <city>Nanjing</city>
-
-          <region>Jiangsu</region>
-
-          <code>210012</code>
-
-          <country>China</country>
-        </postal>
-
-        <email>frank.fengchong@huawei.com</email>
+        <email>fengchongllly@gmail.com</email>
       </address>
     </author>
 
@@ -294,7 +282,13 @@
         <t>The server's copy referenced nodes from &lt;system&gt; to the
         target datastore MUST be enforced at the end of the
         &lt;edit-config&gt;/&lt;edit-data&gt; or &lt;copy-config&gt;
-        operations, regardless of which target datastore it is.</t>
+        operations during the validation processing, regardless of which
+        target datastore it is.</t>
+
+        <t>NETCONF server that supports this parameter MUST advertise the
+        capability identifier:<figure>
+            <artwork>urn:ietf:params:netconf:capability:resolve-system:1.0</artwork>
+          </figure></t>
       </section>
 
       <section title="Updates to RFC 8040">
@@ -328,8 +322,7 @@
           using the "ietf-restconf-monitoring" module defined in RFC
           8040:<figure>
               <artwork>urn:ietf:params:restconf:capability:resolve-system:1.0</artwork>
-            </figure>Comment: Should we define a similar capability identifier
-          for NETCONF protocol?</t>
+            </figure></t>
         </section>
       </section>
     </section>
@@ -642,19 +635,15 @@
         &lt;edit-config&gt;) may not succeed due to incomplete referential
         integrity, it is also possible that the system automatically
         configures the deleted node again to make configuration valid, when a
-        "resolve-system" parameter is carried. System configuration once
-        copied into &lt;running&gt; will not be removed or updated
-        automatically by the server even all references to it are deleted or
-        system configuration no longer appears in &lt;system&gt; due to
-        factors like device upgrade or system-controlled resources (e.g., HW
-        unavailable) change.</t>
+        "resolve-system" parameter is carried.</t>
 
-        <t>Comment: Should the server update configuration in &lt;running&gt;
-        that is copied from &lt;system&gt; automatically (and manually?)
-        during an upgrade? Jason: I think maybe servers that convert
-        configuration during upgrade (a common approach) would want to
-        convert/upgrade system config as well as any copied system config that
-        exists in running.</t>
+        <t>Once copied into &lt;running&gt;, system-instantiated node will not
+        be removed or updated automatically even all references to it are
+        deleted or system configuration no longer appears in &lt;system&gt;
+        due to factors like system-controlled resources change (e.g., HW
+        unavailable). That said, servers MAY upgrade system configuration as
+        well as any copied system nodes in &lt;running&gt; when licensing
+        change or device upgrade.</t>
 
         <t>If the "resolve-system" parameter is not given by the client, the
         server should not modify &lt;running&gt; in any way otherwise not
@@ -668,25 +657,25 @@
         client to opt into its behavior using a "$0$" prefix (see
         ianach:crypt-hash type defined in <xref target="RFC7317"/>).</t>
 
-        <t>Support for the "resolve-system" parameter is OPTIONAL. Non-NMDA
-        servers MAY also implement this parameter without implementing the
-        system configuration datastore, which would only eliminate the ability
-        to expose the system configuration via protocol operations. If a
-        server implements &lt;system&gt;, referenced system configuration is
-        copied from &lt;system&gt; into the target datastore (e.g.,
-        &lt;running&gt;) when the "resolve-system" parameter is used;
-        otherwise it is an implementation decision where to copy referenced
-        system configuration into the target datastore (e.g.,
-        &lt;running&gt;).</t>
+        <t>Support for the "resolve-system" parameter is OPTIONAL. Servers not
+        supporting NMDA <xref target="RFC8342"/> MAY also implement this
+        parameter without implementing the system configuration datastore,
+        which would only eliminate the ability to expose the system
+        configuration via protocol operations. If a server implements
+        &lt;system&gt;, referenced system configuration is copied from
+        &lt;system&gt; into the target datastore (e.g., &lt;running&gt;) when
+        the "resolve-system" parameter is used; otherwise it is an
+        implementation decision where to copy referenced system configuration
+        into the target datastore (e.g., &lt;running&gt;).</t>
 
-        <t>Comments from Jason: Overall the resolve-system function may mean
-        an expensive (time consuming) operation on the server side.
-        Conceptually it may mean doing a validation on the running, and then
-        when an error is hit, searching the 'system' datastore for something
-        that could resolve that invalid aspect. Then running validation again
-        and hitting the next error. It may require multiple passes (since some
-        errors are dependent on the previous error being present or
-        'fixed').</t>
+        <t>Implementation specifics are beyond the scope of this document,
+        however, due to the extra complexity brought by the "resolve-system"
+        parameter, clients should be aware that it would cost a reasonable
+        amount of time for the server to resolve reference, retrieve and copy
+        the referenced system configuration from &lt;system&gt;, which could
+        take multiple rounds since some errors may depend on the resolution of
+        previous ones. Clients need to ensure that connections are alive
+        during the server processing until a response is received.</t>
       </section>
 
       <section anchor="modifying"
@@ -1328,9 +1317,8 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
         "resolve-system" parameter is present, the server will copy the
         referenced system configuration into target datastore automatically. A
         NETCONF client can discover the "resolve-system" parameter support on
-        the server by checking the YANG library information with
-        "ietf-netconf-resolve-system" YANG module included from the
-        operational state datastore.</t>
+        the server by checking the server's capabilities included in the
+        &lt;hello&gt; message.</t>
 
         <t>The following tree diagram [RFC8340] illustrates the
         "ietf-netconf-resolve-system" module:</t>
@@ -1591,9 +1579,17 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
         </figure>
       </section>
 
+      <section title="NETCONF Capability URN Registry">
+        <t>This document registers the following capability identifier URN in
+        the 'Network Configuration Protocol (NETCONF) Capability URNs'
+        registry:<figure>
+            <artwork>urn:ietf:params:netconf:capability:resolve-system:1.0</artwork>
+          </figure></t>
+      </section>
+
       <section title="RESTCONF Capability URN Registry">
-        <t>This document registers a capability in the "RESTCONF Capability
-        URNs" registry [RFC8040]:<figure>
+        <t>This document registers a capability in the 'RESTCONF Capability
+        URNs' registry [RFC8040]:<figure>
             <artwork>   Index            Capability Identifier
    -----------------------------------------------------------------------
    :resolve-system  urn:ietf:params:restconf:capability:resolve-system:1.0</artwork>
@@ -1896,6 +1892,19 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
     </section>
 
     <section title="Changes between Revisions">
+      <t>v03 - v04<list style="symbols">
+          <t>Add some implementation consideration for "resolve-system"
+          parameter </t>
+
+          <t>Define a NETCONF capability identifier for "resolve-system"
+          parameter so that the client can discover if it is supported by the
+          server. </t>
+
+          <t>state servers may upgrade copied system configuration in
+          &lt;running&gt; as well during device upgrade or licensing
+          change.</t>
+        </list></t>
+
       <t>v02 - v03<list style="symbols">
           <t>remove the merge mechanism related comments, as discussed in
           https://github.com/netconf-wg/netconf-next/issues/19</t>

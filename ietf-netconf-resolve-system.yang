@@ -27,7 +27,7 @@ module ietf-netconf-resolve-system {
      Author: Qin Wu
              <mailto:bill.wu@huawei.com>
      Author: Chong Feng
-             <mailto:frank.fengchong@huawei.com>";
+             <mailto:fengchonglly@gmail.com>";
   description
     "This module defines an extension to the NETCONF protocol
      that allows the NETCONF client to control whether the server
