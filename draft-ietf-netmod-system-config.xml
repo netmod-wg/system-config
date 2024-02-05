@@ -96,7 +96,7 @@
       </address>
     </author>
 
-    <date year="2023"/>
+    <date year="2024"/>
 
     <area>ops</area>
 
@@ -240,50 +240,29 @@
         <t>This document updates RFC 8342 to define a configuration datastore
         called "system" to hold system configuration, it also redefines the
         term "conventional configuration datastore" from RFC 8342 to add
-        "system" to the list of conventional configuration datastores. The
-        contents of &lt;system&gt; are read-only to clients but may change
-        dynamically itself. &lt;system&gt; aware client may retrieve all three
-        types of system configuration defined in <xref target="categories"/>,
-        reference nodes defined in &lt;system&gt;, override values of
-        configurations defined in &lt;system&gt;, and configure descendant
-        nodes of system-defined nodes.</t>
+        "system" to the list of conventional configuration datastores.</t>
 
-        <t>Configuration in &lt;system&gt; is merged with the current
-        configuration of the device in &lt;running&gt; after the configuration
-        transformations (e.g., template expansion, removal of inactive
-        configuration defined in <xref target="RFC8342"/>) to create the
-        contents of &lt;intended&gt;. As always, system configuration will
-        appear in &lt;operational&gt; with origin="system" when it is in
-        use.</t>
-
-        <t>The system datastore makes system configuration visible to clients
-        in order for being referenced or configurable prior to present in
-        &lt;operational&gt;.</t>
+        <t>Configuration in &lt;running&gt; is merged with the configuration
+        in &lt;system&gt; to create the contents of &lt;intended&gt; after the
+        configuration transformations (e.g., template expansion, removal of
+        inactive configuration defined in RFC 8342) to &lt;running&gt; have
+        been performed. As always, applied system configuration appears in
+        &lt;operational&gt; with origin value being reported as "system" if
+        not explicitly configured or overridden in &lt;running&gt;. This
+        document updates the definition of "intended" origin metadata
+        annotation identity to allow part of configuration provided by
+        &lt;intended&gt; to use "system" as origin value. </t>
       </section>
 
       <section title="Updates to RFC 6241 and RFC 8526">
         <t>This document augments &lt;edit-config&gt; and &lt;edit-data&gt;
         RPC operations defined in <xref target="RFC6241"/> and <xref
         target="RFC8526"/> respectively, with a new additional input parameter
-        "resolve-system". The &lt;copy-config&gt; RPC operation defined in
-        <xref target="RFC6241"/> is also augmented to support "resolve-system"
+        "resolve-system" to allow the server to copy referenced system nodes
+        into target datastore automatically without the client doing so
+        explicitly. The &lt;copy-config&gt; RPC operation defined in <xref
+        target="RFC6241"/> is also augmented to support "resolve-system"
         parameter.</t>
-
-        <t>The "resolve-system" parameter is optional and has no value. When
-        it is provided and the server detects that there is a reference to a
-        system-defined node during the validation, the server will
-        automatically copy the referenced system configuration into the
-        validated datastore to make the configuration valid without the client
-        doing so explicitly. Legacy clients interacting with servers that
-        support this parameter don't see any changes in
-        &lt;edit-config&gt;/&lt;edit-data&gt; and &lt;copy-config&gt;
-        behaviors.</t>
-
-        <t>The server's copy referenced nodes from &lt;system&gt; to the
-        target datastore MUST be enforced at the end of the
-        &lt;edit-config&gt;/&lt;edit-data&gt; or &lt;copy-config&gt;
-        operations during the validation processing, regardless of which
-        target datastore it is.</t>
 
         <t>NETCONF server that supports this parameter MUST advertise the
         capability identifier:<figure>
@@ -390,16 +369,18 @@
           <t>Management operations: The content of the datastore is set by the
           server in an implementation dependent manner. The content can not be
           changed by management operations via protocols such as NETCONF,
-          RESTCONF, but may change itself by upgrades and/or when
-          resource-conditions are met. The datastore can be read using the
-          standard network management protocols such as NETCONF and
+          RESTCONF, but may change itself by license change, device upgrade
+          and/or system-controlled resources change. The datastore can be read
+          using the standard network management protocols such as NETCONF and
           RESCTCONF.</t>
 
           <t>Origin: This document does not define any new origin identity
           when it interacts with &lt;intended&gt; and flows into
           &lt;operational&gt;. The "system" origin Metadata Annotation
-          [RFC7952] is used to indicate the origin of a data item is system.
-          <vspace blankLines="1"/></t>
+          [RFC7952] is used to indicate the origin of a data item is system,
+          which is achieved by updating the definition of "intended" origin
+          metadata annotation in <xref target="RFC8342"/>. <vspace
+          blankLines="1"/></t>
 
           <t>Protocols: YANG-driven management protocols, such as NETCONF and
           RESTCONF.</t>
@@ -411,14 +392,14 @@
       clients. Upon the content is created or changed, it will be merged into
       &lt;intended&gt;. Unlike &lt;factory-default&gt; <xref
       target="RFC8808"/>, it MAY change dynamically, e.g., depending on
-      factors like device upgrade or system-controlled resources change (e.g.,
-      HW available). The system configuration datastore doesn't persist across
-      reboots; the contents of &lt;system&gt; will be lost upon reboot and
-      recreated by the system with the same or changed contents.
-      &lt;factory-reset&gt; RPC operation defined in <xref target="RFC8808"/>
-      can reset it to its factory default configuration without including
-      configuration generated due to the system update or client-enabled
-      functionality.</t>
+      factors like license change, device upgrade or system-controlled
+      resources change (e.g., HW available). The system configuration
+      datastore doesn't persist across reboots; the contents of &lt;system&gt;
+      will be lost upon reboot and recreated by the system with the same or
+      changed contents. &lt;factory-reset&gt; RPC operation defined in <xref
+      target="RFC8808"/> can reset it to its factory default configuration
+      without including configuration generated due to the system update or
+      client-enabled functionality.</t>
 
       <t>The system datastore is defined as a conventional configuration
       datastore and shares a common datastore schema with other conventional
@@ -435,27 +416,43 @@
 
       <section title="May Change via Software Upgrades or Resource Changes">
         <t>System configuration may change dynamically, e.g., depending on
-        factors like device upgrade or if system-controlled resources (e.g.,
-        HW available) change. In some implementations, when a QoS feature is
-        enabled, QoS-related policies are created by the system.</t>
+        factors like license change, device upgrade, or system-controlled
+        resources (e.g., HW available) change. In some implementations, when a
+        QoS feature is enabled, QoS-related policies are created by the
+        system. The updates of system configuration may be obtained through
+        YANG notifications (e.g., on-change notification) <xref
+        target="RFC6470"/><xref target="RFC8639"/><xref
+        target="RFC8641"/>.</t>
 
-        <t>If the system configuration gets changed, YANG notifications (e.g.,
-        "push-change-update" notification) <xref target="RFC6470"/><xref
-        target="RFC8639"/><xref target="RFC8641"/> can be used to notify the
-        client. Any update of the contents in &lt;system&gt; will not cause
-        the automatic update of &lt;running&gt;, even if some of the system
-        configuration has already been copied into &lt;running&gt; explicitly
-        or automatically before the update.</t>
+        <t>If system configuration changes (e.g., due to device upgrade),
+        &lt;running&gt; MAY become invalid. The server behaviors of migrating
+        updated system data into &lt;running&gt; is beyond the scope of this
+        document. That said, the following gives a list of examples of server
+        implementations that might be possible:<list style="symbols">
+            <t>Servers migrate system configuration update into
+            &lt;running&gt; with the clients' awareness to keep
+            &lt;running&gt; valid </t>
+
+            <t>Servers don't migrate any system configuration update into
+            &lt;running&gt; and clients are responsible to correct the
+            configuration in &lt;running&gt; if it becomes invalid</t>
+
+            <t>Servers rejects the operation to change system configuration
+            (e.g., device upgrade fails) and needs the client to correct the
+            configuration in &lt;running&gt; for validity as a
+            prerequisite</t>
+          </list></t>
       </section>
 
       <section title="No Impact to &lt;operational&gt;">
         <t>This work intends to have no impact to &lt;operational&gt;. System
-        configuration appears in &lt;operational&gt; with "origin=system".
-        This document enables a subset of those system generated nodes to be
-        defined like configuration, i.e., made visible to clients in order for
-        being referenced or configurable prior to present in
-        &lt;operational&gt;. "Config false" nodes are out of scope, hence
-        existing "config false" nodes are not impacted by this work.</t>
+        configuration appears in &lt;operational&gt; with origin value being
+        reported as "system" if not configured or overridden explicitly in
+        &lt;running&gt;. This document enables a subset of those system
+        generated nodes to be defined like configuration, i.e., made visible
+        to clients in order for being referenced or configurable prior to
+        present in &lt;operational&gt;. "Config false" nodes are out of scope,
+        hence existing "config false" nodes are not impacted by this work.</t>
       </section>
     </section>
 
@@ -480,22 +477,21 @@
         writing intended configurations into the target configuration
         datastore (e.g., &lt;running&gt;).</t>
 
-        <t>Configuration in &lt;system&gt; is merged with the current
-        configuration of the device in &lt;running&gt; after the configuration
-        transformations (e.g., template expansion, removal of inactive
-        configuration defined in <xref target="RFC8342"/>) to create the
-        contents of &lt;intended&gt;, in which process, the data node
-        appearing in &lt;running&gt; takes precedence over the same node in
-        &lt;system&gt; if the server allows the node to be modifiable;
-        additional nodes to a list entry or new list/leaf-list entries
-        appearing in &lt;running&gt; extends the list entry or the whole
-        list/leaf-list defined in &lt;system&gt; if the server allows the
-        list/leaf-list to be updated. In addition, the intended configuration
-        datastore represents the configuration after all configuration
-        transformation to &lt;system&gt; are performed (e.g., system-defined
-        template expansion, removal of inactive system configuration). If a
-        server implements &lt;intended&gt;, &lt;system&gt; MUST be merged into
-        &lt;intended&gt;.</t>
+        <t>To ensure the validity of &lt;intended&gt;, configuration in
+        &lt;running&gt; is merged with the configuration in &lt;system&gt;
+        after the configuration transformations (e.g., template expansion,
+        removal of inactive configuration defined in <xref target="RFC8342"/>)
+        to create the contents of &lt;intended&gt;, in which process,
+        configuration appearing in &lt;running&gt; takes precedence over the
+        same node in &lt;system&gt;; additional nodes to a list entry or new
+        list/leaf-list entries appearing in &lt;running&gt; extends the list
+        entry or the whole list/leaf-list defined in &lt;system&gt; if the
+        server allows the list/leaf-list to be updated. In addition, the
+        intended configuration datastore represents the configuration after
+        all configuration transformation to &lt;system&gt; are performed
+        (e.g., system-defined template expansion, removal of inactive system
+        configuration). If a server implements &lt;intended&gt;,
+        &lt;system&gt; MUST be merged into &lt;intended&gt;.</t>
 
         <t>As a result, Figure 2 in Section 5 of RFC 8342 is updated with the
         below conceptual model of datastores which incorporates the system
@@ -539,39 +535,23 @@
   boxes denote named datastores</artwork>
           </figure></t>
 
-        <t>Servers MUST enforce that configuration references in
-        &lt;running&gt; are resolved within &lt;running&gt; and ensure that
-        &lt;running&gt; contains any referenced system configuration. Clients
-        MUST either explicitly copy system-defined nodes into &lt;running&gt;
-        or use the "resolve-system" parameter. The server MUST enforce that
-        the referenced system nodes configured into &lt;running&gt; by the
-        client is consistent with &lt;system&gt;. Note that &lt;system&gt;
-        aware clients know how to discover what nodes exist in &lt;system&gt;.
-        How clients unaware of the system datastore can find appropriate
-        configurations is beyond the scope of this document.</t>
+        <t>The "intended" identity of origin value defined in RFC 8342 to
+        represent the origin of configuration provided by &lt;intended&gt;,
+        this document updates its definition as origin source of configuration
+        explicitly provided by &lt;running&gt;, and allows some configuration
+        in &lt;intended&gt; that flows from &lt;system&gt; yet is not
+        configured or overridden explicitly in &lt;running&gt; to use "system"
+        as its origin value. Configuration copied from &lt;system&gt; into
+        &lt;running&gt; has its origin value reported as "intended" when it
+        flows into &lt;operational&gt;.</t>
 
-        <t>No matter how the referenced system configurations are copied into
-        &lt;running&gt;, the nodes copied into &lt;running&gt; would always be
-        returned as the result of a read of &lt;running&gt;, regardless if the
-        client is &lt;system&gt; aware.</t>
-
-        <t>Configuration defined in &lt;system&gt; is merged into
-        &lt;intended&gt;. It is also present in &lt;operational&gt; if it is
-        in use by the device, even if a client may delete the configuration
-        which is copied from &lt;system&gt; into &lt;running&gt;. For example,
-        system initializes a value for a particular leaf which is overridden
-        by the client with a different value in &lt;running&gt;. The client
-        may delete that node in &lt;running&gt;, in which case
+        <t>Unless explicitly configured or overridden in &lt;running&gt;,
+        system configuration is always present in &lt;intended&gt;. For
+        example, system initializes a value for a particular leaf which is
+        overridden by the client with a different value in &lt;running&gt;.
+        The client may delete that node in &lt;running&gt;, in which case
         system-initialized value defined in &lt;system&gt; can be still in use
         and appear in &lt;operational&gt;.</t>
-
-        <t>Applied system configuration regardless of explicitly or
-        automatically being copied into &lt;running&gt;, appears in
-        &lt;operational&gt; with origin="system".</t>
-
-        <t>Comment: this might need further discussion: should the
-        origin="system" be required for system configuration copied/pasted
-        into &lt;running&gt;?</t>
 
         <t>Any deletable system-provided configuration that is populated as
         part of &lt;running&gt; by the system at boot up, without being part
@@ -610,20 +590,29 @@
         requirement to provide a referentially complete configuration in
         &lt;running&gt;.</t>
 
-        <t>If the "resolve-system" is present, and the server supports this
-        capability, the server MUST copy relevant referenced system-defined
-        nodes into the target datastore (e.g., &lt;running&gt;) without the
-        client doing the copy/paste explicitly, to resolve any references not
-        resolved by the client. The server acting as a "system client" like
-        any other remote clients copies the referenced system-defined nodes
-        when triggered by the "resolve-system" parameter.</t>
+        <t>The "resolve-system" parameter is optional and has no value. If it
+        is present, and the server supports this capability, the server MUST
+        copy relevant referenced system-defined nodes into the target
+        datastore (e.g., &lt;running&gt;) without the client doing the
+        copy/paste explicitly, to resolve any references not resolved by the
+        client. The server acting as a "system client" like any other remote
+        clients copies the referenced system-defined nodes when triggered by
+        the "resolve-system" parameter. Legacy clients interacting with
+        servers that support this parameter don't see any changes in &lt;edit-
+        config&gt;/&lt;edit-data&gt; and &lt;copy-config&gt; behaviors. </t>
 
         <t>The server may automatically configure the list entries (with at
         least the keys) in the target datastore (e.g., &lt;running&gt;) for
         any system configuration list entries that are referenced elsewhere by
         the clients. Similarly, not all the contents of the list entry (i.e.,
         the descendant nodes) are necessarily copied by the server - only the
-        parts that are required to make &lt;running&gt; valid.</t>
+        parts that are required to make configuration valid.</t>
+
+        <t>The server's copy referenced nodes from &lt;system&gt; to the
+        target datastore MUST be enforced at the end of the
+        &lt;edit-config&gt;/&lt;edit-data&gt; or &lt;copy-config&gt;
+        operations during the validation processing, regardless of which
+        target datastore it is. </t>
 
         <t>There is no distinction between the configuration in the target
         datastore (e.g., &lt;running&gt;) which is automatically configured by
@@ -636,14 +625,6 @@
         integrity, it is also possible that the system automatically
         configures the deleted node again to make configuration valid, when a
         "resolve-system" parameter is carried.</t>
-
-        <t>Once copied into &lt;running&gt;, system-instantiated node will not
-        be removed or updated automatically even all references to it are
-        deleted or system configuration no longer appears in &lt;system&gt;
-        due to factors like system-controlled resources change (e.g., HW
-        unavailable). That said, servers MAY upgrade system configuration as
-        well as any copied system nodes in &lt;running&gt; when licensing
-        change or device upgrade.</t>
 
         <t>If the "resolve-system" parameter is not given by the client, the
         server should not modify &lt;running&gt; in any way otherwise not
@@ -1894,11 +1875,11 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
     <section title="Changes between Revisions">
       <t>v03 - v04<list style="symbols">
           <t>Add some implementation consideration for "resolve-system"
-          parameter </t>
+          parameter</t>
 
           <t>Define a NETCONF capability identifier for "resolve-system"
           parameter so that the client can discover if it is supported by the
-          server. </t>
+          server.</t>
 
           <t>state servers may upgrade copied system configuration in
           &lt;running&gt; as well during device upgrade or licensing
