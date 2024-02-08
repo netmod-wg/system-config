@@ -143,8 +143,8 @@
       &lt;running&gt;). The absence of the system configuration in the
       datastore can render the datastore invalid from the perspective of a
       client or offline tools (e.g., missing leafref targets). This document
-      describes several approaches to bring the datastore to a valid state and
-      ensuring that all referential integrity constraints are satisfied.</t>
+      describes several approaches to bring the datastore to a valid state if
+      referential integrity constraints need to be satisfied.</t>
 
       <t>Some servers allow the descendant nodes of system-defined
       configuration to be configured or modified. For example, the system
@@ -233,20 +233,21 @@
 
       <section title="Updates to RFC 8342">
         <t>This document updates RFC 8342 to define a configuration datastore
-        called "system" to hold system configuration, it also redefines the
-        term "conventional configuration datastore" from RFC 8342 to add
-        "system" to the list of conventional configuration datastores.</t>
+        called "system" to hold system configuration (<xref
+        target="system-ds-def"/>), it also redefines the term "conventional
+        configuration datastore" from RFC 8342 to add "system" to the list of
+        conventional configuration datastores.</t>
 
         <t>Configuration in &lt;running&gt; is merged into &lt;system&gt; to
         create the contents of &lt;intended&gt; after the configuration
-        transformations (e.g., template expansion, removal of inactive
-        configuration defined in RFC 8342) to &lt;running&gt; have been
-        performed. As always, applied system configuration appears in
-        &lt;operational&gt; with origin value being reported as "system" if
-        not explicitly configured or overridden in &lt;running&gt;. This
-        document updates the definition of "intended" origin metadata
-        annotation identity to allow part of configuration provided by
-        &lt;intended&gt; to use "system" as origin value.</t>
+        transformations to &lt;running&gt; (e.g., template expansion, removal
+        of inactive configuration defined in RFC 8342) have been performed.
+        This document updates the definition of "intended" origin metadata
+        annotation identity to allow a subset of configuration provided by
+        &lt;intended&gt; to use "system" as origin value as it flows into
+        &lt;operational&gt;. Applied system configuration appears in
+        &lt;operational&gt; with origin value being reported as "system"
+        (<xref target="conceptual-model"/>).</t>
       </section>
 
       <section title="Updates to RFC 6241 and RFC 8526">
@@ -257,7 +258,7 @@
         into target datastore automatically without the client doing so
         explicitly. The &lt;copy-config&gt; RPC operation defined in <xref
         target="RFC6241"/> is also augmented to support "resolve-system"
-        parameter.</t>
+        parameter (<xref target="resolve-system"/>).</t>
 
         <t>NETCONF server that supports this parameter MUST advertise the
         capability identifier:<figure>
@@ -344,7 +345,8 @@
       </section>
     </section>
 
-    <section title="The System Configuration Datastore (&lt;system&gt;)">
+    <section anchor="system-ds-def"
+             title="The System Configuration Datastore (&lt;system&gt;)">
       <t>NMDA servers compliant with this document MUST implement a system
       configuration datastore, and they SHOULD also implement
       &lt;intended&gt;.</t>
@@ -371,10 +373,10 @@
 
           <t>Origin: This document does not define any new origin identity
           when it interacts with &lt;intended&gt; and flows into
-          &lt;operational&gt;. The "system" origin Metadata Annotation
-          [RFC7952] is used to indicate the origin of a data item is system,
-          which is achieved by updating the definition of "intended" origin
-          metadata annotation in <xref target="RFC8342"/>. <vspace
+          &lt;operational&gt;. The "system" origin Metadata Annotation <xref
+          target="RFC7952"/> is used to indicate the origin of a data item is
+          system, which is achieved by updating the definition of "intended"
+          origin metadata annotation in <xref target="RFC8342"/>. <vspace
           blankLines="1"/></t>
 
           <t>Protocols: YANG-driven management protocols, such as NETCONF and
@@ -432,8 +434,8 @@
 
             <t>Servers rejects the operation to change system configuration
             (e.g., device upgrade fails) and needs the client to correct the
-            configuration in &lt;running&gt; for validity as a
-            prerequisite</t>
+            configuration in &lt;running&gt; as a prerequisite to ensure
+            validity</t>
           </list></t>
       </section>
 
@@ -450,18 +452,18 @@
     </section>
 
     <section title="Dynamic Behavior">
-      <section title="Conceptual Model of Datastores">
+      <section anchor="conceptual-model"
+               title="Conceptual Model of Datastores">
         <t>This document introduces a datastore named "system" which is used
         to hold all three types of system configurations defined in <xref
         target="categories"/>.</t>
 
         <t>When the device is powered on, immediately-active system
-        configuration will be generated in &lt;system&gt; and active
-        immediately, but inactive-until-referenced system configuration only
-        becomes active if it is referenced by client-defined configuration.
-        While conditionally-active system configuration will only be created
-        and active if the condition on system resources is met when the device
-        is powered on or running.</t>
+        configuration is generated in &lt;system&gt; and active immediately,
+        but inactive-until-referenced system configuration only becomes active
+        if referenced by client-defined configuration. However,
+        conditionally-active system configuration will only be created and
+        active when specific conditions on system resources are met.</t>
 
         <t>All above three types of system configurations appear in
         &lt;system&gt;. Clients MAY reference nodes defined in &lt;system&gt;,
@@ -479,12 +481,12 @@
         additional nodes to a list entry or new list/leaf-list entries
         appearing in &lt;running&gt; extends the list entry or the whole
         list/leaf-list defined in &lt;system&gt; if the server allows the
-        list/leaf-list to be updated. In addition, the intended configuration
-        datastore represents the configuration after all configuration
-        transformation to &lt;system&gt; are performed (e.g., system-defined
-        template expansion, removal of inactive system configuration). If a
-        server implements &lt;intended&gt;, &lt;system&gt; MUST be merged into
-        &lt;intended&gt;.</t>
+        list/leaf-list to be updated. For some implementations, the intended
+        configuration datastore also represents the configuration after all
+        configuration transformation to &lt;system&gt; are performed (e.g.,
+        system-defined template expansion, removal of inactive system
+        configuration). If a server implements &lt;intended&gt;,
+        &lt;system&gt; MUST be merged into &lt;intended&gt;.</t>
 
         <t>As a result, Figure 2 in Section 5 of RFC 8342 is updated with the
         below conceptual model of datastores which incorporates the system
@@ -531,12 +533,12 @@
         <t>The "intended" identity of origin value defined in RFC 8342 to
         represent the origin of configuration provided by &lt;intended&gt;,
         this document updates its definition as origin source of configuration
-        explicitly provided by &lt;running&gt;, and allows some configuration
-        in &lt;intended&gt; that flows from &lt;system&gt; yet is not
-        configured or overridden explicitly in &lt;running&gt; to use "system"
-        as its origin value. Configuration copied from &lt;system&gt; into
-        &lt;running&gt; has its origin value reported as "intended" when it
-        flows into &lt;operational&gt;.</t>
+        explicitly provided by &lt;running&gt;, and allows a subset of
+        configuration in &lt;intended&gt; that flows from &lt;system&gt; yet
+        is not configured or overridden explicitly in &lt;running&gt; to use
+        "system" as its origin value. Configuration copied from &lt;system&gt;
+        into &lt;running&gt; has its origin value reported as "intended" when
+        it flows into &lt;operational&gt;.</t>
 
         <t>Configuration in &lt;system&gt; is non-deletable to clients, even
         though a client may delete a copied system node from &lt;running&gt;.
@@ -564,17 +566,18 @@
 
         <t>The explicit configuration of system-defined nodes in the target
         datastore (e.g., &lt;running&gt;) can be useful, for example, when the
-        client doesn't want a "system client" to have a role or hasn't
-        implemented the "resolve-system" parameter but need the datastore to
-        be valid. The client can explicitly declare (i.e., configure in the
-        datastore like &lt;running&gt;) the list entries (with at least the
-        keys) that are referenced elsewhere in &lt;running&gt;. The client
-        does not necessarily need to declare all the contents of the list
-        entry (i.e. the descendant nodes) , only the parts that are required
-        to make the datastore appear valid.</t>
+        client does not want a "system client" to have a role or not implement
+        the "resolve-system" parameter but needs the datastore to be
+        referentially complete. The client can explicitly declare (i.e.,
+        configure in the datastore like &lt;running&gt;) the list entries
+        (with at least the keys) that are referenced elsewhere in
+        &lt;running&gt;. The client does not necessarily need to declare all
+        the contents of the list entry (i.e. the descendant nodes), only the
+        parts that are required to make the datastore appear valid.</t>
       </section>
 
-      <section title="Servers Auto-configuring Referenced System Configuration (&quot;resolve-system&quot; parameter)">
+      <section anchor="resolve-system"
+               title="Servers Auto-configuring Referenced System Configuration (&quot;resolve-system&quot; parameter)">
         <t>This document defines a new parameter "resolve-system" to the input
         for the &lt;edit-config&gt;, &lt;edit-data&gt;, and
         &lt;copy-config&gt; operations. Clients that are aware of the
@@ -666,8 +669,8 @@
         be modifiable or not, even if some system configuration has been
         copied into &lt;running&gt; earlier. If a system node is
         non-modifiable, then writing a different value for that node MUST
-        return an error. The immutability of system configuration is further
-        defined in <xref target="I-D.ma-netmod-immutable-flag"/>.</t>
+        return an error. The immutability of system configuration is defined
+        in <xref target="I-D.ma-netmod-immutable-flag"/>.</t>
 
         <t>A server may also allow a client to add data nodes to a list entry
         in &lt;system&gt; by writing those additional nodes in
@@ -979,7 +982,7 @@
 
           <t>Then the configuration of applications is present in
           &lt;operational&gt; as follows:<figure>
-              <artwork>        &lt;applications xmlns="urn:example:application"
+              <artwork>         &lt;applications xmlns="urn:example:application"
                       xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
                       or:origin="or:intended"&gt;
           &lt;application&gt;
@@ -1001,7 +1004,7 @@
             &lt;name&gt;tftp&lt;/name&gt;
             &lt;protocol or:origin="or:system"&gt;udp&lt;/protocol&gt;
             &lt;destination-port or:origin="or:system"&gt;69&lt;/destination-port&gt;
-          &lt;/application&gt;            
+          &lt;/application&gt;
         &lt;/applications&gt;</artwork>
             </figure>Since the application names "ftp" and "tftp" are
           explicitly configured by the client, they take precedence over the
@@ -1195,10 +1198,10 @@
         discover the system configuration datastore support on the server by
         reading the YANG library information from the operational state
         datastore. Note that no new origin identity is defined in this
-        document, the "or:system" origin Metadata Annotation [RFC7952] is used
-        to indicate the origin of a data item is system. Support for the
-        "origin" annotation is identified with the feature "origin" defined in
-        [RFC8526].</t>
+        document, the "or:system" origin Metadata Annotation <xref
+        target="RFC7952"/> is used to indicate the origin of a data item is
+        system. Support for the "origin" annotation is identified with the
+        feature "origin" defined in <xref target="RFC8526"/>.</t>
 
         <t>The following diagram illustrates the relationship amongst the
         "identity" statements defined in the "ietf-system-datastore" and
@@ -1214,13 +1217,13 @@
     |  +--- dynamic
     |  +--- operational</artwork>
           </figure>The diagram above uses syntax that is similar to but not
-        defined in [RFC8340].</t>
+        defined in <xref target="RFC8340"/>.</t>
       </section>
 
       <section title="Example Usage">
         <t>This section gives an example of data retrieval from
         &lt;system&gt;. The fictional YANG module used following are from
-        Appendix C.2 of [RFC8342]. </t>
+        Appendix C.2 of [RFC8342].</t>
 
         <figure>
           <artwork>       container bgp {
@@ -1573,7 +1576,8 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
     <section anchor="IANA" title="IANA Considerations">
       <section title="The &quot;IETF XML&quot; Registry">
         <t>This document registers two XML namespace URNs in the 'IETF XML
-        registry', following the format defined in [RFC3688].</t>
+        registry', following the format defined in <xref
+        target="RFC3688"/>.</t>
 
         <figure>
           <artwork>   URI: urn:ietf:params:xml:ns:yang:ietf-system-datastore
@@ -1588,7 +1592,7 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
 
       <section title="The &quot;YANG Module Names&quot; Registry">
         <t>This document registers two module names in the 'YANG Module Names'
-        registry, defined in [RFC6020] .</t>
+        registry, defined in <xref target="RFC6020"/>.</t>
 
         <figure>
           <artwork>      name: ietf-system-datastore
@@ -1627,34 +1631,36 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
     <section anchor="scecurity" title="Security Considerations">
       <section title="Regarding the &quot;ietf-system-datastore&quot; YANG Module">
         <t>The YANG module defined in this document extends the base
-        operations for NETCONF [RFC6241] and RESTCONF [RFC8040]. The lowest
-        NETCONF layer is the secure transport layer, and the
-        mandatory-to-implement secure transport is Secure Shell (SSH)
-        [RFC6242]. The lowest RESTCONF layer is HTTPS, and the
-        mandatory-to-implement secure transport is TLS [RFC8446].</t>
+        operations for NETCONF <xref target="RFC6241"/> and RESTCONF <xref
+        target="RFC8040"/>. The lowest NETCONF layer is the secure transport
+        layer, and the mandatory-to-implement secure transport is Secure Shell
+        (SSH) <xref target="RFC6242"/>. The lowest RESTCONF layer is HTTPS,
+        and the mandatory-to-implement secure transport is TLS <xref
+        target="RFC8446"/>.</t>
 
-        <t>The Network Configuration Access Control Model (NACM) [RFC8341]
-        provides the means to restrict access for particular NETCONF users to
-        a preconfigured subset of all available NETCONF protocol operations
-        and content.</t>
+        <t>The Network Configuration Access Control Model (NACM) <xref
+        target="RFC8341"/> provides the means to restrict access for
+        particular NETCONF users to a preconfigured subset of all available
+        NETCONF protocol operations and content.</t>
       </section>
 
       <section title="Regarding the &quot;ietf-netconf-resolve-system&quot; YANG Module">
         <t>The YANG module defined in this document extends the base
-        operations for NETCONF [RFC6241] and [RFC8526]. The lowest NETCONF
-        layer is the secure transport layer, and the mandatory-to-implement
-        secure transport is Secure Shell (SSH) [RFC6242]. The lowest RESTCONF
-        layer is HTTPS, and the mandatory-to-implement secure transport is TLS
-        [RFC8446].</t>
+        operations for NETCONF <xref target="RFC6241"/> and <xref
+        target="RFC8526"/>. The lowest NETCONF layer is the secure transport
+        layer, and the mandatory-to-implement secure transport is Secure Shell
+        (SSH) <xref target="RFC6242"/>. The lowest RESTCONF layer is HTTPS,
+        and the mandatory-to-implement secure transport is TLS <xref
+        target="RFC8446"/>.</t>
 
-        <t>The Network Configuration Access Control Model (NACM) [RFC8341]
-        provides the means to restrict access for particular NETCONF users to
-        a preconfigured subset of all available NETCONF protocol operations
-        and content.</t>
+        <t>The Network Configuration Access Control Model (NACM) <xref
+        target="RFC8341"/> provides the means to restrict access for
+        particular NETCONF users to a preconfigured subset of all available
+        NETCONF protocol operations and content.</t>
 
         <t>The security considerations for the base NETCONF protocol
-        operations (see Section 9 of [RFC6241] apply to the new extended RPC
-        operations defined in this document.</t>
+        operations (see Section 9 of <xref target="RFC6241"/> apply to the new
+        extended RPC operations defined in this document.</t>
       </section>
     </section>
 
@@ -1959,13 +1965,6 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
           if a resolve-system parameter is used</t>
 
           <t>Editorial changes</t>
-        </list></t>
-    </section>
-
-    <section title="Open Issues tracking">
-      <t><list style="symbols">
-          <t>Should the "with-origin" parameter be supported for
-          &lt;intended&gt;?</t>
         </list></t>
     </section>
   </back>
