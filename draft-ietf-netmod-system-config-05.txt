@@ -1200,7 +1200,7 @@ Internet-Draft        System-defined Configuration         February 2024
    Then the configuration of applications is present in <operational> as
    follows:
 
-         <applications xmlns="urn:example:application"
+        <applications xmlns="urn:example:application"
                       xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
                       or:origin="or:intended">
           <application>

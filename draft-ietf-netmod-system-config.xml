@@ -982,7 +982,7 @@
 
           <t>Then the configuration of applications is present in
           &lt;operational&gt; as follows:<figure>
-              <artwork>         &lt;applications xmlns="urn:example:application"
+              <artwork>        &lt;applications xmlns="urn:example:application"
                       xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
                       or:origin="or:intended"&gt;
           &lt;application&gt;
