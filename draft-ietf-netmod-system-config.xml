@@ -1925,6 +1925,24 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
     </section>
 
     <section title="Changes between Revisions">
+      <t>v04 - v05<list style="symbols">
+          <t>Explicitly state that system configuration copied from
+          &lt;system&gt; into &lt;running&gt; have its origin value being
+          reported as "intended" and update the examples accordingly to
+          reflect it</t>
+
+          <t>Update the definition of "intended" origin identity in 8342 to
+          allow a subset of configuration in &lt;intended&gt; to use "system"
+          as origin value</t>
+
+          <t>State server behaviors of migrating updated system data into
+          &lt;running&gt; is beyond the scope of this document, and give a
+          couple of implementation examples</t>
+
+          <t>Remove the related statement which mandates referenced system
+          configuration must be copied into &lt;running&gt;</t>
+        </list></t>
+
       <t>v03 - v04<list style="symbols">
           <t>Add some implementation consideration for "resolve-system"
           parameter</t>

@@ -2595,6 +2595,23 @@ Internet-Draft        System-defined Configuration         February 2024
 
 Appendix B.  Changes between Revisions
 
+   v04 - v05
+
+   *  Explicitly state that system configuration copied from <system>
+      into <running> have its origin value being reported as "intended"
+      and update the examples accordingly to reflect it
+
+   *  Update the definition of "intended" origin identity in 8342 to
+      allow a subset of configuration in <intended> to use "system" as
+      origin value
+
+   *  State server behaviors of migrating updated system data into
+      <running> is beyond the scope of this document, and give a couple
+      of implementation examples
+
+   *  Remove the related statement which mandates referenced system
+      configuration must be copied into <running>
+
    v03 - v04
 
    *  Add some implementation consideration for "resolve-system"
@@ -2608,6 +2625,14 @@ Appendix B.  Changes between Revisions
       as well during device upgrade or licensing change.
 
    v02 - v03
+
+
+
+
+Ma, et al.               Expires 11 August 2024                [Page 47]
+
+Internet-Draft        System-defined Configuration         February 2024
+
 
    *  remove the merge mechanism related comments, as discussed in
       https://github.com/netconf-wg/netconf-next/issues/19
@@ -2625,14 +2650,6 @@ Appendix B.  Changes between Revisions
    *  Editorial changes
 
    v00 - v01
-
-
-
-
-Ma, et al.               Expires 11 August 2024                [Page 47]
-
-Internet-Draft        System-defined Configuration         February 2024
-
 
    *  Clarify why client's explicit copy is not preferred but cannot be
       avoided if resolve-system parameter is not defined
@@ -2665,6 +2682,14 @@ Authors' Addresses
 
 
    Feng Chong
+
+
+
+Ma, et al.               Expires 11 August 2024                [Page 48]
+
+Internet-Draft        System-defined Configuration         February 2024
+
+
    Email: fengchongllly@gmail.com
 
 
@@ -2685,4 +2710,35 @@ Authors' Addresses
 
 
 
-Ma, et al.               Expires 11 August 2024                [Page 48]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Ma, et al.               Expires 11 August 2024                [Page 49]
