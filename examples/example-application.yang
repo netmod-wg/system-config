@@ -1,0 +1,26 @@
+module example-application {
+  yang-version 1.1;
+  namespace "urn:example:application";
+  prefix "app";
+           
+  import ietf-inet-types {
+    prefix "inet";
+  }
+  container applications {
+    list application {
+      key "name";
+      leaf name {
+        type string;
+      }
+      leaf protocol {
+        type enumeration {
+          enum tcp;
+          enum udp;
+        }
+      }
+      leaf destination-port {
+        type inet:port-number;
+      }
+    }
+  }
+}  

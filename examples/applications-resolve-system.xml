@@ -1,0 +1,25 @@
+<rpc xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="101">  
+  <edit-config> 
+    <target> 
+      <running/> 
+    </target>  
+    <config> 
+      <acl xmlns="urn:example:acl">  
+        <acl_rule> 
+          <name>allow_access_to_ftp_tftp</name>  
+          <matches> 
+            <ipv4> 
+              <source_address>198.51.100.0/24</source_address>  
+              <dest_address>192.0.2.0/24</dest_address> 
+            </ipv4>  
+            <application>ftp</application>  
+            <application>tftp</application>  
+            <application>my-app-1</application> 
+          </matches>  
+          <packet_action>forward</packet_action> 
+        </acl_rule> 
+      </acl> 
+    </config>  
+    <resolve-system/> 
+  </edit-config> 
+</rpc>

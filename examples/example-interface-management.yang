@@ -1,0 +1,35 @@
+module example-interface-management {
+  yang-version 1.1;
+  namespace "urn:example:interfacemgmt";
+  prefix "inm";
+  
+  import ietf-inet-types {
+    prefix "inet";
+  }
+  
+  container interfaces {
+    list interface {
+      key name;
+      leaf name {
+        type string;
+      }
+      leaf description {
+        type string;
+      }
+      leaf mtu {
+        type uint16;
+      }
+      leaf ip-address {
+        type inet:ip-address;
+      }
+    }
+  }
+  container default-address {
+    leaf ifname {
+      type leafref {
+        path "../../interfaces/interface/name";
+      }
+    }
+  }
+}
+

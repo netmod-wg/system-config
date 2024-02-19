@@ -1,0 +1,18 @@
+<rpc xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="101">  
+  <edit-config> 
+    <target> 
+      <running/> 
+    </target>  
+    <config> 
+      <qos-policies xmlns="urn:example:qos">  
+        <policy> 
+          <name>built-in-policy</name>  
+          <queue> 
+            <queue-id>1</queue-id>  
+            <maximum-burst-size>55</maximum-burst-size> 
+          </queue> 
+        </policy> 
+      </qos-policies> 
+    </config> 
+  </edit-config> 
+</rpc>

@@ -1,0 +1,6 @@
+<interfaces xmlns="urn:example:interfacemgmt">
+  <interface>
+    <name>eth0</name>
+    <mtu>1500</mtu>
+  </interface>
+</interfaces>

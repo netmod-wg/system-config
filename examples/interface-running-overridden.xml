@@ -1,0 +1,6 @@
+<interfaces xmlns="urn:example:interface">
+  <interface>
+    <name>lo0</name>
+    <mtu>65535</mtu>
+  </interface>
+</interfaces>

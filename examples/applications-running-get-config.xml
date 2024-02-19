@@ -1,0 +1,19 @@
+<applications xmlns="urn:example:application">  
+  <application> 
+    <name>my-app-1</name>  
+    <protocol>tcp</protocol>  
+    <destination-port>2345</destination-port> 
+  </application>  
+  <application> 
+    <name>my-app-2</name>  
+    <protocol>udp</protocol>  
+    <destination-port>69</destination-port> 
+  </application>  
+  <application> 
+    <name>ftp</name> 
+  </application>  
+  <application> 
+    <name>tftp</name> 
+  </application> 
+</applications>
+

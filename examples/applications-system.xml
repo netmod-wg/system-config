@@ -1,0 +1,17 @@
+<applications xmlns="urn:example:application">  
+  <application> 
+    <name>ftp</name>  
+    <protocol>tcp</protocol>  
+    <destination-port>21</destination-port> 
+  </application>  
+  <application> 
+    <name>tftp</name>  
+    <protocol>udp</protocol>  
+    <destination-port>69</destination-port> 
+  </application>  
+  <application> 
+    <name>smtp</name>  
+    <protocol>tcp</protocol>  
+    <destination-port>25</destination-port> 
+  </application> 
+</applications>

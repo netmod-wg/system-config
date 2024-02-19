@@ -1,0 +1,6 @@
+<interfaces xmlns="urn:example:interfacemgmt" xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin" or:origin="or:intended">
+  <interface>
+    <name>eth0</name>
+    <mtu or:origin="or:system">1500</mtu>
+  </interface>
+</interfaces>

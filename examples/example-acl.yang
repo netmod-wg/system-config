@@ -1,0 +1,48 @@
+module example-acl {
+  yang-version 1.1;
+  namespace "urn:example:acl";
+  prefix "acl";
+
+  import example-application {
+    prefix "app";
+  }
+  import ietf-inet-types {
+    prefix "inet";
+  }
+
+  container acl {
+    list acl_rule {
+      key "name";
+      leaf name {
+        type string;
+      }
+      container matches {
+        choice l3 {
+          container ipv4 {
+            leaf source_address {
+              type inet:ipv4-prefix;
+            }
+            leaf dest_address {
+              type inet:ipv4-prefix;
+            }
+          }
+        }
+        choice applications {
+          leaf-list application {
+            type leafref {
+            path "/app:applications/app:application/app:name";
+            }
+          }
+        }
+      }
+      leaf packet_action {
+        type enumeration {
+          enum forward;
+          enum drop;
+          enum redirect;
+        }
+      }
+    }
+  }
+}
+

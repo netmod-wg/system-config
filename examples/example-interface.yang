@@ -1,0 +1,28 @@
+module example-interface {
+  yang-version 1.1;
+  namespace "urn:example:interface";
+  prefix "exif";
+
+  import ietf-inet-types {
+    prefix "inet";
+  }
+  
+  container interfaces {
+    list interface {
+      key name;
+      leaf name {
+        type string;
+      }
+      leaf description {
+        type string;
+      }
+      leaf mtu {
+        type uint32;
+      }
+      leaf-list ip-address {
+        type inet:ip-address;
+      }
+    }
+  }
+}
+
