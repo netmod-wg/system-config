@@ -6,6 +6,7 @@ module example-acl {
   import example-application {
     prefix "app";
   }
+
   import ietf-inet-types {
     prefix "inet";
   }

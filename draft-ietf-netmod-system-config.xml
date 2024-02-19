@@ -735,8 +735,7 @@ INSERT_TEXT_FROM_FILE(examples/applications-resolve-system.xml)
 
           <t>The following gives the configuration of applications in
           &lt;running&gt; which is returned in the response to a follow-up
-          &lt;get-config&gt; operation:<figure
-              anchor="applications-running-get-config">
+          &lt;get-config&gt; operation:<figure>
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/applications-running-get-config.xml)
               ]]></artwork>
