@@ -1,23 +1,24 @@
-<applications xmlns="urn:example:application" xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin" or:origin="or:intended">  
-  <application> 
-    <name>my-app-1</name>  
-    <protocol>tcp</protocol>  
-    <destination-port>2345</destination-port> 
-  </application>  
-  <application> 
-    <name>my-app-2</name>  
-    <protocol>udp</protocol>  
-    <destination-port>69</destination-port> 
-  </application>  
-  <application> 
-    <name>ftp</name>  
-    <protocol or:origin="or:system">tcp</protocol>  
-    <destination-port or:origin="or:system">21</destination-port> 
-  </application>  
-  <application> 
-    <name>tftp</name>  
-    <protocol or:origin="or:system">udp</protocol>  
-    <destination-port or:origin="or:system">69</destination-port> 
-  </application> 
+<applications xmlns="urn:example:application" 
+              xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin" 
+              or:origin="or:intended">
+  <application>
+    <name>my-app-1</name>
+    <protocol>tcp</protocol>
+    <destination-port>2345</destination-port>
+  </application>
+  <application>
+    <name>my-app-2</name>
+    <protocol>udp</protocol>
+    <destination-port>69</destination-port>
+  </application>
+  <application>
+    <name>ftp</name>
+    <protocol or:origin="or:system">tcp</protocol>
+    <destination-port or:origin="or:system">21</destination-port>
+  </application>
+  <application>
+    <name>tftp</name>
+    <protocol or:origin="or:system">udp</protocol>
+    <destination-port or:origin="or:system">69</destination-port>
+  </application>
 </applications>
-

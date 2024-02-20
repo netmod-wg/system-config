@@ -1,12 +1,13 @@
-<interfaces xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin" or:origin="or:intended">  
-  <interface or:origin="or:system"> 
-    <name>lo0</name>  
-    <ip-address>127.0.0.1</ip-address>  
-    <ip-address>::1</ip-address> 
-  </interface>  
-  <interface> 
-    <name>et-0/0/0</name>  
-    <description>Test interface</description>  
-    <mtu or:origin="or:system">1500</mtu> 
-  </interface> 
+<interfaces xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin" 
+            or:origin="or:intended">
+  <interface or:origin="or:system">
+    <name>lo0</name>
+    <ip-address>127.0.0.1</ip-address>
+    <ip-address>::1</ip-address>
+  </interface>
+  <interface>
+    <name>et-0/0/0</name>
+    <description>Test interface</description>
+    <mtu or:origin="or:system">1500</mtu>
+  </interface>
 </interfaces>

@@ -1,8 +1,8 @@
-<interfaces xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin" or:origin="or:system">  
-  <interface> 
-    <name>lo0</name>  
-    <ip-address>127.0.0.1</ip-address>  
-    <ip-address>::1</ip-address> 
-  </interface> 
+<interfaces xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
+            or:origin="or:system">
+  <interface>
+    <name>lo0</name>
+    <ip-address>127.0.0.1</ip-address>
+    <ip-address>::1</ip-address>
+  </interface>
 </interfaces>
-

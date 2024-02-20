@@ -1,4 +1,6 @@
-<interfaces xmlns="urn:example:interface" xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin" or:origin="or:intended">
+<interfaces xmlns="urn:example:interface" 
+            xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin" 
+            or:origin="or:intended">
   <interface>
     <name>lo0</name>
     <mtu>65535</mtu>

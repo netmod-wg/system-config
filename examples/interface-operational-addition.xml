@@ -1,8 +1,10 @@
-<interfaces xmlns="urn:example:interface" xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin" or:origin="or:intended">
+<interfaces xmlns="urn:example:interface" 
+            xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin" 
+            or:origin="or:intended">
   <interface>
     <name>lo0</name>
     <description>loopback</description>
-    <mtu>65535</mtu>   
+    <mtu>65535</mtu>
     <ip-address or:origin="or:system">127.0.0.1</ip-address>
     <ip-address or:origin="or:system">::1</ip-address>
   </interface>

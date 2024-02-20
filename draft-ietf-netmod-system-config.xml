@@ -112,15 +112,17 @@
 
       <t>The Network Management Datastore Architecture (NMDA) defined in RFC
       8342 is updated with a read-only conventional configuration datastore
-      called "system" to hold system-defined configuration. As an alternative
-      to clients explicitly copying referenced system-defined configuration
-      into the target configuration datastore (e.g., &lt;running&gt;) so that
-      the datastore is valid, a "resolve-system" parameter is defined to allow
-      the server acting as a "system client" to copy referenced system nodes
-      automatically. This solution enables clients manipulating the target
-      configuration datastore (e.g., &lt;running&gt;) to reference nodes
-      defined in &lt;system&gt;, override system-provided values, and
-      configure descendant nodes of system-defined configuration.</t>
+      called "system" to hold system-defined configuration. </t>
+
+      <t>As an alternative to clients explicitly copying referenced
+      system-defined configuration into the target configuration datastore
+      (e.g., &lt;running&gt;) so that the datastore is valid, a
+      "resolve-system" parameter is defined to allow the server acting as a
+      "system client" to copy referenced system nodes automatically. This
+      solution enables clients manipulating the target configuration datastore
+      (e.g., &lt;running&gt;) to reference nodes defined in &lt;system&gt;,
+      override system-provided values, and configure descendant nodes of
+      system-defined configuration.</t>
 
       <t>This document updates RFC 8342, RFC 6241, RFC 8526 and RFC 8040.</t>
     </abstract>
@@ -155,16 +157,17 @@
 
       <t>This document updates the Network Management Datastore Architecture
       (NMDA) defined in RFC 8342 with a read-only conventional configuration
-      datastore called "system" to hold system-defined configuration. As an
-      alternative to clients explicitly copying referenced system-defined
-      configuration into the target configuration datastore (e.g.,
-      &lt;running&gt;) so that the datastore is valid, a "resolve-system"
-      parameter is defined to allow the server acting as a "system client" to
-      copy referenced system nodes automatically. This solution enables
-      clients manipulating the target configuration datastore (e.g.,
-      &lt;running&gt;) to reference nodes defined in &lt;system&gt;, override
-      system-provided values, and configure descendant nodes of system-defined
-      configuration.</t>
+      datastore called "system" to hold system-defined configuration. </t>
+
+      <t>As an alternative to clients explicitly copying referenced
+      system-defined configuration into the target configuration datastore
+      (e.g., &lt;running&gt;) so that the datastore is valid, a
+      "resolve-system" parameter is defined to allow the server acting as a
+      "system client" to copy referenced system nodes automatically. This
+      solution enables clients manipulating the target configuration datastore
+      (e.g., &lt;running&gt;) to reference nodes defined in &lt;system&gt;,
+      override system-provided values, and configure descendant nodes of
+      system-defined configuration.</t>
 
       <t>If a system-defined node is referenced, it refers to one of the
       following cases throughout this document:<list style="symbols">
@@ -234,18 +237,18 @@
         <t>This document updates RFC 8342 to define a configuration datastore
         called "system" to hold system configuration (<xref
         target="system-ds-def"/>), it also redefines the term "conventional
-        configuration datastore" from RFC 8342 to add "system" to the list of
-        conventional configuration datastores.</t>
+        configuration datastore" from <xref target="RFC8342"/> to add "system"
+        to the list of conventional configuration datastores.</t>
 
         <t>Configuration in &lt;running&gt; is merged into &lt;system&gt; to
         create the contents of &lt;intended&gt; after the configuration
         transformations to &lt;running&gt; (e.g., template expansion, removal
-        of inactive configuration defined in RFC 8342) have been performed.
-        This document updates the definition of "intended" origin metadata
-        annotation identity to allow a subset of configuration provided by
-        &lt;intended&gt; to use "system" as origin value as it flows into
-        &lt;operational&gt;. Applied system configuration appears in
-        &lt;operational&gt; with origin value being reported as "system"
+        of inactive configuration defined in <xref target="RFC8342"/>) have
+        been performed. This document updates the definition of "intended"
+        origin metadata annotation identity to allow a subset of configuration
+        provided by &lt;intended&gt; to use "system" as origin value as it
+        flows into &lt;operational&gt;. Applied system configuration appears
+        in &lt;operational&gt; with origin value being reported as "system"
         (<xref target="conceptual-model"/>).</t>
       </section>
 
