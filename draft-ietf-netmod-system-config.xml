@@ -112,7 +112,7 @@
 
       <t>The Network Management Datastore Architecture (NMDA) defined in RFC
       8342 is updated with a read-only conventional configuration datastore
-      called "system" to hold system-defined configuration. </t>
+      called "system" to hold system-defined configuration.</t>
 
       <t>As an alternative to clients explicitly copying referenced
       system-defined configuration into the target configuration datastore
@@ -157,7 +157,7 @@
 
       <t>This document updates the Network Management Datastore Architecture
       (NMDA) defined in RFC 8342 with a read-only conventional configuration
-      datastore called "system" to hold system-defined configuration. </t>
+      datastore called "system" to hold system-defined configuration.</t>
 
       <t>As an alternative to clients explicitly copying referenced
       system-defined configuration into the target configuration datastore
@@ -455,7 +455,7 @@
       </section>
     </section>
 
-    <section title="Dynamic Behavior">
+    <section title="Dynamic Behaviors">
       <section anchor="conceptual-model"
                title="Conceptual Model of Datastores">
         <t>This document introduces a datastore named "system" which is used
@@ -476,20 +476,19 @@
         configurations into the target configuration datastore (e.g.,
         &lt;running&gt;).</t>
 
-        <t>To ensure the validity of &lt;intended&gt;, configuration in both
-        &lt;system&gt; and &lt;running&gt; are merged to create the contents
-        of &lt;intended&gt; after the configuration transformations (e.g.,
-        template expansion, removal of inactive configuration defined in <xref
-        target="RFC8342"/>), in which process, configuration appearing in
+        <t>To ensure the validity of &lt;intended&gt;, configuration in
+        &lt;running&gt; is merged into &lt;system&gt; to become
+        &lt;intended&gt;, in which process, configuration appearing in
         &lt;running&gt; takes precedence over the same node in &lt;system&gt;;
         additional nodes to a list entry or new list/leaf-list entries
         appearing in &lt;running&gt; extends the list entry or the whole
         list/leaf-list defined in &lt;system&gt; if the server allows the
-        list/leaf-list to be updated. For some implementations, the intended
-        configuration datastore also represents the configuration after all
-        configuration transformation to &lt;system&gt; are performed (e.g.,
-        system-defined template expansion, removal of inactive system
-        configuration). If a server implements &lt;intended&gt;,
+        list/leaf-list to be updated. If &lt;running&gt; includes
+        configuration that requires further transformation (e.g., template
+        expansion, removal of inactive configuration defined in <xref
+        target="RFC8342"/>) before it can be applied, configuration
+        transformations MUST be performed before &lt;running&gt; is merged
+        into &lt;system&gt;. If a server implements &lt;intended&gt;,
         &lt;system&gt; MUST be merged into &lt;intended&gt;.</t>
 
         <t>As a result, Figure 2 in Section 5 of RFC 8342 is updated with the
@@ -505,29 +504,29 @@
       | &lt;system&gt;  | +--------&gt;| &lt;running&gt; |&lt;--------+
       | (ct, ro)  |           | (ct, rw)  |
       +-----+-----+           +----+------+
-            |                      |
-            +--------+      +------+  // configuration transformations,
-                     |      |         // e.g., removal of nodes marked
-                     |      |         // as "inactive", expansion of
-                     |      |         // templates
-                     V      V
-                  +------------+
-                  | &lt;intended&gt; | // subject to validation
-                  | (ct, ro)   |
-                  +------------+
-                        |        // changes applied, subject to
-                        |        // local factors, e.g., missing
-                        |        // resources, delays
-                        |
-   dynamic              |
-   configuration        |   +-------- learned configuration
-   datastores -----+    |   +-------- default configuration
-                   |    |   |
-                   v    v   v
-                +---------------+
-                | &lt;operational&gt; | &lt;-- system state
-                | (ct + cf, ro) |
-                +---------------+
+            |                      | // configuration transformations,
+            +--------+             | // e.g., removal of nodes marked
+                     |             | // as "inactive", expansion of
+                     |&lt;------------+ // templates
+                     |
+                     V
+               +------------+
+               | &lt;intended&gt; | // subject to validation
+               | (ct, ro)   |
+               +------------+
+                       |
+                       |      // changes applied, subject to
+                       |      // local factors, e.g., missing
+                       |      // resources, delays
+   dynamic             |
+   configuration       |   +-------- learned configuration
+   datastores -----+   |   +-------- default configuration
+                   |   |   |
+                   v   v   v
+               +---------------+
+               | &lt;operational&gt; | &lt;-- system state
+               | (ct + cf, ro) |
+               +---------------+
 
   ct = config true; cf = config false
   rw = read-write; ro = read-only
@@ -549,7 +548,7 @@
         If system initializes a value for a particular leaf which is
         overridden by the client with a different value in &lt;running&gt;,
         the client may delete it in &lt;running&gt;, in which case
-        system-initialized value defined in &lt;system&gt; can be still in use
+        system-initialized value defined in &lt;system&gt; may still be in use
         and appear in &lt;operational&gt;.</t>
 
         <t>Any deletable system-provided configuration that is populated as
@@ -682,11 +681,9 @@
       </section>
 
       <section title="Examples">
-        <t>This section shows some examples of server-configuring of
-        &lt;running&gt; automatically, declaring a system-defined node in
-        &lt;running&gt; explicitly, modifying a system-instantiated leaf's
-        value and configuring descendant nodes of a system-defined node. For
-        each example, the corresponding XML snippets are provided.</t>
+        <t>This section presents some sample data models and corresponding
+        contents of various datastores with different dynamical behaviors
+        above. The XML snippets are used only for examples.</t>
 
         <section anchor="automatical"
                  title="Server Configuring of &lt;running&gt; Automatically">
@@ -727,10 +724,10 @@ INSERT_TEXT_FROM_FILE(examples/example-acl.yang)
               ]]></artwork>
             </figure></t>
 
-          <t>If a client configures an ACL rule referencing system predefined
-          nodes which are not present in &lt;running&gt;, the client may issue
-          an &lt;edit-config&gt; operation with the parameter "resolve-system"
-          as follows:<figure>
+          <t>If a client configures an ACL rule referencing system provided
+          applications which are not present in &lt;running&gt;, take NETCONF
+          protocol for example, the client may issue an &lt;edit-config&gt;
+          operation with the parameter "resolve-system" as follows:<figure>
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/applications-resolve-system.xml)
               ]]></artwork>
@@ -738,7 +735,7 @@ INSERT_TEXT_FROM_FILE(examples/applications-resolve-system.xml)
 
           <t>The following gives the configuration of applications in
           &lt;running&gt; which is returned in the response to a follow-up
-          &lt;get-config&gt; operation:<figure>
+          retrieval operation:<figure>
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/applications-running-get-config.xml)
               ]]></artwork>
@@ -914,7 +911,7 @@ INSERT_TEXT_FROM_FILE(examples/interface-operational-addition.xml)
         </figure>
 
         <t>All the messages are presented in a protocol-independent manner.
-        JSON is used only for its conciseness.</t>
+        JSON is used to not imply a preferred encoding in this document.</t>
 
         <t>Suppose the following BGP peer configuration is added to
         &lt;running&gt;:</t>
@@ -936,26 +933,9 @@ INSERT_TEXT_FROM_FILE(examples/interface-operational-addition.xml)
         <t>The local port and remote port are used when the BGP peer
         connection is established. Since both are not supplied explicitly in
         &lt;running&gt; and &lt;intended&gt;, the default value for
-        bgp/peer/remote-port is used, and there is no default statement for
-        bgp/peer/local-port, the system will select a value for it.</t>
-
-        <t>REQUEST (a &lt;get-data&gt; or GET request sent from the NETCONF or
-        RESTCONF client):</t>
-
-        <figure>
-          <artwork>Datastore: &lt;system&gt;
-Target:/bgp</artwork>
-        </figure>
-
-        <t>An example of RESTCONF request:</t>
-
-        <figure>
-          <artwork>GET /restconf/ds/system/bgp HTTP/1.1
-Host: example.com
-Accept: application/yang-data+xml</artwork>
-        </figure>
-
-        <t>RESPONSE ("local-port" leaf value is supplied by the system):</t>
+        "bgp/peer/remote-port" is used, and there is no default statement for
+        "bgp/peer/local-port", the system will select a value for it. So the
+        contents of &lt;system&gt; are shown as follows:</t>
 
         <figure>
           <artwork>{
@@ -1072,59 +1052,8 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
       </section>
 
       <section title="Example Usage">
-        <t>This section gives an example of an &lt;edit-config&gt; request to
-        reference system-defined data nodes which are not present in
-        &lt;running&gt; with a "resolve-system" parameter. A retrieval of
-        &lt;running&gt; to show the auto-copied referenced system
-        configurations after the &lt;edit-config&gt; request is also given.
-        The YANG module used is shown as follows, leafrefs refer to an
-        existing name and address of an interface:</t>
-
-        <figure>
-              <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/example-interface-management.yang)
-              ]]></artwork>
-        </figure>
-
-        <t>Image the system provides an interface named "eth0" with a
-        predefined MTU value of "1500" when it is physically present,
-        &lt;system&gt; shows the following configuration of eth0
-        interface:</t>
-
-        <figure>
-              <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/interfacemgmt-system.xml)
-              ]]></artwork>
-        </figure>
-
-        <t>The client sends an &lt;edit-config&gt; operation to add the
-        configuration of default-address with a "resolve-system"
-        parameter:</t>
-
-        <figure>
-              <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/interfacemgmt-running.xml)
-              ]]></artwork>
-        </figure>
-
-        <t>Since the "resolve-system" parameter is provided, the server will
-        resolve any leafrefs to system configurations and copy the referenced
-        system-defined nodes into &lt;running&gt; automatically with the same
-        value (i.e., the name of interface eth0) in &lt;system&gt;.</t>
-
-        <t>A read back of interfaces configuration in &lt;running&gt; appears
-        as follows:<figure>
-              <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/interfacemgmt-read-running.xml)
-              ]]></artwork>
-          </figure></t>
-
-        <t>And a read back of interfaces configuration in &lt;operational&gt;
-        appears as follows:<figure>
-              <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/interfacemgmt-operational.xml)
-              ]]></artwork>
-          </figure></t>
+        <t>Please refer to <xref target="automatical"/> for example usage of
+        the "resolve-system" parameter.</t>
       </section>
 
       <section title="YANG Module">
@@ -1320,8 +1249,9 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
       <t>Following provides three use cases related to system-defined
       configuration lifecycle management. The simple interface data model
       defined in Appendix C.3 of <xref target="RFC8342"/> is used. For each
-      use case, XML snippets of &lt;running&gt;, &lt;system&gt;,
-      &lt;intended&gt; and &lt;operational&gt; are shown.</t>
+      use case, corresponding sample configuration in &lt;running&gt;,
+      &lt;system&gt;, &lt;intended&gt; and &lt;operational&gt; are shown. The
+      XML snippets are used only for examples.</t>
 
       <section title="Device Powers On">
         <t>&lt;running&gt;:</t>
@@ -1357,9 +1287,14 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
         <t>&lt;operational&gt;:</t>
 
         <figure>
-              <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/appendix-1.xml)
-              ]]></artwork>
+          <artwork>&lt;interfaces xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
+            or:origin="or:system"&gt;
+  &lt;interface&gt;
+    &lt;name&gt;lo0&lt;/name&gt;
+    &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
+    &lt;ip-address&gt;::1&lt;/ip-address&gt;
+  &lt;/interface&gt;
+&lt;/interfaces&gt;  </artwork>
         </figure>
       </section>
 
@@ -1409,9 +1344,14 @@ INSERT_TEXT_FROM_FILE(examples/appendix-1.xml)
         <t>&lt;operational&gt;:</t>
 
         <figure>
-              <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/appendix-2.xml)
-              ]]></artwork>
+          <artwork>&lt;interfaces xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
+            or:origin="or:intended"&gt;
+  &lt;interface or:origin="or:system"&gt;
+    &lt;name&gt;lo0&lt;/name&gt;
+    &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
+    &lt;ip-address&gt;::1&lt;/ip-address&gt;
+  &lt;/interface&gt;
+&lt;/interfaces&gt;              </artwork>
         </figure>
       </section>
 
@@ -1463,9 +1403,19 @@ INSERT_TEXT_FROM_FILE(examples/appendix-2.xml)
         <t>&lt;operational&gt;:</t>
 
         <figure>
-              <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/appendix-3.xml)
-              ]]></artwork>
+          <artwork>&lt;interfaces xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
+            or:origin="or:intended"&gt;
+  &lt;interface or:origin="or:system"&gt;
+    &lt;name&gt;lo0&lt;/name&gt;
+    &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
+    &lt;ip-address&gt;::1&lt;/ip-address&gt;
+  &lt;/interface&gt;
+  &lt;interface&gt;
+    &lt;name&gt;et-0/0/0&lt;/name&gt;
+    &lt;description&gt;Test interface&lt;/description&gt;
+    &lt;mtu or:origin="or:system"&gt;1500&lt;/mtu&gt;
+  &lt;/interface&gt;
+&lt;/interfaces&gt;            </artwork>
         </figure>
       </section>
     </section>
@@ -1488,7 +1438,8 @@ INSERT_TEXT_FROM_FILE(examples/appendix-3.xml)
           <t>Remove the related statement which mandates referenced system
           configuration must be copied into &lt;running&gt;</t>
 
-          <t>Refine usage examples</t>
+          <t>Refine usage examples (e.g., fix validation errors, remove
+          redundancy)</t>
         </list></t>
 
       <t>v03 - v04<list style="symbols">
