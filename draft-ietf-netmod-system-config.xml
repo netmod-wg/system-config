@@ -88,7 +88,7 @@
       </address>
     </author>
 
-    <author fullname="Feng Chong" initials="C." surname="Feng">
+    <author fullname="Chong Feng" initials="C." surname="Feng">
       <organization/>
 
       <address>
@@ -240,7 +240,7 @@
         configuration datastore" from <xref target="RFC8342"/> to add "system"
         to the list of conventional configuration datastores.</t>
 
-        <t>Configuration in &lt;running&gt; is merged into &lt;system&gt; to
+        <t>Configuration in &lt;running&gt; is merged with &lt;system&gt; to
         create the contents of &lt;intended&gt; after the configuration
         transformations to &lt;running&gt; (e.g., template expansion, removal
         of inactive configuration defined in <xref target="RFC8342"/>) have
@@ -423,18 +423,13 @@
         target="RFC6470"/><xref target="RFC8639"/><xref
         target="RFC8641"/>.</t>
 
-        <t>If system configuration changes (e.g., due to device upgrade),
-        &lt;running&gt; MAY become invalid. The server behaviors of migrating
-        updated system data into &lt;running&gt; is beyond the scope of this
-        document. That said, the following gives a list of examples of server
-        implementations that might be possible:<list style="symbols">
+        <t>The server behaviors of migrating updated system data into
+        &lt;running&gt; is beyond the scope of this document. That said, the
+        following gives a list of examples of server implementations that
+        might be possible:<list style="symbols">
             <t>Servers migrate system configuration update into
             &lt;running&gt; with the clients' awareness to keep
             &lt;running&gt; valid</t>
-
-            <t>Servers don't migrate any system configuration update into
-            &lt;running&gt; and clients are responsible to correct the
-            configuration in &lt;running&gt; if it becomes invalid</t>
 
             <t>Servers rejects the operation to change system configuration
             (e.g., device upgrade fails) and needs the client to correct the
@@ -477,7 +472,7 @@
         &lt;running&gt;).</t>
 
         <t>To ensure the validity of &lt;intended&gt;, configuration in
-        &lt;running&gt; is merged into &lt;system&gt; to become
+        &lt;running&gt; is merged with &lt;system&gt; to become
         &lt;intended&gt;, in which process, configuration appearing in
         &lt;running&gt; takes precedence over the same node in &lt;system&gt;;
         additional nodes to a list entry or new list/leaf-list entries
@@ -488,7 +483,7 @@
         expansion, removal of inactive configuration defined in <xref
         target="RFC8342"/>) before it can be applied, configuration
         transformations MUST be performed before &lt;running&gt; is merged
-        into &lt;system&gt;. If a server implements &lt;intended&gt;,
+        with &lt;system&gt;. If a server implements &lt;intended&gt;,
         &lt;system&gt; MUST be merged into &lt;intended&gt;.</t>
 
         <t>As a result, Figure 2 in Section 5 of RFC 8342 is updated with the
@@ -725,9 +720,9 @@ INSERT_TEXT_FROM_FILE(examples/example-acl.yang)
             </figure></t>
 
           <t>If a client configures an ACL rule referencing system provided
-          applications which are not present in &lt;running&gt;, take NETCONF
-          protocol for example, the client may issue an &lt;edit-config&gt;
-          operation with the parameter "resolve-system" as follows:<figure>
+          applications which are not present in &lt;running&gt;, the client
+          may issue an &lt;edit-config&gt; operation with the parameter
+          "resolve-system" to the NETCONF server as follows:<figure>
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/applications-resolve-system.xml)
               ]]></artwork>
@@ -757,15 +752,15 @@ INSERT_TEXT_FROM_FILE(examples/applications-operational.xml)
           system-defined configurations that are referenced instead of using
           the "resolve-system" parameter. For instance, in the above example,
           the client MAY also explicitly configure the following system
-          defined applications "ftp" and "tftp" only with the list key "name"
-          before referencing:<figure>
+          defined applications "ftp" and "tftp" only with the list key
+          "name":<figure>
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/applications-declare.xml)
               ]]></artwork>
             </figure></t>
 
-          <t>Then the client configures the following ACL rule referencing
-          applications "ftp" and "tftp" as follows:<figure>
+          <t>And the configuration of ACL rules referencing application "ftp"
+          and "tftp" are as follows:<figure>
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/applications-referenced.xml)
               ]]></artwork>
