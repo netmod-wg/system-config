@@ -12,7 +12,7 @@ module example-acl {
   }
 
   container acl {
-    list acl_rule {
+    list acl-rule {
       key "name";
       leaf name {
         type string;
@@ -20,10 +20,10 @@ module example-acl {
       container matches {
         choice l3 {
           container ipv4 {
-            leaf source_address {
+            leaf src-address {
               type inet:ipv4-prefix;
             }
-            leaf dest_address {
+            leaf dst-address {
               type inet:ipv4-prefix;
             }
           }
@@ -36,7 +36,7 @@ module example-acl {
           }
         }
       }
-      leaf packet_action {
+      leaf packet-action {
         type enumeration {
           enum forward;
           enum drop;
@@ -46,4 +46,3 @@ module example-acl {
     }
   }
 }
-
