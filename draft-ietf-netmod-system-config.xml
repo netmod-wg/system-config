@@ -388,16 +388,12 @@
         <t>To ensure the validity of &lt;intended&gt;, configuration in
         &lt;running&gt; is merged with &lt;system&gt; to become
         &lt;intended&gt;, in which process, configuration appearing in
-        &lt;running&gt; takes precedence over the same node in &lt;system&gt;;
-        additional nodes to a list entry or new list/leaf-list entries
-        appearing in &lt;running&gt; extends the list entry or the whole
-        list/leaf-list defined in &lt;system&gt; if the server allows the
-        list/leaf-list to be updated. If &lt;running&gt; includes
-        configuration that requires further transformation (e.g., template
-        expansion, removal of inactive configuration defined in <xref
-        target="RFC8342"/>) before it can be applied, configuration
-        transformations MUST be performed before &lt;running&gt; is merged
-        with &lt;system&gt;.</t>
+        &lt;running&gt; takes precedence over the same node in &lt;system&gt;.
+        If &lt;running&gt; includes configuration that requires further
+        transformation (e.g., template expansion, removal of inactive
+        configuration defined in <xref target="RFC8342"/>) before it can be
+        applied, configuration transformations MUST be performed before
+        &lt;running&gt; is merged with &lt;system&gt;.</t>
 
         <t>Whenever configuration in &lt;system&gt; changes, the server MUST
         also immediately update and validate &lt;intended&gt;.</t>
@@ -411,16 +407,16 @@
              |  (ct, rw)   |&lt;---+      +----&gt;| (ct, rw)  |
              +-------------+    |      |     +-----------+
                     |           |      |           |
-    +-----------+   |        +-----------+         |
-    | &lt;system&gt;  |   +-------&gt;| &lt;running&gt; |&lt;--------+
-    | (ct, ro)  |            | (ct, rw)  |
-    +-----+-----+            +----+------+
-          |                       | // configuration transformations,
-          +---------+             | // e.g., removal of nodes marked
-                    |             | // as "inactive", expansion of
-                    |&lt;------------+ // templates
-                    |
-                    V
++-----------+       |        +-----------+         |
+| &lt;system&gt;  |       +-------&gt;| &lt;running&gt; |&lt;--------+
+| (ct, ro)  |                | (ct, rw)  |
++-----+-----+                +----+------+
+      |                           | // configuration transformations,
+      +--------------+            | // e.g., removal of nodes marked
+                     |            | // as "inactive", expansion of
+                     |&lt;-----------+ // templates
+                     |
+                     V
                +------------+
                | &lt;intended&gt; | // subject to validation
                | (ct, ro)   |
@@ -476,6 +472,20 @@
           its origin value reported as "intended" when it flows into
           &lt;operational&gt;.</t>
         </section>
+
+        <section anchor="defaults" title="Default Interactions">
+          <t>&lt;system&gt; should not contain the configuration using the
+          schema default value, either specified in the "default" statement or
+          described in the "description" statement.</t>
+
+          <t>Any value provided by the system that is not the schema default
+          value MUST be contained in &lt;system&gt;. If system provides a
+          value that is not the schema default value, and the node is not
+          explicitly set by the client, it MUST be copied into the target
+          datastore when its closest ancestor node needs to be copied to
+          satisfy referential integrity constraints, to not to mislead the
+          client that the default value is in use.</t>
+        </section>
       </section>
 
       <section title="Explicit Declaration of System Configuration">
@@ -500,21 +510,23 @@
       <section anchor="resolve-system"
                title="Servers Auto-configuring Referenced System Configuration (&quot;resolve-system&quot; parameter)">
         <t>This document defines a new parameter "resolve-system" to the input
-        for the &lt;edit-config&gt;, &lt;edit-data&gt;, and
-        &lt;copy-config&gt; operations. Clients that are aware of the
-        "resolve-system" parameter MAY use this parameter to avoid the
-        requirement to provide a referentially complete configuration in
-        &lt;running&gt;.</t>
+        for some of the NETCONF and RESTCONF operations. Clients that are
+        aware of the "resolve-system" parameter MAY use this parameter to
+        avoid the requirement to provide a referentially complete
+        configuration.</t>
 
         <t>The "resolve-system" parameter is optional and has no value. If it
         is present, and the server supports this capability, the server MUST
         copy referenced system nodes into the target datastore (e.g.,
         &lt;running&gt;) without the client doing the copy/paste explicitly,
-        to resolve any references not resolved by the client. The server
-        copies the referenced system-defined nodes when triggered by the
-        "resolve-system" parameter. Legacy clients interacting with servers
-        that support this parameter don't see any changes in &lt;edit-
-        config&gt;/&lt;edit-data&gt; and &lt;copy-config&gt; behaviors.</t>
+        to resolve any references not resolved by the client. If any child
+        node of the copied configuration has its value being set by the system
+        that is not the schema default value, it MUST also be copied into the
+        target datastore (<xref target="defaults"/>). The copy operation MUST
+        NOT overwrite any explicit configuration in &lt;running&gt;. The
+        server copies the referenced system-defined nodes only when triggered
+        by the "resolve-system" parameter. Legacy clients don't see any
+        changes in the server behaviors.</t>
 
         <t>The server's copy referenced nodes from &lt;system&gt; to the
         target datastore MUST be enforced at the end of the
@@ -536,12 +548,12 @@
         &lt;get-data&gt; operation) returns automatically configured
         nodes.</t>
 
-        <t>Note that even an auto-configured node is allowed to be deleted
-        from the target datastore by the client, the system may automatically
-        recreate the deleted node to make configuration valid, when a
-        "resolve-system" parameter is carried. It is also possible that the
-        operation request (e.g., &lt;edit-config&gt;) may not succeed due to
-        incomplete referential integrity.</t>
+        <t>Note that even though an auto-configured node is allowed to be
+        deleted from the target datastore by the client, the system may
+        automatically recreate the deleted node to make configuration valid,
+        when a "resolve-system" parameter is carried. It is also possible that
+        the operation request (e.g., &lt;edit-config&gt;) may not succeed due
+        to incomplete referential integrity.</t>
 
         <t>Support for the "resolve-system" parameter is OPTIONAL. Servers not
         supporting NMDA <xref target="RFC8342"/> MAY also implement this
@@ -587,12 +599,12 @@
         <section anchor="RESTCONF-resolve"
                  title="RESTCONF Support for &quot;resolve-system&quot; Parameter">
           <section title="Query Parameter">
-            <t>The "resolve-system" parameter controls whether to allow a
-            server to copy any referenced system-defined configuration
-            automatically without the client doing so explicitly. This
-            parameter is only allowed with no values carried. If this
-            parameter has any unexpected value, then a "400 Bad Request"
-            status-line is returned.<figure
+            <t>The "resolve-system" parameter may be present in the request
+            URI of some RESTCONF operations as shown in <xref
+            target="RESTCONF-fig"/>. This parameter is only allowed with no
+            values carried. If this parameter has any unexpected value, then a
+            "400 Bad Request" status-line is returned.<figure align="left"
+                anchor="RESTCONF-fig"
                 title="RESTCONF &quot;resolve-system&quot; Query Parameter">
                 <artwork>+----------------+---------+-----------------------------------------+
 | Name           | Methods | Description                             |
