@@ -1937,15 +1937,15 @@ li > p:last-of-type {
 <p id="section-5.3-2">The "resolve-system" parameter is optional and has no value. If it
         is present, and the server supports this capability, the server MUST
         copy referenced system nodes into the target datastore (e.g.,
-        &lt;running&gt;) without the client doing the copy/paste explicitly,
-        to resolve any references not resolved by the client. If any child
-        node of the copied configuration has its value being set by the system
-        that is not the schema default value, it MUST also be copied into the
-        target datastore (<a href="#defaults" class="xref">Section 5.1.2</a>). The copy operation MUST
-        NOT overwrite any explicit configuration in &lt;running&gt;. The
-        server copies the referenced system-defined nodes only when triggered
-        by the "resolve-system" parameter. Legacy clients don't see any
-        changes in the server behaviors.<a href="#section-5.3-2" class="pilcrow">¶</a></p>
+        &lt;running&gt;) where it is missing from without the client doing the
+        copy/paste explicitly, to resolve any references not resolved by the
+        client. If any child node of the copied configuration has its value
+        being set by the system that is not the schema default value, it MUST
+        also be copied into the target datastore (<a href="#defaults" class="xref">Section 5.1.2</a>).
+        The copy operation MUST NOT overwrite any explicit configuration in
+        &lt;running&gt;. The server copies the referenced system-defined nodes
+        only when triggered by the "resolve-system" parameter. Legacy clients
+        don't see any changes in the server behaviors.<a href="#section-5.3-2" class="pilcrow">¶</a></p>
 <p id="section-5.3-3">The server's copy referenced nodes from &lt;system&gt; to the
         target datastore MUST be enforced at the end of the
         &lt;edit-config&gt;/&lt;edit-data&gt; or &lt;copy-config&gt;
@@ -2856,37 +2856,34 @@ module ietf-netconf-resolve-system {
     leaf resolve-system {
       type empty;
       description
-        "When present, the server is allowed to automatically
-         configure referenced system configuration into the
-         target configuration datastore.";
+        "When present, the server MUST copy referenced system
+         configuration into the target configuration datastore
+         where it is missing from without the client doing the
+         copy/paste explicitly.";
     }
   }
 
   augment "/nc:edit-config/nc:input" {
     description
-      "Allows the server to automatically configure
-       referenced system configuration to make configuration
-       valid.";
+      "Augment edit-config operation to allow resolve-system
+       parameter to be carried.";
     uses resolve-system-grouping;
   }
 
   augment "/nc:copy-config/nc:input" {
     description
-      "Allows the server to automatically configure
-       referenced system configuration to make configuration
-       valid.";
+      "Augment copy-config operation to allow resolve-system
+       parameter to be carried.";
     uses resolve-system-grouping;
   }
 
   augment "/ncds:edit-data/ncds:input" {
     description
-      "Allows the server to automatically configure
-       referenced system configuration to make configuration
-       valid.";
+      "Augment edit-data operation to allow resolve-system
+       parameter to be carried.";
     uses resolve-system-grouping;
   }
 }
-
 </pre><a href="#section-7.3-2" class="pilcrow">¶</a>
 </div>
 <p id="section-7.3-3" class="keepWithPrevious">&lt;CODE ENDS&gt;<a href="#section-7.3-3" class="pilcrow">¶</a></p>

@@ -592,15 +592,15 @@ Internet-Draft        System-defined Configuration              May 2024
    The "resolve-system" parameter is optional and has no value.  If it
    is present, and the server supports this capability, the server MUST
    copy referenced system nodes into the target datastore (e.g.,
-   <running>) without the client doing the copy/paste explicitly, to
-   resolve any references not resolved by the client.  If any child node
-   of the copied configuration has its value being set by the system
-   that is not the schema default value, it MUST also be copied into the
-   target datastore (Section 5.1.2).  The copy operation MUST NOT
-   overwrite any explicit configuration in <running>.  The server copies
-   the referenced system-defined nodes only when triggered by the
-   "resolve-system" parameter.  Legacy clients don't see any changes in
-   the server behaviors.
+   <running>) where it is missing from without the client doing the
+   copy/paste explicitly, to resolve any references not resolved by the
+   client.  If any child node of the copied configuration has its value
+   being set by the system that is not the schema default value, it MUST
+   also be copied into the target datastore (Section 5.1.2).  The copy
+   operation MUST NOT overwrite any explicit configuration in <running>.
+   The server copies the referenced system-defined nodes only when
+   triggered by the "resolve-system" parameter.  Legacy clients don't
+   see any changes in the server behaviors.
 
    The server's copy referenced nodes from <system> to the target
    datastore MUST be enforced at the end of the <edit-config>/<edit-
@@ -1648,32 +1648,32 @@ Internet-Draft        System-defined Configuration              May 2024
        leaf resolve-system {
          type empty;
          description
-           "When present, the server is allowed to automatically
-            configure referenced system configuration into the
-            target configuration datastore.";
+           "When present, the server MUST copy referenced system
+            configuration into the target configuration datastore
+            where it is missing from without the client doing the
+            copy/paste explicitly.";
        }
      }
 
      augment "/nc:edit-config/nc:input" {
        description
-         "Allows the server to automatically configure
-          referenced system configuration to make configuration
-          valid.";
+         "Augment edit-config operation to allow resolve-system
+          parameter to be carried.";
        uses resolve-system-grouping;
      }
 
      augment "/nc:copy-config/nc:input" {
        description
-         "Allows the server to automatically configure
-          referenced system configuration to make configuration
-          valid.";
+         "Augment copy-config operation to allow resolve-system
+          parameter to be carried.";
        uses resolve-system-grouping;
      }
 
      augment "/ncds:edit-data/ncds:input" {
        description
-         "Allows the server to automatically configure
-          referenced system configuration to make configuration
+         "Augment edit-data operation to allow resolve-system
+          parameter to be carried.";
+       uses resolve-system-grouping;
 
 
 
@@ -1682,8 +1682,6 @@ Ma, et al.              Expires 22 November 2024               [Page 30]
 Internet-Draft        System-defined Configuration              May 2024
 
 
-          valid.";
-       uses resolve-system-grouping;
      }
    }
 
@@ -1729,6 +1727,8 @@ Internet-Draft        System-defined Configuration              May 2024
    registry:
 
    urn:ietf:params:netconf:capability:resolve-system:1.0
+
+
 
 
 

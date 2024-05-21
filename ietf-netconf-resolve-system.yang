@@ -68,34 +68,31 @@ module ietf-netconf-resolve-system {
     leaf resolve-system {
       type empty;
       description
-        "When present, the server is allowed to automatically
-         configure referenced system configuration into the
-         target configuration datastore.";
+        "When present, the server MUST copy referenced system
+         configuration into the target configuration datastore
+         where it is missing from without the client doing the
+         copy/paste explicitly.";
     }
   }
 
   augment "/nc:edit-config/nc:input" {
     description
-      "Allows the server to automatically configure
-       referenced system configuration to make configuration
-       valid.";
+      "Augment edit-config operation to allow resolve-system
+       parameter to be carried.";
     uses resolve-system-grouping;
   }
 
   augment "/nc:copy-config/nc:input" {
     description
-      "Allows the server to automatically configure
-       referenced system configuration to make configuration
-       valid.";
+      "Augment copy-config operation to allow resolve-system
+       parameter to be carried.";
     uses resolve-system-grouping;
   }
 
   augment "/ncds:edit-data/ncds:input" {
     description
-      "Allows the server to automatically configure
-       referenced system configuration to make configuration
-       valid.";
+      "Augment edit-data operation to allow resolve-system
+       parameter to be carried.";
     uses resolve-system-grouping;
   }
 }
-

@@ -518,15 +518,15 @@
         <t>The "resolve-system" parameter is optional and has no value. If it
         is present, and the server supports this capability, the server MUST
         copy referenced system nodes into the target datastore (e.g.,
-        &lt;running&gt;) without the client doing the copy/paste explicitly,
-        to resolve any references not resolved by the client. If any child
-        node of the copied configuration has its value being set by the system
-        that is not the schema default value, it MUST also be copied into the
-        target datastore (<xref target="defaults"/>). The copy operation MUST
-        NOT overwrite any explicit configuration in &lt;running&gt;. The
-        server copies the referenced system-defined nodes only when triggered
-        by the "resolve-system" parameter. Legacy clients don't see any
-        changes in the server behaviors.</t>
+        &lt;running&gt;) where it is missing from without the client doing the
+        copy/paste explicitly, to resolve any references not resolved by the
+        client. If any child node of the copied configuration has its value
+        being set by the system that is not the schema default value, it MUST
+        also be copied into the target datastore (<xref target="defaults"/>).
+        The copy operation MUST NOT overwrite any explicit configuration in
+        &lt;running&gt;. The server copies the referenced system-defined nodes
+        only when triggered by the "resolve-system" parameter. Legacy clients
+        don't see any changes in the server behaviors.</t>
 
         <t>The server's copy referenced nodes from &lt;system&gt; to the
         target datastore MUST be enforced at the end of the
