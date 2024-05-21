@@ -6,7 +6,7 @@ NETMOD                                                        Q. Ma, Ed.
 Internet-Draft                                                     Q. Wu
 Updates: 8342, 6241, 8526, 8040 (if approved)                     Huawei
 Intended status: Standards Track                                 C. Feng
-Expires: 18 November 2024                                    17 May 2024
+Expires: 22 November 2024                                    21 May 2024
 
 
                       System-defined Configuration
@@ -40,7 +40,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 18 November 2024.
+   This Internet-Draft will expire on 22 November 2024.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Ma, et al.              Expires 18 November 2024                [Page 1]
+Ma, et al.              Expires 22 November 2024                [Page 1]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Ma, et al.              Expires 18 November 2024                [Page 2]
+Ma, et al.              Expires 22 November 2024                [Page 2]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -165,7 +165,7 @@ Internet-Draft        System-defined Configuration              May 2024
 
 
 
-Ma, et al.              Expires 18 November 2024                [Page 3]
+Ma, et al.              Expires 22 November 2024                [Page 3]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -221,7 +221,7 @@ Internet-Draft        System-defined Configuration              May 2024
 
 
 
-Ma, et al.              Expires 18 November 2024                [Page 4]
+Ma, et al.              Expires 22 November 2024                [Page 4]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -277,7 +277,7 @@ Internet-Draft        System-defined Configuration              May 2024
 
 
 
-Ma, et al.              Expires 18 November 2024                [Page 5]
+Ma, et al.              Expires 22 November 2024                [Page 5]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -294,9 +294,9 @@ Internet-Draft        System-defined Configuration              May 2024
 
 1.5.  Updates to RFC 8040
 
-   This document extends Section 4.8 of [4.8] and Section 9.1.1 of
-   [RFC8040] to add a new query parameter "resolve-system" and
-   corresponding query parameter capability URI (Section 5.3.2).
+   This document extends sections 4.8 and 9.1.1 in [RFC8040] to add a
+   new query parameter "resolve-system" and corresponding query
+   parameter capability URI (Section 5.3.2).
 
 2.  Kinds of System Configuration
 
@@ -333,7 +333,7 @@ Internet-Draft        System-defined Configuration              May 2024
 
 
 
-Ma, et al.              Expires 18 November 2024                [Page 6]
+Ma, et al.              Expires 22 November 2024                [Page 6]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -389,7 +389,7 @@ Internet-Draft        System-defined Configuration              May 2024
 
 
 
-Ma, et al.              Expires 18 November 2024                [Page 7]
+Ma, et al.              Expires 22 November 2024                [Page 7]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -445,7 +445,7 @@ Internet-Draft        System-defined Configuration              May 2024
 
 
 
-Ma, et al.              Expires 18 November 2024                [Page 8]
+Ma, et al.              Expires 22 November 2024                [Page 8]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -501,7 +501,7 @@ Internet-Draft        System-defined Configuration              May 2024
 
 
 
-Ma, et al.              Expires 18 November 2024                [Page 9]
+Ma, et al.              Expires 22 November 2024                [Page 9]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -557,7 +557,7 @@ Internet-Draft        System-defined Configuration              May 2024
 
 
 
-Ma, et al.              Expires 18 November 2024               [Page 10]
+Ma, et al.              Expires 22 November 2024               [Page 10]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -613,7 +613,7 @@ Internet-Draft        System-defined Configuration              May 2024
 
 
 
-Ma, et al.              Expires 18 November 2024               [Page 11]
+Ma, et al.              Expires 22 November 2024               [Page 11]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -669,7 +669,7 @@ Internet-Draft        System-defined Configuration              May 2024
 
 
 
-Ma, et al.              Expires 18 November 2024               [Page 12]
+Ma, et al.              Expires 22 November 2024               [Page 12]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -725,7 +725,7 @@ Internet-Draft        System-defined Configuration              May 2024
 
 
 
-Ma, et al.              Expires 18 November 2024               [Page 13]
+Ma, et al.              Expires 22 November 2024               [Page 13]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -781,7 +781,7 @@ Internet-Draft        System-defined Configuration              May 2024
 
 
 
-Ma, et al.              Expires 18 November 2024               [Page 14]
+Ma, et al.              Expires 22 November 2024               [Page 14]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -837,7 +837,7 @@ Internet-Draft        System-defined Configuration              May 2024
 
 
 
-Ma, et al.              Expires 18 November 2024               [Page 15]
+Ma, et al.              Expires 22 November 2024               [Page 15]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -893,7 +893,7 @@ Internet-Draft        System-defined Configuration              May 2024
 
 
 
-Ma, et al.              Expires 18 November 2024               [Page 16]
+Ma, et al.              Expires 22 November 2024               [Page 16]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -949,7 +949,7 @@ Internet-Draft        System-defined Configuration              May 2024
 
 
 
-Ma, et al.              Expires 18 November 2024               [Page 17]
+Ma, et al.              Expires 22 November 2024               [Page 17]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -1005,7 +1005,7 @@ Internet-Draft        System-defined Configuration              May 2024
 
 
 
-Ma, et al.              Expires 18 November 2024               [Page 18]
+Ma, et al.              Expires 22 November 2024               [Page 18]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -1061,7 +1061,7 @@ Internet-Draft        System-defined Configuration              May 2024
 
 
 
-Ma, et al.              Expires 18 November 2024               [Page 19]
+Ma, et al.              Expires 22 November 2024               [Page 19]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -1117,7 +1117,7 @@ Internet-Draft        System-defined Configuration              May 2024
 
 
 
-Ma, et al.              Expires 18 November 2024               [Page 20]
+Ma, et al.              Expires 22 November 2024               [Page 20]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -1173,7 +1173,7 @@ Internet-Draft        System-defined Configuration              May 2024
 
 
 
-Ma, et al.              Expires 18 November 2024               [Page 21]
+Ma, et al.              Expires 22 November 2024               [Page 21]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -1229,7 +1229,7 @@ Internet-Draft        System-defined Configuration              May 2024
 
 
 
-Ma, et al.              Expires 18 November 2024               [Page 22]
+Ma, et al.              Expires 22 November 2024               [Page 22]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -1285,7 +1285,7 @@ Internet-Draft        System-defined Configuration              May 2024
 
 
 
-Ma, et al.              Expires 18 November 2024               [Page 23]
+Ma, et al.              Expires 22 November 2024               [Page 23]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -1322,7 +1322,7 @@ Internet-Draft        System-defined Configuration              May 2024
 
 6.3.  YANG Module
 
-   <CODE BEGINS> file "ietf-system-datastore@2024-05-17.yang"
+   <CODE BEGINS> file "ietf-system-datastore@2024-05-21.yang"
 
    module ietf-system-datastore {
      yang-version 1.1;
@@ -1341,7 +1341,7 @@ Internet-Draft        System-defined Configuration              May 2024
 
 
 
-Ma, et al.              Expires 18 November 2024               [Page 24]
+Ma, et al.              Expires 22 November 2024               [Page 24]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -1380,7 +1380,7 @@ Internet-Draft        System-defined Configuration              May 2024
         (RFC 8174) when, and only when, they appear in all
         capitals, as shown here.";
 
-     revision 2024-05-17 {
+     revision 2024-05-21 {
        description
          "Initial version.";
        reference
@@ -1397,7 +1397,7 @@ Internet-Draft        System-defined Configuration              May 2024
 
 
 
-Ma, et al.              Expires 18 November 2024               [Page 25]
+Ma, et al.              Expires 22 November 2024               [Page 25]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -1453,7 +1453,7 @@ Internet-Draft        System-defined Configuration              May 2024
 
 
 
-Ma, et al.              Expires 18 November 2024               [Page 26]
+Ma, et al.              Expires 22 November 2024               [Page 26]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -1503,13 +1503,13 @@ Internet-Draft        System-defined Configuration              May 2024
 
 7.3.  YANG Module
 
-   <CODE BEGINS> file "ietf-netconf-resolve-system@2024-05-17.yang"
+   <CODE BEGINS> file "ietf-netconf-resolve-system@2024-05-21.yang"
 
 
 
 
 
-Ma, et al.              Expires 18 November 2024               [Page 27]
+Ma, et al.              Expires 22 November 2024               [Page 27]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -1565,7 +1565,7 @@ Internet-Draft        System-defined Configuration              May 2024
 
 
 
-Ma, et al.              Expires 18 November 2024               [Page 28]
+Ma, et al.              Expires 22 November 2024               [Page 28]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -1579,7 +1579,7 @@ Internet-Draft        System-defined Configuration              May 2024
          (RFC 8174) when, and only when, they appear in all
          capitals, as shown here.";
 
-     revision 2024-05-17 {
+     revision 2024-05-21 {
        description
          "Initial version.";
        reference
@@ -1621,7 +1621,7 @@ Internet-Draft        System-defined Configuration              May 2024
 
 
 
-Ma, et al.              Expires 18 November 2024               [Page 29]
+Ma, et al.              Expires 22 November 2024               [Page 29]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -1677,7 +1677,7 @@ Internet-Draft        System-defined Configuration              May 2024
 
 
 
-Ma, et al.              Expires 18 November 2024               [Page 30]
+Ma, et al.              Expires 22 November 2024               [Page 30]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -1733,7 +1733,7 @@ Internet-Draft        System-defined Configuration              May 2024
 
 
 
-Ma, et al.              Expires 18 November 2024               [Page 31]
+Ma, et al.              Expires 22 November 2024               [Page 31]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -1789,7 +1789,7 @@ Normative References
 
 
 
-Ma, et al.              Expires 18 November 2024               [Page 32]
+Ma, et al.              Expires 22 November 2024               [Page 32]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -1845,7 +1845,7 @@ Informative References
 
 
 
-Ma, et al.              Expires 18 November 2024               [Page 33]
+Ma, et al.              Expires 22 November 2024               [Page 33]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -1901,7 +1901,7 @@ Internet-Draft        System-defined Configuration              May 2024
 
 
 
-Ma, et al.              Expires 18 November 2024               [Page 34]
+Ma, et al.              Expires 22 November 2024               [Page 34]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -1957,7 +1957,7 @@ A.1.  Device Powers On
 
 
 
-Ma, et al.              Expires 18 November 2024               [Page 35]
+Ma, et al.              Expires 22 November 2024               [Page 35]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -2013,7 +2013,7 @@ A.2.  Client Commits Configuration
 
 
 
-Ma, et al.              Expires 18 November 2024               [Page 36]
+Ma, et al.              Expires 22 November 2024               [Page 36]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -2069,7 +2069,7 @@ A.3.  Operator Installs Card into a Chassis
 
 
 
-Ma, et al.              Expires 18 November 2024               [Page 37]
+Ma, et al.              Expires 22 November 2024               [Page 37]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -2125,7 +2125,7 @@ Appendix B.  Changes between Revisions
 
 
 
-Ma, et al.              Expires 18 November 2024               [Page 38]
+Ma, et al.              Expires 22 November 2024               [Page 38]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -2181,7 +2181,7 @@ Authors' Addresses
 
 
 
-Ma, et al.              Expires 18 November 2024               [Page 39]
+Ma, et al.              Expires 22 November 2024               [Page 39]
 
 Internet-Draft        System-defined Configuration              May 2024
 
@@ -2237,4 +2237,4 @@ Internet-Draft        System-defined Configuration              May 2024
 
 
 
-Ma, et al.              Expires 18 November 2024               [Page 40]
+Ma, et al.              Expires 22 November 2024               [Page 40]

@@ -253,11 +253,11 @@
       </section>
 
       <section title="Updates to RFC 8040">
-        <t>This document extends <xref format="counter" section="4.8"
-        sectionFormat="of" target="RFC8040"/> and <xref section="9.1.1"
-        sectionFormat="of" target="RFC8040"/> to add a new query parameter
-        "resolve-system" and corresponding query parameter capability URI
-        (<xref target="RESTCONF-resolve"/>).</t>
+        <t>This document extends sections <xref format="counter" section="4.8"
+        sectionFormat="bare" target="RFC8040"/> and <xref section="9.1.1"
+        sectionFormat="bare" target="RFC8040"/> in <xref target="RFC8040"/> to
+        add a new query parameter "resolve-system" and corresponding query
+        parameter capability URI (<xref target="RESTCONF-resolve"/>).</t>
       </section>
     </section>
 
