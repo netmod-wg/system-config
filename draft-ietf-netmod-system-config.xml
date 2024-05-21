@@ -643,8 +643,10 @@
         be modifiable or not, even if some system configuration has been
         copied into &lt;running&gt; earlier. If a system node is
         non-modifiable, then writing a different value for that node MUST
-        return an error. The immutability of system configuration is defined
-        in <xref target="I-D.ma-netmod-immutable-flag"/>.</t>
+        return an error during a &lt;edit-config&gt;, &lt;validate&gt; or
+        &lt;commit&gt; operation, depending on the target datastore. The
+        immutability of system configuration is defined in <xref
+        target="I-D.ma-netmod-immutable-flag"/>.</t>
 
         <t>A server may also allow a client to add data nodes to a list entry
         in &lt;system&gt; by writing those additional nodes in
