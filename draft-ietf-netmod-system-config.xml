@@ -566,26 +566,6 @@
         implementation decision where to copy referenced system configuration
         into the target datastore (e.g., &lt;running&gt;).</t>
 
-        <t>If the "resolve-system" parameter is not given by the client, the
-        server should not modify &lt;running&gt; in any way otherwise not
-        specified by the client. Not using capitalized "SHOULD NOT" in the
-        previous sentence is intentional. The intention is to bring awareness
-        to the general need to not surprise clients with unexpected changes.
-        It is desirable for clients to always opt into using mechanisms having
-        server-side changes. This document enables a client to opt into this
-        behavior using the "resolve-system" parameter. An example of this type
-        of opt-in behavior can also be found in RFC 7317, which enables a
-        client to opt into its behavior using a "$0$" prefix (see
-        ianach:crypt-hash type defined in <xref target="RFC7317"/>).</t>
-
-        <t>Implementation specifics are beyond the scope of this document,
-        however, due to the extra complexity brought by the "resolve-system"
-        parameter, clients should be aware that it would cost a reasonable
-        amount of time for the server to resolve reference, retrieve and copy
-        the referenced system configuration from &lt;system&gt;, which could
-        take multiple rounds since some errors may depend on the resolution of
-        previous ones.</t>
-
         <section anchor="NETCONF-resolve"
                  title="NETCONF Support for &quot;resolve-system&quot; Parameter">
           <t>This document defines a NETCONF protocol capability to indicate
