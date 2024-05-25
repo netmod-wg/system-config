@@ -402,42 +402,42 @@
         target="RFC8342"/> is updated with the below conceptual model of
         datastores which incorporates the system configuration
         datastore.<figure title="Architectural Model of Datastores">
-            <artwork>             +-------------+                 +-----------+
-             | &lt;candidate&gt; |                 | &lt;startup&gt; |
-             |  (ct, rw)   |&lt;---+      +----&gt;| (ct, rw)  |
-             +-------------+    |      |     +-----------+
-                    |           |      |           |
-+-----------+       |        +-----------+         |
-| &lt;system&gt;  |       +-------&gt;| &lt;running&gt; |&lt;--------+
-| (ct, ro)  |                | (ct, rw)  |
-+-----+-----+                +----+------+
-      |                           | // configuration transformations,
-      +--------------+            | // e.g., removal of nodes marked
-                     |            | // as "inactive", expansion of
-                     |&lt;-----------+ // templates
-                     |
-                     V
-               +------------+
-               | &lt;intended&gt; | // subject to validation
-               | (ct, ro)   |
-               +------------+
-                       |
-                       |      // changes applied, subject to
-                       |      // local factors, e.g., missing
-                       |      // resources, delays
-   dynamic             |
-   configuration       |   +-------- learned configuration
-   datastores -----+   |   +-------- default configuration
-                   |   |   |
-                   v   v   v
-               +---------------+
-               | &lt;operational&gt; | &lt;-- system state
-               | (ct + cf, ro) |
-               +---------------+
+            <artwork>               +-------------+                 +-----------+
+               | &lt;candidate&gt; |                 | &lt;startup&gt; |
+               |  (ct, rw)   |&lt;---+      +----&gt;| (ct, rw)  |
+               +-------------+    |      |     +-----------+
+                      |           |      |           |
++-----------+         |        +-----------+         |
+| &lt;system&gt;  |         +-------&gt;| &lt;running&gt; |&lt;--------+
+| (ct, ro)  |                  | (ct, rw)  |
++-----------+                  +-----------+
+     |                              | // configuration transformations,
+     |                              | // e.g., removal of nodes marked
+     |           // merge           | // as "inactive", expansion of
+     +--------------+---------------+ // templates
+                    |
+                    |
+                    V
+              +------------+
+              | &lt;intended&gt; |  // subject to validation
+              | (ct, ro)   |
+              +------------+
+                     |       // changes applied, subject to
+                     |       // local factors, e.g., missing
+                     |       // resources, delays
+ dynamic             |
+ configuration       |   +-------- learned configuration
+ datastores -----+   |   +-------- default configuration
+                 |   |   |
+                 V   V   V
+             +---------------+
+             | &lt;operational&gt; | &lt;-- system state
+             | (ct + cf, ro) |
+             +---------------+
 
-  ct = config true; cf = config false
-  rw = read-write; ro = read-only
-  boxes denote named datastores</artwork>
+ct = config true; cf = config false
+rw = read-write; ro = read-only
+boxes denote named datastores</artwork>
           </figure></t>
 
         <t>Configuration in &lt;system&gt; is non-deletable to clients, even
