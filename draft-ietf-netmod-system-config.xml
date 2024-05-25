@@ -1191,7 +1191,7 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
 
       <?rfc include="reference.RFC.8808.xml"?>
 
-      <xi:include href="https://datatracker.ietf.org/doc/bibxml3/reference.I-D.ma-netmod-immutable-flag.xml"
+      <xi:include href="https://datatracker.ietf.org/doc/bibxml3/reference.I-D.ietf-netmod-immutable-flag.xml"
                   xmlns:xi="http://www.w3.org/2001/XInclude"/>
     </references>
 

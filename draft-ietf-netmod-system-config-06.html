@@ -1201,7 +1201,7 @@ li > p:last-of-type {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ma, et al.</td>
-<td class="center">Expires 22 November 2024</td>
+<td class="center">Expires 26 November 2024</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1217,12 +1217,12 @@ li > p:last-of-type {
 <a href="https://www.rfc-editor.org/rfc/rfc8342" class="eref">8342</a>, <a href="https://www.rfc-editor.org/rfc/rfc6241" class="eref">6241</a>, <a href="https://www.rfc-editor.org/rfc/rfc8526" class="eref">8526</a>, <a href="https://www.rfc-editor.org/rfc/rfc8040" class="eref">8040</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-05-21" class="published">21 May 2024</time>
+<time datetime="2024-05-25" class="published">25 May 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2024-11-22">22 November 2024</time></dd>
+<dd class="expires"><time datetime="2024-11-26">26 November 2024</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1271,7 +1271,7 @@ li > p:last-of-type {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 22 November 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 26 November 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1687,8 +1687,8 @@ li > p:last-of-type {
         loads associated configuration; when the physical resource is not
         present (an interface card is removed), the system configuration will
         be automatically cleared. Another example is when a special
-        functionality is enabled, e.g., when a QoS feature is enabled, QoS
-        related policies are automatically created by the system.<a href="#section-2.2-1" class="pilcrow">¶</a></p>
+        functionality is enabled, e.g., when a license or feature is enabled,
+        specific configuration may be created by the system.<a href="#section-2.2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1750,13 +1750,13 @@ li > p:last-of-type {
         <h3 id="name-may-change-via-software-upg">
 <a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-may-change-via-software-upg" class="section-name selfRef">May Change via Software Upgrades or Resource Changes</a>
         </h3>
-<p id="section-4.2-1">System configuration may change dynamically (see <a href="#conditional" class="xref">Section 2.2</a> and <a href="#system-ds-def" class="xref">Section 3</a>). The
+<p id="section-4.2-1">System configuration MAY change dynamically (see <a href="#conditional" class="xref">Section 2.2</a> and <a href="#system-ds-def" class="xref">Section 3</a>). The
         updates of system configuration may be obtained through YANG
         notifications (e.g., on-change notification) <span>[<a href="#RFC6470" class="xref">RFC6470</a>]</span><span>[<a href="#RFC8639" class="xref">RFC8639</a>]</span><span>[<a href="#RFC8641" class="xref">RFC8641</a>]</span>.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
 <p id="section-4.2-2">The behavior of the server when system configuration changes (e.g.,
         due to software upgrade) is outside the scope of this document. That
         said, here are some examples of how a server might handle this
-        scenario:<a href="#section-4.2-2" class="pilcrow">¶</a></p>
+        scenario ensuring &lt;running&gt; remains accurate:<a href="#section-4.2-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.2-3.1">Servers migrate system configuration update in
             &lt;running&gt;.<a href="#section-4.2-3.1" class="pilcrow">¶</a>
@@ -1813,42 +1813,42 @@ li > p:last-of-type {
         datastore.<a href="#section-5.1-4" class="pilcrow">¶</a></p>
 <span id="name-architectural-model-of-data"></span><figure id="figure-1">
           <div class="alignLeft art-text artwork" id="section-5.1-5.1">
-<pre>             +-------------+                 +-----------+
-             | &lt;candidate&gt; |                 | &lt;startup&gt; |
-             |  (ct, rw)   |&lt;---+      +----&gt;| (ct, rw)  |
-             +-------------+    |      |     +-----------+
-                    |           |      |           |
-+-----------+       |        +-----------+         |
-| &lt;system&gt;  |       +-------&gt;| &lt;running&gt; |&lt;--------+
-| (ct, ro)  |                | (ct, rw)  |
-+-----+-----+                +----+------+
-      |                           | // configuration transformations,
-      +--------------+            | // e.g., removal of nodes marked
-                     |            | // as "inactive", expansion of
-                     |&lt;-----------+ // templates
-                     |
-                     V
-               +------------+
-               | &lt;intended&gt; | // subject to validation
-               | (ct, ro)   |
-               +------------+
-                       |
-                       |      // changes applied, subject to
-                       |      // local factors, e.g., missing
-                       |      // resources, delays
-   dynamic             |
-   configuration       |   +-------- learned configuration
-   datastores -----+   |   +-------- default configuration
-                   |   |   |
-                   v   v   v
-               +---------------+
-               | &lt;operational&gt; | &lt;-- system state
-               | (ct + cf, ro) |
-               +---------------+
+<pre>               +-------------+                 +-----------+
+               | &lt;candidate&gt; |                 | &lt;startup&gt; |
+               |  (ct, rw)   |&lt;---+      +----&gt;| (ct, rw)  |
+               +-------------+    |      |     +-----------+
+                      |           |      |           |
++-----------+         |        +-----------+         |
+| &lt;system&gt;  |         +-------&gt;| &lt;running&gt; |&lt;--------+
+| (ct, ro)  |                  | (ct, rw)  |
++-----------+                  +-----------+
+     |                              | // configuration transformations,
+     |                              | // e.g., removal of nodes marked
+     |           // merge           | // as "inactive", expansion of
+     +--------------+---------------+ // templates
+                    |
+                    |
+                    V
+              +------------+
+              | &lt;intended&gt; |  // subject to validation
+              | (ct, ro)   |
+              +------------+
+                     |       // changes applied, subject to
+                     |       // local factors, e.g., missing
+                     |       // resources, delays
+ dynamic             |
+ configuration       |   +-------- learned configuration
+ datastores -----+   |   +-------- default configuration
+                 |   |   |
+                 V   V   V
+             +---------------+
+             | &lt;operational&gt; | &lt;-- system state
+             | (ct + cf, ro) |
+             +---------------+
 
-  ct = config true; cf = config false
-  rw = read-write; ro = read-only
-  boxes denote named datastores</pre>
+ct = config true; cf = config false
+rw = read-write; ro = read-only
+boxes denote named datastores</pre>
 </div>
 <figcaption><a href="#figure-1" class="selfRef">Figure 1</a>:
 <a href="#name-architectural-model-of-data" class="selfRef">Architectural Model of Datastores</a>
@@ -1898,8 +1898,7 @@ li > p:last-of-type {
           value that is not the schema default value, and the node is not
           explicitly set by the client, it MUST be copied into the target
           datastore when its closest ancestor node needs to be copied to
-          satisfy referential integrity constraints, to not to mislead the
-          client that the default value is in use.<a href="#section-5.1.2-2" class="pilcrow">¶</a></p>
+          satisfy referential integrity constraints.<a href="#section-5.1.2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1979,24 +1978,6 @@ li > p:last-of-type {
         the "resolve-system" parameter is used; otherwise it is an
         implementation decision where to copy referenced system configuration
         into the target datastore (e.g., &lt;running&gt;).<a href="#section-5.3-7" class="pilcrow">¶</a></p>
-<p id="section-5.3-8">If the "resolve-system" parameter is not given by the client, the
-        server should not modify &lt;running&gt; in any way otherwise not
-        specified by the client. Not using capitalized "SHOULD NOT" in the
-        previous sentence is intentional. The intention is to bring awareness
-        to the general need to not surprise clients with unexpected changes.
-        It is desirable for clients to always opt into using mechanisms having
-        server-side changes. This document enables a client to opt into this
-        behavior using the "resolve-system" parameter. An example of this type
-        of opt-in behavior can also be found in RFC 7317, which enables a
-        client to opt into its behavior using a "$0$" prefix (see
-        ianach:crypt-hash type defined in <span>[<a href="#RFC7317" class="xref">RFC7317</a>]</span>).<a href="#section-5.3-8" class="pilcrow">¶</a></p>
-<p id="section-5.3-9">Implementation specifics are beyond the scope of this document,
-        however, due to the extra complexity brought by the "resolve-system"
-        parameter, clients should be aware that it would cost a reasonable
-        amount of time for the server to resolve reference, retrieve and copy
-        the referenced system configuration from &lt;system&gt;, which could
-        take multiple rounds since some errors may depend on the resolution of
-        previous ones.<a href="#section-5.3-9" class="pilcrow">¶</a></p>
 <div id="NETCONF-resolve">
 <section id="section-5.3.1">
           <h4 id="name-netconf-support-for-resolve">
@@ -2076,11 +2057,7 @@ li > p:last-of-type {
         non-modifiable, then writing a different value for that node MUST
         return an error during a &lt;edit-config&gt;, &lt;validate&gt; or
         &lt;commit&gt; operation, depending on the target datastore. The
-        immutability of system configuration is defined in <span>[<a href="#I-D.ma-netmod-immutable-flag" class="xref">I-D.ma-netmod-immutable-flag</a>]</span>.<a href="#section-5.4-2" class="pilcrow">¶</a></p>
-<p id="section-5.4-3">A server may also allow a client to add data nodes to a list entry
-        in &lt;system&gt; by writing those additional nodes in
-        &lt;running&gt;. Those additional data nodes may not exist in
-        &lt;system&gt; (i.e., an *addition* rather than an override).<a href="#section-5.4-3" class="pilcrow">¶</a></p>
+        immutability of system configuration is defined in <span>[<a href="#I-D.ietf-netmod-immutable-flag" class="xref">I-D.ietf-netmod-immutable-flag</a>]</span>.<a href="#section-5.4-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <section id="section-5.5">
@@ -2612,7 +2589,7 @@ module example-interface {
 <a href="#section-6.3" class="section-number selfRef">6.3. </a><a href="#name-yang-module" class="section-name selfRef">YANG Module</a>
         </h3>
 <p id="section-6.3-1" class="keepWithNext">&lt;CODE BEGINS&gt; file
-          "ietf-system-datastore@2024-05-21.yang"<a href="#section-6.3-1" class="pilcrow">¶</a></p>
+          "ietf-system-datastore@2024-05-25.yang"<a href="#section-6.3-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-6.3-2">
 <pre>
 module ietf-system-datastore {
@@ -2663,7 +2640,7 @@ module ietf-system-datastore {
      (RFC 8174) when, and only when, they appear in all
      capitals, as shown here.";
 
-  revision 2024-05-21 {
+  revision 2024-05-25 {
     description
       "Initial version.";
     reference
@@ -2783,7 +2760,7 @@ module ietf-system-datastore {
 <a href="#section-7.3" class="section-number selfRef">7.3. </a><a href="#name-yang-module-2" class="section-name selfRef">YANG Module</a>
         </h3>
 <p id="section-7.3-1" class="keepWithNext">&lt;CODE BEGINS&gt; file
-          "ietf-netconf-resolve-system@2024-05-21.yang"<a href="#section-7.3-1" class="pilcrow">¶</a></p>
+          "ietf-netconf-resolve-system@2024-05-25.yang"<a href="#section-7.3-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-7.3-2">
 <pre>
 module ietf-netconf-resolve-system {
@@ -2843,7 +2820,7 @@ module ietf-netconf-resolve-system {
       (RFC 8174) when, and only when, they appear in all
       capitals, as shown here.";
 
-  revision 2024-05-21 {
+  revision 2024-05-25 {
     description
       "Initial version.";
     reference
@@ -3091,9 +3068,9 @@ module ietf-netconf-resolve-system {
 <a href="#name-informative-references" class="section-name selfRef">Informative References</a>
         </h3>
 <dl class="references">
-<dt id="I-D.ma-netmod-immutable-flag">[I-D.ma-netmod-immutable-flag]</dt>
+<dt id="I-D.ietf-netmod-immutable-flag">[I-D.ietf-netmod-immutable-flag]</dt>
         <dd>
-<span class="refAuthor">Ma, Q.</span>, <span class="refAuthor">Wu, Q.</span>, <span class="refAuthor">Lengyel, B.</span>, and <span class="refAuthor">H. Li</span>, <span class="refTitle">"YANG Metadata Annotation for Immutable Flag"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ma-netmod-immutable-flag-09</span>, <time datetime="2023-10-22" class="refDate">22 October 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ma-netmod-immutable-flag-09">https://datatracker.ietf.org/doc/html/draft-ma-netmod-immutable-flag-09</a>&gt;</span>. </dd>
+<span class="refAuthor">Ma, Q.</span>, <span class="refAuthor">Wu, Q.</span>, <span class="refAuthor">Lengyel, B.</span>, and <span class="refAuthor">H. Li</span>, <span class="refTitle">"YANG Metadata Annotation for Immutable Flag"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-netmod-immutable-flag-00</span>, <time datetime="2024-03-18" class="refDate">18 March 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-netmod-immutable-flag-00">https://datatracker.ietf.org/doc/html/draft-ietf-netmod-immutable-flag-00</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC3688">[RFC3688]</dt>
         <dd>
