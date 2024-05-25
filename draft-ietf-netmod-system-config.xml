@@ -253,7 +253,7 @@
       </section>
 
       <section title="Updates to RFC 8040">
-        <t>This document extends sections <xref format="counter" section="4.8"
+        <t>This document extends sections <xref section="4.8"
         sectionFormat="bare" target="RFC8040"/> and <xref section="9.1.1"
         sectionFormat="bare" target="RFC8040"/> in <xref target="RFC8040"/> to
         add a new query parameter "resolve-system" and corresponding query
@@ -401,8 +401,7 @@
         <t>As a result, Figure 2 in <xref section="5" sectionFormat="of"
         target="RFC8342"/> is updated with the below conceptual model of
         datastores which incorporates the system configuration
-        datastore.<figure align="center"
-            title="Architectural Model of Datastores">
+        datastore.<figure title="Architectural Model of Datastores">
             <artwork>               +-------------+                 +-----------+
                | &lt;candidate&gt; |                 | &lt;startup&gt; |
                |  (ct, rw)   |&lt;---+      +----&gt;| (ct, rw)  |
@@ -576,7 +575,7 @@ boxes denote named datastores</artwork>
             URI of some RESTCONF operations as shown in <xref
             target="RESTCONF-fig"/>. This parameter is only allowed with no
             values carried. If this parameter has any unexpected value, then a
-            "400 Bad Request" status-line is returned.<figure align="center"
+            "400 Bad Request" status-line is returned.<figure
                 anchor="RESTCONF-fig"
                 title="RESTCONF &quot;resolve-system&quot; Query Parameter">
                 <artwork>+----------------+---------+-----------------------------------------+
@@ -782,7 +781,7 @@ INSERT_TEXT_FROM_FILE(examples/interface-operational-addition.xml)
         reset to its factory default condition.</t>
 
         <t>The &lt;factory-reset&gt; RPC operation can reset &lt;system&gt; to
-        its factory default contents. </t>
+        its factory default contents.</t>
       </section>
 
       <section title="The &quot;candidate&quot; Datastore">
@@ -1206,8 +1205,6 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
       <?rfc include="reference.RFC.6020.xml"?>
 
       <?rfc include="reference.RFC.6242.xml"?>
-
-      <?rfc include="reference.RFC.7317.xml"?>
 
       <?rfc include="reference.RFC.7952.xml"?>
 
