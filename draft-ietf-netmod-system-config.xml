@@ -285,8 +285,8 @@
         loads associated configuration; when the physical resource is not
         present (an interface card is removed), the system configuration will
         be automatically cleared. Another example is when a special
-        functionality is enabled, e.g., when a QoS feature is enabled, QoS
-        related policies are automatically created by the system.</t>
+        functionality is enabled, e.g., when a license or feature is enabled,
+        specific configuration may be created by the system.</t>
       </section>
     </section>
 
@@ -483,8 +483,7 @@
           value that is not the schema default value, and the node is not
           explicitly set by the client, it MUST be copied into the target
           datastore when its closest ancestor node needs to be copied to
-          satisfy referential integrity constraints, to not to mislead the
-          client that the default value is in use.</t>
+          satisfy referential integrity constraints.</t>
         </section>
       </section>
 
