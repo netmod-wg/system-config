@@ -253,7 +253,7 @@
       </section>
 
       <section title="Updates to RFC 8040">
-        <t>This document extends sections <xref format="counter" section="4.8"
+        <t>This document extends sections <xref section="4.8"
         sectionFormat="bare" target="RFC8040"/> and <xref section="9.1.1"
         sectionFormat="bare" target="RFC8040"/> in <xref target="RFC8040"/> to
         add a new query parameter "resolve-system" and corresponding query
@@ -327,9 +327,8 @@
           target="system-datastore"/>).</t>
         </list></t>
 
-      <t>The system configuration datastore doesn't persist across reboots;
-      &lt;factory-reset&gt; RPC operation defined in <xref target="RFC8808"/>
-      can reset &lt;system&gt; to its factory default contents.</t>
+      <t>The system configuration datastore doesn't persist across
+      reboots.</t>
     </section>
 
     <section title="Static Characteristics of &lt;system&gt;">
@@ -448,13 +447,6 @@ boxes denote named datastores</artwork>
         the client may delete it in &lt;running&gt;, in which case
         system-initialized value defined in &lt;system&gt; may still be in use
         and appear in &lt;operational&gt;.</t>
-
-        <t>Any deletable system-provided configuration that is populated as
-        part of &lt;running&gt; by the system at boot up, without being part
-        of the contents of a &lt;startup&gt; datastore, must be defined in
-        &lt;factory-default&gt; <xref target="RFC8808"/>, which is used to
-        initialize &lt;running&gt; when the device is first-time powered on or
-        reset to its factory default condition.</t>
 
         <section anchor="origin" title="Origin Metadata Annotation">
           <t>This document does not define any new origin identity when
@@ -583,7 +575,7 @@ boxes denote named datastores</artwork>
             URI of some RESTCONF operations as shown in <xref
             target="RESTCONF-fig"/>. This parameter is only allowed with no
             values carried. If this parameter has any unexpected value, then a
-            "400 Bad Request" status-line is returned.<figure align="left"
+            "400 Bad Request" status-line is returned.<figure
                 anchor="RESTCONF-fig"
                 title="RESTCONF &quot;resolve-system&quot; Query Parameter">
                 <artwork>+----------------+---------+-----------------------------------------+
@@ -776,6 +768,45 @@ INSERT_TEXT_FROM_FILE(examples/interface-operational-addition.xml)
               ]]></artwork>
             </figure></t>
         </section>
+      </section>
+    </section>
+
+    <section title="Relation to Other Datastores">
+      <section title="The &quot;factory-default&quot; Datastore">
+        <t>Any deletable system-provided configuration that is populated as
+        part of &lt;running&gt; by the system at boot up, without being part
+        of the contents of a &lt;startup&gt; datastore, must be defined in
+        &lt;factory-default&gt; <xref target="RFC8808"/>, which is used to
+        initialize &lt;running&gt; when the device is first-time powered on or
+        reset to its factory default condition.</t>
+
+        <t>The &lt;factory-reset&gt; RPC operation can reset &lt;system&gt; to
+        its factory default contents.</t>
+      </section>
+
+      <section title="The &quot;candidate&quot; Datastore">
+        <t>If the device supports the :candidate or :private-candidate <xref
+        target="I-D.ietf-netconf-privcand"/> capability, a NETCONF client may
+        edit configuration in the candidate or private-candidate datastore
+        without expecting it to be valid until a &lt;commit&gt; or
+        &lt;validate&gt; operation takes place. The client may use the
+        "resolve-system" parameter in one of the following situations: <list
+            style="symbols">
+            <t>The client issues an &lt;edit-config&gt; or &lt;edit-data&gt;
+            operation on the candidate/private-candidate datastore. This is
+            possible, though may not be required.</t>
+
+            <t>The client issues a &lt;validate&gt; operation.</t>
+
+            <t>The client issues a &lt;commit&gt; operation.</t>
+          </list></t>
+
+        <t>In particular, <xref target="I-D.ietf-netconf-privcand"/> defines
+        the concept of conflict, the server's copy referenced system nodes
+        triggered by "resolve-system" parameter might conflict with the
+        contents of &lt;running&gt;, the conflict resolution is no different
+        than the resolution of conflict caused by configuration explicitly
+        provided by the client.</t>
       </section>
     </section>
 
@@ -1175,8 +1206,6 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
 
       <?rfc include="reference.RFC.6242.xml"?>
 
-      <?rfc include="reference.RFC.7317.xml"?>
-
       <?rfc include="reference.RFC.7952.xml"?>
 
       <?rfc include="reference.RFC.8174.xml"?>
@@ -1192,6 +1221,9 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
       <?rfc include="reference.RFC.8808.xml"?>
 
       <xi:include href="https://datatracker.ietf.org/doc/bibxml3/reference.I-D.ietf-netmod-immutable-flag.xml"
+                  xmlns:xi="http://www.w3.org/2001/XInclude"/>
+
+      <xi:include href="https://datatracker.ietf.org/doc/bibxml3/reference.I-D.ietf-netconf-privcand.xml"
                   xmlns:xi="http://www.w3.org/2001/XInclude"/>
     </references>
 
