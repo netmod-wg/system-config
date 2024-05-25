@@ -341,7 +341,7 @@
       </section>
 
       <section title="May Change via Software Upgrades or Resource Changes">
-        <t>System configuration may change dynamically (see <xref
+        <t>System configuration MAY change dynamically (see <xref
         target="conditional"/> and <xref target="system-ds-def"/>). The
         updates of system configuration may be obtained through YANG
         notifications (e.g., on-change notification) <xref
@@ -351,7 +351,8 @@
         <t>The behavior of the server when system configuration changes (e.g.,
         due to software upgrade) is outside the scope of this document. That
         said, here are some examples of how a server might handle this
-        scenario:<list style="symbols">
+        scenario ensuring &lt;running&gt; remains accurate:<list
+            style="symbols">
             <t>Servers migrate system configuration update in
             &lt;running&gt;.</t>
 
