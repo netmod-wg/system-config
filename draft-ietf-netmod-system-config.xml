@@ -341,7 +341,7 @@
       </section>
 
       <section title="May Change via Software Upgrades or Resource Changes">
-        <t>System configuration may change dynamically (see <xref
+        <t>System configuration MAY change dynamically (see <xref
         target="conditional"/> and <xref target="system-ds-def"/>). The
         updates of system configuration may be obtained through YANG
         notifications (e.g., on-change notification) <xref
@@ -351,7 +351,8 @@
         <t>The behavior of the server when system configuration changes (e.g.,
         due to software upgrade) is outside the scope of this document. That
         said, here are some examples of how a server might handle this
-        scenario:<list style="symbols">
+        scenario ensuring &lt;running&gt; remains accurate:<list
+            style="symbols">
             <t>Servers migrate system configuration update in
             &lt;running&gt;.</t>
 
@@ -625,12 +626,7 @@ boxes denote named datastores</artwork>
         return an error during a &lt;edit-config&gt;, &lt;validate&gt; or
         &lt;commit&gt; operation, depending on the target datastore. The
         immutability of system configuration is defined in <xref
-        target="I-D.ma-netmod-immutable-flag"/>.</t>
-
-        <t>A server may also allow a client to add data nodes to a list entry
-        in &lt;system&gt; by writing those additional nodes in
-        &lt;running&gt;. Those additional data nodes may not exist in
-        &lt;system&gt; (i.e., an *addition* rather than an override).</t>
+        target="I-D.ietf-netmod-immutable-flag"/>.</t>
       </section>
 
       <section title="Examples">
