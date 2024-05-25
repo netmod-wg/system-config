@@ -402,7 +402,7 @@
         target="RFC8342"/> is updated with the below conceptual model of
         datastores which incorporates the system configuration
         datastore.<figure title="Architectural Model of Datastores">
-            <artwork>               +-------------+                 +-----------+
+            <artwork align="center">               +-------------+                 +-----------+
                | &lt;candidate&gt; |                 | &lt;startup&gt; |
                |  (ct, rw)   |&lt;---+      +----&gt;| (ct, rw)  |
                +-------------+    |      |     +-----------+
