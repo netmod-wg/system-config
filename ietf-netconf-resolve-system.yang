@@ -88,7 +88,18 @@ module ietf-netconf-resolve-system {
        parameter to be carried.";
     uses resolve-system-grouping;
   }
-
+  augment "/nc:validate/nc:input" {
+    description
+      "Augment validate operation to allow resolve-system
+       parameter to be carried.";
+    uses resolve-system-grouping;
+  }
+  augment "/nc:commit/nc:input" {
+    description
+      "Augment commit operation to allow resolve-system
+       parameter to be carried.";
+    uses resolve-system-grouping;
+  }
   augment "/ncds:edit-data/ncds:input" {
     description
       "Augment edit-data operation to allow resolve-system
