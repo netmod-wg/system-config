@@ -77,33 +77,34 @@ module ietf-netconf-resolve-system {
 
   augment "/nc:edit-config/nc:input" {
     description
-      "Augment edit-config operation to allow resolve-system
-       parameter to be carried.";
+      "Adds the 'resolve-system' parameter to the input of the
+       NETCONF <edit-config> operation.";
     uses resolve-system-grouping;
   }
 
   augment "/nc:copy-config/nc:input" {
     description
-      "Augment copy-config operation to allow resolve-system
-       parameter to be carried.";
+      "Adds the 'resolve-system' parameter to the input of the
+       NETCONF <copy-config> operation.";
     uses resolve-system-grouping;
   }
   augment "/nc:validate/nc:input" {
     description
-      "Augment validate operation to allow resolve-system
-       parameter to be carried.";
+      "Adds the 'resolve-system' parameter to the input of the
+       NETCONF <validate> operation.";
     uses resolve-system-grouping;
   }
   augment "/nc:commit/nc:input" {
     description
-      "Augment commit operation to allow resolve-system
-       parameter to be carried.";
+      "Adds the 'resolve-system' parameter to the input of the
+       NETCONF <commit> operation.";
     uses resolve-system-grouping;
   }
   augment "/ncds:edit-data/ncds:input" {
     description
-      "Augment edit-data operation to allow resolve-system
-       parameter to be carried.";
+      "Adds the 'resolve-system' parameter to the input of the
+       NETCONF <edit-data> operation.";
     uses resolve-system-grouping;
   }
 }
+
