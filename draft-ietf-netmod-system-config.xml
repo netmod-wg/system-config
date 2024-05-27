@@ -1141,39 +1141,6 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
         DoS attacks.</t>
       </section>
     </section>
-
-    <section title="Contributors">
-      <figure>
-        <artwork>      Kent Watsen
-      Watsen Networks
-
-      Email: kent+ietf@watsen.net
-
-      Jan Lindblad
-      Cisco Systems
-
-      Email: jlindbla@cisco.com
-
-      Chongfeng Xie
-      China Telecom
-      Beijing
-      China
-
-      Email: xiechf@chinatelecom.cn
-
-      Jason Sterne
-      Nokia
-
-      Email: jason.sterne@nokia.com</artwork>
-      </figure>
-    </section>
-
-    <section anchor="Acknowledgements" numbered="no" title="Acknowledgements">
-      <t>The authors would like to thank for following for discussions and
-      providing input to this document (ordered by first name): Alex Clemm,
-      Andy Bierman, Balazs Lengyel, Juergen Schoenwaelder, Martin Bjorklund,
-      Mohamed Boucadair, Robert Wilton and Timothy Carey.</t>
-    </section>
   </middle>
 
   <back>
@@ -1476,6 +1443,36 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
 
           <t>Editorial changes</t>
         </list></t>
+    </section>
+
+    <section anchor="Acknowledgements" numbered="no" title="Acknowledgements">
+      <t>The authors would like to thank for following for discussions and
+      providing input to this document: Balazs Lengyel, Robert Wilton, Juergen
+      Schoenwaelder, Andy Bierman, Martin Bjorklund, Mohamed Boucadair,
+      Alexander Clemm, and Timothy Carey.</t>
+    </section>
+
+    <section numbered="no" title="Contributors">
+      <figure>
+        <artwork align="left">      
+Kent Watsen
+Watsen Networks
+Email: kent+ietf@watsen.net
+
+Jan Lindblad
+Cisco Systems
+Email: jlindbla@cisco.com
+
+Chongfeng Xie
+China Telecom
+Beijing
+China
+Email: xiechf@chinatelecom.cn
+
+Jason Sterne
+Nokia
+Email: jason.sterne@nokia.com</artwork>
+      </figure>
     </section>
   </back>
 </rfc>
