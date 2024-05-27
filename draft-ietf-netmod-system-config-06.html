@@ -1646,12 +1646,13 @@ li > p:last-of-type {
         <h3 id="name-updates-to-rfc-6241-and-rfc">
 <a href="#section-1.4" class="section-number selfRef">1.4. </a><a href="#name-updates-to-rfc-6241-and-rfc" class="section-name selfRef">Updates to RFC 6241 and RFC 8526</a>
         </h3>
-<p id="section-1.4-1">This document augments &lt;edit-config&gt; and &lt;edit-data&gt;
-        RPC operations defined in <span><a href="https://rfc-editor.org/rfc/rfc6241#section-7.2" class="relref">Section 7.2</a> of [<a href="#RFC6241" class="xref">RFC6241</a>]</span> and <span><a href="https://rfc-editor.org/rfc/rfc8526#section-3.1.2" class="relref">Section 3.1.2</a> of [<a href="#RFC8526" class="xref">RFC8526</a>]</span> respectively, with a new additional input parameter
-        "resolve-system" to allow the server to copy referenced system nodes
-        into target datastore automatically without the client doing so
-        explicitly. The &lt;copy-config&gt; RPC operation defined in <span><a href="https://rfc-editor.org/rfc/rfc6241#section-7.3" class="relref">Section 7.3</a> of [<a href="#RFC6241" class="xref">RFC6241</a>]</span> is also augmented
-        to support "resolve-system" parameter (<a href="#NETCONF-resolve" class="xref">Section 5.3.1</a>).<a href="#section-1.4-1" class="pilcrow">¶</a></p>
+<p id="section-1.4-1">This document updates <span>[<a href="#RFC6241" class="xref">RFC6241</a>]</span> to augment the
+        NETCONF &lt;edit-config&gt;, &lt;copy-config&gt;, &lt;validate&gt;,
+        and &lt;commit&gt; operations with an additional input parameter named
+        "resolve-system", as specified in <a href="#resolve-system" class="xref">Section 5.3</a>.<a href="#section-1.4-1" class="pilcrow">¶</a></p>
+<p id="section-1.4-2">This document also updates <span>[<a href="#RFC8526" class="xref">RFC8526</a>]</span> to augment the
+        NETCONF &lt;edit-data&gt; operation with the "resolve-system"
+        parameter, as specified in <a href="#resolve-system" class="xref">Section 5.3</a>.<a href="#section-1.4-2" class="pilcrow">¶</a></p>
 </section>
 <section id="section-1.5">
         <h3 id="name-updates-to-rfc-8040">
@@ -1949,30 +1950,25 @@ boxes denote named datastores</pre>
         &lt;running&gt;. The server copies the referenced system-defined nodes
         only when triggered by the "resolve-system" parameter. Legacy clients
         don't see any changes in the server behaviors.<a href="#section-5.3-2" class="pilcrow">¶</a></p>
-<p id="section-5.3-3">The server's copy referenced nodes from &lt;system&gt; to the
-        target datastore MUST be enforced at the end of the
-        &lt;edit-config&gt;/&lt;edit-data&gt; or &lt;copy-config&gt;
-        operations during the validation processing, regardless of which
-        target datastore it is.<a href="#section-5.3-3" class="pilcrow">¶</a></p>
-<p id="section-5.3-4">The server may automatically configure the list entries (with at
+<p id="section-5.3-3">The server may automatically configure the list entries (with at
         least the keys) in the target datastore (e.g., &lt;running&gt;) that
         are referenced elsewhere by the clients. Similarly, not all the
         contents of the list entry (i.e., the descendant nodes) are
         necessarily copied by the server - only the parts that are required to
-        make configuration valid.<a href="#section-5.3-4" class="pilcrow">¶</a></p>
-<p id="section-5.3-5">There is no distinction between the configuration in the target
+        make configuration valid.<a href="#section-5.3-3" class="pilcrow">¶</a></p>
+<p id="section-5.3-4">There is no distinction between the configuration in the target
         datastore (e.g., &lt;running&gt;) automatically configured by the
         server and the one explicitly declared by the client, e.g., a read
         back of the datastore (i.e., &lt;get&gt;, &lt;get-config&gt; or
         &lt;get-data&gt; operation) returns automatically configured
-        nodes.<a href="#section-5.3-5" class="pilcrow">¶</a></p>
-<p id="section-5.3-6">Note that even though an auto-configured node is allowed to be
+        nodes.<a href="#section-5.3-4" class="pilcrow">¶</a></p>
+<p id="section-5.3-5">Note that even though an auto-configured node is allowed to be
         deleted from the target datastore by the client, the system may
         automatically recreate the deleted node to make configuration valid,
         when a "resolve-system" parameter is carried. It is also possible that
         the operation request (e.g., &lt;edit-config&gt;) may not succeed due
-        to incomplete referential integrity.<a href="#section-5.3-6" class="pilcrow">¶</a></p>
-<p id="section-5.3-7">Support for the "resolve-system" parameter is OPTIONAL. Servers not
+        to incomplete referential integrity.<a href="#section-5.3-5" class="pilcrow">¶</a></p>
+<p id="section-5.3-6">Support for the "resolve-system" parameter is OPTIONAL. Servers not
         supporting NMDA <span>[<a href="#RFC8342" class="xref">RFC8342</a>]</span> MAY also implement this
         parameter without implementing the system configuration datastore,
         which would only eliminate the ability to retrieve the system
@@ -1981,7 +1977,7 @@ boxes denote named datastores</pre>
         &lt;system&gt; into the target datastore (e.g., &lt;running&gt;) when
         the "resolve-system" parameter is used; otherwise it is an
         implementation decision where to copy referenced system configuration
-        into the target datastore (e.g., &lt;running&gt;).<a href="#section-5.3-7" class="pilcrow">¶</a></p>
+        into the target datastore (e.g., &lt;running&gt;).<a href="#section-5.3-6" class="pilcrow">¶</a></p>
 <div id="NETCONF-resolve">
 <section id="section-5.3.1">
           <h4 id="name-netconf-support-for-resolve">
@@ -2717,83 +2713,20 @@ module ietf-system-datastore {
         <h3 id="name-data-model-overview-2">
 <a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-data-model-overview-2" class="section-name selfRef">Data Model Overview</a>
         </h3>
-<p id="section-8.1-1">This YANG module augments NETCONF &lt;edit-config&gt;,
-        &lt;edit-data&gt; and &lt;copy-config&gt; operations with a new
-        parameter "resolve-system" in the input parameters. If the
-        "resolve-system" parameter is present, the server will copy the
-        referenced system configuration into target datastore automatically. A
-        NETCONF client can discover the "resolve-system" parameter support on
-        the server by checking the server's capabilities included in the
-        &lt;hello&gt; message.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
-<p id="section-8.1-2">The following tree diagram [RFC8340] illustrates the
-        "ietf-netconf-resolve-system" module:<a href="#section-8.1-2" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-8.1-3">
+<p id="section-8.1-1">The following tree diagram <span>[<a href="#RFC8340" class="xref">RFC8340</a>]</span> illustrates the
+        "ietf-netconf-resolve-system" module:<a href="#section-8.1-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-8.1-2">
 <pre>module: ietf-netconf-resolve-system
   augment /nc:edit-config/nc:input:
     +---w resolve-system?   empty
   augment /nc:copy-config/nc:input:
     +---w resolve-system?   empty
+  augment /nc:validate/nc:input:
+    +---w resolve-system?   empty
+  augment /nc:commit/nc:input:
+    +---w resolve-system?   empty
   augment /ncds:edit-data/ncds:input:
-    +---w resolve-system?   empty</pre><a href="#section-8.1-3" class="pilcrow">¶</a>
-</div>
-<p id="section-8.1-4">The following tree diagram [RFC8340] illustrates "edit-config",
-        "copy-config" and "edit-data" rpcs defined in "ietf-netconf" and
-        "ietf-netconf-nmda" respectively, augmented by
-        "ietf-netconf-resolve-system" YANG module:<a href="#section-8.1-4" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-8.1-5">
-<pre>  rpcs:
-    +---x edit-config
-    |  +---w input
-    |     +---w target
-    |     |  +---w (config-target)
-    |     |     +--:(candidate)
-    |     |     |  +---w candidate?   empty {candidate}?
-    |     |     +--:(running)
-    |     |        +---w running?     empty {writable-running}?
-    |     +---w default-operation?   enumeration
-    |     +---w test-option?         enumeration {validate}?
-    |     +---w error-option?        enumeration
-    |     +---w (edit-content)
-    |     |   +--:(config)
-    |     |   |  +---w config?        &lt;anyxml&gt;
-    |     |   +--:(url)
-    |     |     +---w url?           inet:uri {url}?
-    |     +---w resolve-system?      empty
-    +---x copy-config
-    |  +---w input
-    |     +---w target
-    |     |  +---w (config-target)
-    |     |     +--:(candidate)
-    |     |     |  +---w candidate?   empty {candidate}?
-    |     |     +--:(running)
-    |     |     |  +---w running?     empty {writable-running}?
-    |     |     +--:(startup)
-    |     |     |  +---w startup?     empty {startup}?
-    |     |     +--:(url)
-    |     |        +---w url?         inet:uri {url}?
-    |     +---w source
-    |     |  +---w (config-source)
-    |     |     +--:(candidate)
-    |     |     |  +---w candidate?   empty {candidate}?
-    |     |     +--:(running)
-    |     |     |  +---w running?     empty
-    |     |     +--:(startup)
-    |     |     |  +---w startup?     empty {startup}?
-    |     |     +--:(url)
-    |     |     |  +---w url?         inet:uri {url}?
-    |     |     +--:(config)
-    |     |        +---w config?      &lt;anyxml&gt;
-    |     +---w resolve-system?       empty
-    +---x edit-data
-       +---w input
-          +---w datastore            ds:datastore-ref
-          +---w default-operation?   enumeration
-          +---w (edit-content)
-          |  +--:(config)
-          |  |  +---w config?        &lt;anydata&gt;
-          |  +--:(url)
-          |     +---w url?           inet:uri {nc:url}?
-          +---w resolve-system?      empty</pre><a href="#section-8.1-5" class="pilcrow">¶</a>
+    +---w resolve-system?   empty</pre><a href="#section-8.1-2" class="pilcrow">¶</a>
 </div>
 </section>
 <section id="section-8.2">
@@ -2807,9 +2740,12 @@ module ietf-system-datastore {
         <h3 id="name-yang-module-2">
 <a href="#section-8.3" class="section-number selfRef">8.3. </a><a href="#name-yang-module-2" class="section-name selfRef">YANG Module</a>
         </h3>
-<p id="section-8.3-1" class="keepWithNext">&lt;CODE BEGINS&gt; file
-          "ietf-netconf-resolve-system@2024-05-27.yang"<a href="#section-8.3-1" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-8.3-2">
+<p id="section-8.3-1">This module imports modules "ietf-netconf" and "ietf-netconf-nmda",
+        defined in <span>[<a href="#RFC6241" class="xref">RFC6241</a>]</span> and <span>[<a href="#RFC8526" class="xref">RFC8526</a>]</span>,
+        respectively.<a href="#section-8.3-1" class="pilcrow">¶</a></p>
+<p id="section-8.3-2" class="keepWithNext">&lt;CODE BEGINS&gt; file
+          "ietf-netconf-resolve-system@2024-05-27.yang"<a href="#section-8.3-2" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-8.3-3">
 <pre>
 module ietf-netconf-resolve-system {
   yang-version 1.1;
@@ -2890,39 +2826,40 @@ module ietf-netconf-resolve-system {
 
   augment "/nc:edit-config/nc:input" {
     description
-      "Augment edit-config operation to allow resolve-system
-       parameter to be carried.";
+      "Adds the 'resolve-system' parameter to the input of the
+       NETCONF &lt;edit-config&gt; operation.";
     uses resolve-system-grouping;
   }
 
   augment "/nc:copy-config/nc:input" {
     description
-      "Augment copy-config operation to allow resolve-system
-       parameter to be carried.";
+      "Adds the 'resolve-system' parameter to the input of the
+       NETCONF &lt;copy-config&gt; operation.";
     uses resolve-system-grouping;
   }
   augment "/nc:validate/nc:input" {
     description
-      "Augment validate operation to allow resolve-system
-       parameter to be carried.";
+      "Adds the 'resolve-system' parameter to the input of the
+       NETCONF &lt;validate&gt; operation.";
     uses resolve-system-grouping;
   }
   augment "/nc:commit/nc:input" {
     description
-      "Augment commit operation to allow resolve-system
-       parameter to be carried.";
+      "Adds the 'resolve-system' parameter to the input of the
+       NETCONF &lt;commit&gt; operation.";
     uses resolve-system-grouping;
   }
   augment "/ncds:edit-data/ncds:input" {
     description
-      "Augment edit-data operation to allow resolve-system
-       parameter to be carried.";
+      "Adds the 'resolve-system' parameter to the input of the
+       NETCONF &lt;edit-data&gt; operation.";
     uses resolve-system-grouping;
   }
 }
-</pre><a href="#section-8.3-2" class="pilcrow">¶</a>
+
+</pre><a href="#section-8.3-3" class="pilcrow">¶</a>
 </div>
-<p id="section-8.3-3" class="keepWithPrevious">&lt;CODE ENDS&gt;<a href="#section-8.3-3" class="pilcrow">¶</a></p>
+<p id="section-8.3-4" class="keepWithPrevious">&lt;CODE ENDS&gt;<a href="#section-8.3-4" class="pilcrow">¶</a></p>
 </section>
 </section>
 <div id="IANA">
