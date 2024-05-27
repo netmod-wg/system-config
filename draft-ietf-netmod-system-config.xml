@@ -240,16 +240,14 @@
       </section>
 
       <section title="Updates to RFC 6241 and RFC 8526">
-        <t>This document augments &lt;edit-config&gt; and &lt;edit-data&gt;
-        RPC operations defined in <xref section="7.2" sectionFormat="of"
-        target="RFC6241"/> and <xref section="3.1.2" sectionFormat="of"
-        target="RFC8526"/> respectively, with a new additional input parameter
-        "resolve-system" to allow the server to copy referenced system nodes
-        into target datastore automatically without the client doing so
-        explicitly. The &lt;copy-config&gt; RPC operation defined in <xref
-        section="7.3" sectionFormat="of" target="RFC6241"/> is also augmented
-        to support "resolve-system" parameter (<xref
-        target="NETCONF-resolve"/>).</t>
+        <t>This document updates <xref target="RFC6241"/> to augment the
+        NETCONF &lt;edit-config&gt;, &lt;copy-config&gt;, &lt;validate&gt;,
+        and &lt;commit&gt; operations with an additional input parameter named
+        "resolve-system", as specified in <xref target="resolve-system"/>.</t>
+
+        <t>This document also updates <xref target="RFC8526"/> to augment the
+        NETCONF &lt;edit-data&gt; operation with the "resolve-system"
+        parameter, as specified in <xref target="resolve-system"/>.</t>
       </section>
 
       <section title="Updates to RFC 8040">
@@ -519,12 +517,6 @@ boxes denote named datastores</artwork>
         &lt;running&gt;. The server copies the referenced system-defined nodes
         only when triggered by the "resolve-system" parameter. Legacy clients
         don't see any changes in the server behaviors.</t>
-
-        <t>The server's copy referenced nodes from &lt;system&gt; to the
-        target datastore MUST be enforced at the end of the
-        &lt;edit-config&gt;/&lt;edit-data&gt; or &lt;copy-config&gt;
-        operations during the validation processing, regardless of which
-        target datastore it is.</t>
 
         <t>The server may automatically configure the list entries (with at
         least the keys) in the target datastore (e.g., &lt;running&gt;) that
@@ -944,16 +936,7 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
       <t>This YANG module is optional to implement.</t>
 
       <section title="Data Model Overview">
-        <t>This YANG module augments NETCONF &lt;edit-config&gt;,
-        &lt;edit-data&gt; and &lt;copy-config&gt; operations with a new
-        parameter "resolve-system" in the input parameters. If the
-        "resolve-system" parameter is present, the server will copy the
-        referenced system configuration into target datastore automatically. A
-        NETCONF client can discover the "resolve-system" parameter support on
-        the server by checking the server's capabilities included in the
-        &lt;hello&gt; message.</t>
-
-        <t>The following tree diagram [RFC8340] illustrates the
+        <t>The following tree diagram <xref target="RFC8340"/> illustrates the
         "ietf-netconf-resolve-system" module:</t>
 
         <figure>
@@ -962,69 +945,12 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
     +---w resolve-system?   empty
   augment /nc:copy-config/nc:input:
     +---w resolve-system?   empty
+  augment /nc:validate/nc:input:
+    +---w resolve-system?   empty
+  augment /nc:commit/nc:input:
+    +---w resolve-system?   empty
   augment /ncds:edit-data/ncds:input:
     +---w resolve-system?   empty</artwork>
-        </figure>
-
-        <t>The following tree diagram [RFC8340] illustrates "edit-config",
-        "copy-config" and "edit-data" rpcs defined in "ietf-netconf" and
-        "ietf-netconf-nmda" respectively, augmented by
-        "ietf-netconf-resolve-system" YANG module:</t>
-
-        <figure>
-          <artwork>  rpcs:
-    +---x edit-config
-    |  +---w input
-    |     +---w target
-    |     |  +---w (config-target)
-    |     |     +--:(candidate)
-    |     |     |  +---w candidate?   empty {candidate}?
-    |     |     +--:(running)
-    |     |        +---w running?     empty {writable-running}?
-    |     +---w default-operation?   enumeration
-    |     +---w test-option?         enumeration {validate}?
-    |     +---w error-option?        enumeration
-    |     +---w (edit-content)
-    |     |   +--:(config)
-    |     |   |  +---w config?        &lt;anyxml&gt;
-    |     |   +--:(url)
-    |     |     +---w url?           inet:uri {url}?
-    |     +---w resolve-system?      empty
-    +---x copy-config
-    |  +---w input
-    |     +---w target
-    |     |  +---w (config-target)
-    |     |     +--:(candidate)
-    |     |     |  +---w candidate?   empty {candidate}?
-    |     |     +--:(running)
-    |     |     |  +---w running?     empty {writable-running}?
-    |     |     +--:(startup)
-    |     |     |  +---w startup?     empty {startup}?
-    |     |     +--:(url)
-    |     |        +---w url?         inet:uri {url}?
-    |     +---w source
-    |     |  +---w (config-source)
-    |     |     +--:(candidate)
-    |     |     |  +---w candidate?   empty {candidate}?
-    |     |     +--:(running)
-    |     |     |  +---w running?     empty
-    |     |     +--:(startup)
-    |     |     |  +---w startup?     empty {startup}?
-    |     |     +--:(url)
-    |     |     |  +---w url?         inet:uri {url}?
-    |     |     +--:(config)
-    |     |        +---w config?      &lt;anyxml&gt;
-    |     +---w resolve-system?       empty
-    +---x edit-data
-       +---w input
-          +---w datastore            ds:datastore-ref
-          +---w default-operation?   enumeration
-          +---w (edit-content)
-          |  +--:(config)
-          |  |  +---w config?        &lt;anydata&gt;
-          |  +--:(url)
-          |     +---w url?           inet:uri {nc:url}?
-          +---w resolve-system?      empty</artwork>
         </figure>
       </section>
 
@@ -1034,6 +960,10 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
       </section>
 
       <section title="YANG Module">
+        <t>This module imports modules "ietf-netconf" and "ietf-netconf-nmda",
+        defined in <xref target="RFC6241"/> and <xref target="RFC8526"/>,
+        respectively.</t>
+
         <figure>
           <preamble>&lt;CODE BEGINS&gt; file
           "ietf-netconf-resolve-system@YYYY-MM-DD.yang"</preamble>
