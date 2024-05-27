@@ -1523,13 +1523,12 @@ li > p:last-of-type {
       expose the system configuration. NETCONF/RESTCONF clients can benefit
       from a standard mechanism to retrieve what system configuration is
       available on a server.<a href="#section-1-2" class="pilcrow">¶</a></p>
-<p id="section-1-3">Some servers allow the NETCONF/RESTCONF client to reference a
-      system-defined node which isn't present in the target datastore (e.g.,
-      &lt;running&gt;). The absence of the system configuration in the
-      datastore can render the datastore invalid from the perspective of a
-      client or offline tools (e.g., missing leafref targets). This document
-      describes several approaches to bring the datastore to a valid state and
-      satisfy referential integrity constraints.<a href="#section-1-3" class="pilcrow">¶</a></p>
+<p id="section-1-3">Some servers allow clients to reference a system-defined node which
+      is not present in the datastore. The absence of the system configuration
+      in the datastore can render the datastore invalid from the perspective
+      of a client or offline tools (e.g., missing leafref targets). This
+      document describes several approaches to bring the datastore to a valid
+      state and satisfy referential integrity constraints.<a href="#section-1-3" class="pilcrow">¶</a></p>
 <p id="section-1-4">Some servers allow the descendant nodes of system-defined
       configuration to be configured or modified. For example, the system
       configuration may contain an almost empty physical interface, while the
@@ -1541,12 +1540,10 @@ li > p:last-of-type {
       configuration datastore called "system" to expose system-defined
       configuration.<a href="#section-1-5" class="pilcrow">¶</a></p>
 <p id="section-1-6">As an alternative to clients explicitly copying referenced
-      system-defined configuration into the target configuration datastore
-      (e.g., &lt;running&gt;) so that the datastore is valid, a
+      system-defined configuration so that the datastore is valid, a
       "resolve-system" parameter is defined to allow the server to copy
-      referenced system nodes automatically. This solution enables clients
-      manipulating the target configuration datastore (e.g., &lt;running&gt;)
-      to reference nodes defined in &lt;system&gt;, override system-provided
+      referenced system nodes automatically. This solution enables clients to
+      reference nodes defined in &lt;system&gt;, override system-provided
       values, and configure descendant nodes of system-defined
       configuration.<a href="#section-1-6" class="pilcrow">¶</a></p>
 <p id="section-1-7">If a system-defined node is referenced, it refers to one of the
@@ -1802,12 +1799,9 @@ li > p:last-of-type {
         <h3 id="name-conceptual-model-of-datasto">
 <a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-conceptual-model-of-datasto" class="section-name selfRef">Conceptual Model of Datastores</a>
         </h3>
-<p id="section-5.1-1">Clients manipulating the target datastore (e.g., &lt;running&gt;)
-        MAY reference nodes defined in &lt;system&gt;, override
+<p id="section-5.1-1">Clients MAY reference nodes defined in &lt;system&gt;, override
         system-provided values, and configure descendant nodes of
-        system-defined configuration, by copying or writing intended
-        configurations into the target configuration datastore (e.g.,
-        &lt;running&gt;).<a href="#section-5.1-1" class="pilcrow">¶</a></p>
+        system-defined configuration in &lt;running&gt;.<a href="#section-5.1-1" class="pilcrow">¶</a></p>
 <p id="section-5.1-2">To ensure the validity of &lt;intended&gt;, configuration in
         &lt;running&gt; is merged with &lt;system&gt; to become
         &lt;intended&gt;, in which process, configuration appearing in
@@ -1913,20 +1907,18 @@ boxes denote named datastores</pre>
 <a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-explicit-declaration-of-sys" class="section-name selfRef">Explicit Declaration of System Configuration</a>
         </h3>
 <p id="section-5.2-1">It is possible for a client to explicitly declare system
-        configuration nodes in the target datastore (e.g., &lt;running&gt;)
-        with the same values as in &lt;system&gt;, by configuring a node
-        (list/leaf-list entry, leaf, etc.) in the target datastore (e.g.,
-        &lt;running&gt;) that matches the same node and value in
-        &lt;system&gt;.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
-<p id="section-5.2-2">The explicit configuration of system-defined nodes in the target
-        datastore (e.g., &lt;running&gt;) can be useful, for example, when the
-        client does not support the "resolve-system" parameter but needs the
-        datastore to be referentially complete. The client can explicitly
-        declare (i.e., configure in the datastore like &lt;running&gt;) the
-        list entries (with at least the keys) that are referenced elsewhere in
-        &lt;running&gt;. The client does not necessarily need to declare all
-        the contents of the list entry (i.e. the descendant nodes), only the
-        parts that are required to make the datastore appear valid.<a href="#section-5.2-2" class="pilcrow">¶</a></p>
+        configuration nodes with the same values as in &lt;system&gt;, by
+        configuring a node (list/leaf-list entry, leaf, etc.) in the target
+        datastore (e.g., &lt;candidate&gt; and &lt;running&gt;) that matches
+        the same node and value in &lt;system&gt;.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
+<p id="section-5.2-2">The explicit declaration of system-defined nodes can be useful, for
+        example, when the client does not support the "resolve-system"
+        parameter but needs the datastore to be referentially complete. The
+        client can explicitly copy the list entries (with at least the keys)
+        that are referenced elsewhere in the datastore. The client does not
+        necessarily need to declare all the contents of the list entry (i.e.
+        the descendant nodes), only the parts that are required to make the
+        datastore appear valid.<a href="#section-5.2-2" class="pilcrow">¶</a></p>
 </section>
 <div id="resolve-system">
 <section id="section-5.3">
@@ -1941,27 +1933,26 @@ boxes denote named datastores</pre>
 <p id="section-5.3-2">The "resolve-system" parameter is optional and has no value. If it
         is present, and the server supports this capability, the server MUST
         copy referenced system nodes into the target datastore (e.g.,
-        &lt;running&gt;) where it is missing from without the client doing the
-        copy/paste explicitly, to resolve any references not resolved by the
-        client. If any child node of the copied configuration has its value
-        being set by the system that is not the schema default value, it MUST
-        also be copied into the target datastore (<a href="#defaults" class="xref">Section 5.1.2</a>).
-        The copy operation MUST NOT overwrite any explicit configuration in
-        &lt;running&gt;. The server copies the referenced system-defined nodes
-        only when triggered by the "resolve-system" parameter. Legacy clients
-        don't see any changes in the server behaviors.<a href="#section-5.3-2" class="pilcrow">¶</a></p>
+        &lt;candidate&gt; and &lt;running&gt;) where it is missing from
+        without the client doing the copy/paste explicitly, to resolve any
+        references not resolved by the client. If any child node of the copied
+        configuration has its value being set by the system that is not the
+        schema default value, it MUST also be copied into the target datastore
+        (<a href="#defaults" class="xref">Section 5.1.2</a>). The copy operation MUST NOT overwrite any
+        explicit configuration in &lt;running&gt;. The server copies the
+        referenced system-defined nodes only when triggered by the
+        "resolve-system" parameter. Legacy clients don't see any changes in
+        the server behaviors.<a href="#section-5.3-2" class="pilcrow">¶</a></p>
 <p id="section-5.3-3">The server may automatically configure the list entries (with at
-        least the keys) in the target datastore (e.g., &lt;running&gt;) that
-        are referenced elsewhere by the clients. Similarly, not all the
-        contents of the list entry (i.e., the descendant nodes) are
-        necessarily copied by the server - only the parts that are required to
-        make configuration valid.<a href="#section-5.3-3" class="pilcrow">¶</a></p>
-<p id="section-5.3-4">There is no distinction between the configuration in the target
-        datastore (e.g., &lt;running&gt;) automatically configured by the
-        server and the one explicitly declared by the client, e.g., a read
-        back of the datastore (i.e., &lt;get&gt;, &lt;get-config&gt; or
-        &lt;get-data&gt; operation) returns automatically configured
-        nodes.<a href="#section-5.3-4" class="pilcrow">¶</a></p>
+        least the keys) that are referenced elsewhere by the clients.
+        Similarly, not all the contents of the list entry (i.e., the
+        descendant nodes) are necessarily copied by the server - only the
+        parts that are required to make configuration valid.<a href="#section-5.3-3" class="pilcrow">¶</a></p>
+<p id="section-5.3-4">There is no distinction between the configuration automatically
+        configured by the server and the one explicitly declared by the
+        client, e.g., a read back of the datastore (i.e., &lt;get&gt;,
+        &lt;get-config&gt; or &lt;get-data&gt; operation) returns
+        automatically configured nodes.<a href="#section-5.3-4" class="pilcrow">¶</a></p>
 <p id="section-5.3-5">Note that even though an auto-configured node is allowed to be
         deleted from the target datastore by the client, the system may
         automatically recreate the deleted node to make configuration valid,
@@ -1974,10 +1965,9 @@ boxes denote named datastores</pre>
         which would only eliminate the ability to retrieve the system
         configuration via protocol operations. If a server implements
         &lt;system&gt;, referenced system configuration is copied from
-        &lt;system&gt; into the target datastore (e.g., &lt;running&gt;) when
-        the "resolve-system" parameter is used; otherwise it is an
-        implementation decision where to copy referenced system configuration
-        into the target datastore (e.g., &lt;running&gt;).<a href="#section-5.3-6" class="pilcrow">¶</a></p>
+        &lt;system&gt; into the target datastore when the "resolve-system"
+        parameter is used; otherwise it is an implementation decision where to
+        copy referenced system configuration.<a href="#section-5.3-6" class="pilcrow">¶</a></p>
 <div id="NETCONF-resolve">
 <section id="section-5.3.1">
           <h4 id="name-netconf-support-for-resolve">
