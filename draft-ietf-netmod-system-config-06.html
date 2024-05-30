@@ -1757,15 +1757,17 @@ li > p:last-of-type {
         <h3 id="name-may-change-via-software-upg">
 <a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-may-change-via-software-upg" class="section-name selfRef">May Change via Software Upgrades or Resource Changes</a>
         </h3>
-<p id="section-4.2-1">System configuration MAY change dynamically under various
+<p id="section-4.2-1">The contents of &lt;system&gt; MAY change dynamically under various
         conditions, such as license change, software upgrade, and
         system-controlled resources change (see <a href="#conditional" class="xref">Section 2.2</a>).
         The updates of system configuration may be obtained through YANG
         notifications (e.g., on-change notification) <span>[<a href="#RFC6470" class="xref">RFC6470</a>]</span><span>[<a href="#RFC8639" class="xref">RFC8639</a>]</span><span>[<a href="#RFC8641" class="xref">RFC8641</a>]</span>.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
-<p id="section-4.2-2">The behavior of the server when system configuration changes (e.g.,
-        due to software upgrade) is outside the scope of this document. That
-        said, here are some examples of how a server might handle this
-        scenario ensuring &lt;running&gt; remains accurate:<a href="#section-4.2-2" class="pilcrow">¶</a></p>
+<p id="section-4.2-2">Generally speaking, any update of &lt;system&gt; should not cause
+        the automatic update of &lt;running&gt; to not surprise clients with
+        unexpected changes. In particular, the behavior of system data
+        migration during software upgrade is outside the scope of this
+        document. That said, here are some examples of how a server might
+        handle this scenario ensuring &lt;running&gt; remains accurate:<a href="#section-4.2-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.2-3.1">Servers migrate system configuration update in
             &lt;running&gt;.<a href="#section-4.2-3.1" class="pilcrow">¶</a>
@@ -1783,12 +1785,12 @@ li > p:last-of-type {
 <a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-no-impact-to-operational" class="section-name selfRef">No Impact to &lt;operational&gt;</a>
         </h3>
 <p id="section-4.3-1">This work intends to have no impact to &lt;operational&gt; and does
-        not define any new origin identity beyond <span><a href="https://rfc-editor.org/rfc/rfc8342#section-5.3.4" class="relref">Section 5.3.4</a> of [<a href="#RFC8342" class="xref">RFC8342</a>]</span>. This document enables a subset
-        of those system generated nodes to be defined like configuration,
-        i.e., made visible to clients in order for being referenced or
-        configurable prior to present in &lt;operational&gt;. "Config false"
-        nodes are out of scope, hence existing "config false" nodes are not
-        impacted by this work.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
+        not define any new origin identity beyond <span><a href="https://rfc-editor.org/rfc/rfc8342#section-5.3.4" class="relref">Section 5.3.4</a> of [<a href="#RFC8342" class="xref">RFC8342</a>]</span>. The existence of &lt;system&gt;
+        enables a subset of those system generated nodes to be defined like
+        configuration, i.e., made visible to clients in order for being
+        referenced or configurable prior to present in &lt;operational&gt;.
+        "config false" nodes are out of scope, hence existing "config false"
+        nodes are not impacted by this work.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
 </section>
 </section>
 <section id="section-5">
@@ -1834,7 +1836,7 @@ li > p:last-of-type {
      +--------------+---------------+ // templates
                     |
                     |
-                    V
+                    v
               +------------+
               | &lt;intended&gt; |  // subject to validation
               | (ct, ro)   |
@@ -1846,7 +1848,7 @@ li > p:last-of-type {
  configuration       |   +-------- learned configuration
  datastores -----+   |   +-------- default configuration
                  |   |   |
-                 V   V   V
+                 v   v   v
              +---------------+
              | &lt;operational&gt; | &lt;-- system state
              | (ct + cf, ro) |

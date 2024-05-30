@@ -379,9 +379,9 @@ Internet-Draft        System-defined Configuration              May 2024
 
 4.2.  May Change via Software Upgrades or Resource Changes
 
-   System configuration MAY change dynamically under various conditions,
-   such as license change, software upgrade, and system-controlled
-   resources change (see Section 2.2).  The updates of system
+   The contents of <system> MAY change dynamically under various
+   conditions, such as license change, software upgrade, and system-
+   controlled resources change (see Section 2.2).  The updates of system
    configuration may be obtained through YANG notifications (e.g., on-
    change notification) [RFC6470][RFC8639][RFC8641].
 
@@ -394,10 +394,12 @@ Ma, et al.               Expires 1 December 2024                [Page 7]
 Internet-Draft        System-defined Configuration              May 2024
 
 
-   The behavior of the server when system configuration changes (e.g.,
-   due to software upgrade) is outside the scope of this document.  That
-   said, here are some examples of how a server might handle this
-   scenario ensuring <running> remains accurate:
+   Generally speaking, any update of <system> should not cause the
+   automatic update of <running> to not surprise clients with unexpected
+   changes.  In particular, the behavior of system data migration during
+   software upgrade is outside the scope of this document.  That said,
+   here are some examples of how a server might handle this scenario
+   ensuring <running> remains accurate:
 
    *  Servers migrate system configuration update in <running>.
 
@@ -411,10 +413,10 @@ Internet-Draft        System-defined Configuration              May 2024
 
    This work intends to have no impact to <operational> and does not
    define any new origin identity beyond Section 5.3.4 of [RFC8342].
-   This document enables a subset of those system generated nodes to be
-   defined like configuration, i.e., made visible to clients in order
-   for being referenced or configurable prior to present in
-   <operational>.  "Config false" nodes are out of scope, hence existing
+   The existence of <system> enables a subset of those system generated
+   nodes to be defined like configuration, i.e., made visible to clients
+   in order for being referenced or configurable prior to present in
+   <operational>.  "config false" nodes are out of scope, hence existing
    "config false" nodes are not impacted by this work.
 
 5.  Dynamic Behaviors
@@ -443,8 +445,6 @@ Internet-Draft        System-defined Configuration              May 2024
 
 
 
-
-
 Ma, et al.               Expires 1 December 2024                [Page 8]
 
 Internet-Draft        System-defined Configuration              May 2024
@@ -465,7 +465,7 @@ Internet-Draft        System-defined Configuration              May 2024
       +--------------+---------------+ // templates
                      |
                      |
-                     V
+                     v
                +------------+
                | <intended> |  // subject to validation
                | (ct, ro)   |
@@ -477,7 +477,7 @@ Internet-Draft        System-defined Configuration              May 2024
   configuration       |   +-------- learned configuration
   datastores -----+   |   +-------- default configuration
                   |   |   |
-                  V   V   V
+                  v   v   v
               +---------------+
               | <operational> | <-- system state
               | (ct + cf, ro) |
