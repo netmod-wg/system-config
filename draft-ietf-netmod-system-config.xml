@@ -220,12 +220,12 @@
       </section>
 
       <section title="Updates to RFC 8342">
-        <t>This document updates <xref target="RFC8342"/> to define a
-        configuration datastore called "system" to hold system configuration
-        (<xref target="system-ds-def"/>), it also redefines the term
-        "conventional configuration datastore" from <xref target="RFC8342"/>
-        to add "system" to the list of conventional configuration
-        datastores.</t>
+        <t>This document updates <xref format="none" target="RFC8342">RFC
+        8342</xref> to define a configuration datastore called "system" to
+        hold system configuration (<xref target="system-ds-def"/>), it also
+        redefines the term "conventional configuration datastore" from <xref
+        target="RFC8342"/> to add "system" to the list of conventional
+        configuration datastores.</t>
 
         <t>Configuration in &lt;running&gt; is merged with &lt;system&gt; to
         create the contents of &lt;intended&gt; after the configuration
@@ -238,14 +238,16 @@
       </section>
 
       <section title="Updates to RFC 6241 and RFC 8526">
-        <t>This document updates <xref target="RFC6241"/> to augment the
-        NETCONF &lt;edit-config&gt;, &lt;copy-config&gt;, &lt;validate&gt;,
-        and &lt;commit&gt; operations with an additional input parameter named
-        "resolve-system", as specified in <xref target="resolve-system"/>.</t>
+        <t>This document updates <xref format="none" target="RFC6241">RFC
+        6241</xref> to augment the NETCONF &lt;edit-config&gt;,
+        &lt;copy-config&gt;, &lt;validate&gt;, and &lt;commit&gt; operations
+        with an additional input parameter named "resolve-system", as
+        specified in <xref target="resolve-system"/>.</t>
 
-        <t>This document also updates <xref target="RFC8526"/> to augment the
-        NETCONF &lt;edit-data&gt; operation with the "resolve-system"
-        parameter, as specified in <xref target="resolve-system"/>.</t>
+        <t>This document also updates <xref format="none" target="RFC8526">RFC
+        8526</xref> to augment the NETCONF &lt;edit-data&gt; operation with
+        the "resolve-system" parameter, as specified in <xref
+        target="resolve-system"/>.</t>
       </section>
 
       <section title="Updates to RFC 8040">
