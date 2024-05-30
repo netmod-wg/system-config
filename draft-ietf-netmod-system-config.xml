@@ -362,11 +362,12 @@
       <section title="No Impact to &lt;operational&gt;">
         <t>This work intends to have no impact to &lt;operational&gt; and does
         not define any new origin identity beyond <xref section="5.3.4"
-        sectionFormat="of" target="RFC8342"/>. &lt;system&gt; enables system
-        generated nodes to be visible to clients in order for being referenced
-        or configurable prior to present in &lt;operational&gt;. "config
-        false" nodes are out of scope, hence existing "config false" nodes are
-        not impacted by this work.</t>
+        sectionFormat="of" target="RFC8342"/>. The existence of &lt;system&gt;
+        enables a subset of those system generated nodes to be defined like
+        configuration, i.e., made visible to clients in order for being
+        referenced or configurable prior to present in &lt;operational&gt;.
+        "config false" nodes are out of scope, hence existing "config false"
+        nodes are not impacted by this work.</t>
       </section>
     </section>
 
@@ -409,7 +410,7 @@
      +--------------+---------------+ // templates
                     |
                     |
-                    V
+                    v
               +------------+
               | &lt;intended&gt; |  // subject to validation
               | (ct, ro)   |
@@ -421,7 +422,7 @@
  configuration       |   +-------- learned configuration
  datastores -----+   |   +-------- default configuration
                  |   |   |
-                 V   V   V
+                 v   v   v
              +---------------+
              | &lt;operational&gt; | &lt;-- system state
              | (ct + cf, ro) |
