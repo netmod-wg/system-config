@@ -333,7 +333,7 @@
       </section>
 
       <section title="May Change via Software Upgrades or Resource Changes">
-        <t>System configuration MAY change dynamically under various
+        <t>The contents of &lt;system&gt; MAY change dynamically under various
         conditions, such as license change, software upgrade, and
         system-controlled resources change (see <xref target="conditional"/>).
         The updates of system configuration may be obtained through YANG
@@ -341,10 +341,12 @@
         target="RFC6470"/><xref target="RFC8639"/><xref
         target="RFC8641"/>.</t>
 
-        <t>The behavior of the server when system configuration changes (e.g.,
-        due to software upgrade) is outside the scope of this document. That
-        said, here are some examples of how a server might handle this
-        scenario ensuring &lt;running&gt; remains accurate:<list
+        <t>Generally speaking, any update of &lt;system&gt; should not cause
+        the automatic update of &lt;running&gt; to not surprise clients with
+        unexpected changes. In particular, the behavior of system data
+        migration during software upgrade is outside the scope of this
+        document. That said, here are some examples of how a server might
+        handle this scenario ensuring &lt;running&gt; remains accurate:<list
             style="symbols">
             <t>Servers migrate system configuration update in
             &lt;running&gt;.</t>
@@ -360,12 +362,11 @@
       <section title="No Impact to &lt;operational&gt;">
         <t>This work intends to have no impact to &lt;operational&gt; and does
         not define any new origin identity beyond <xref section="5.3.4"
-        sectionFormat="of" target="RFC8342"/>. This document enables a subset
-        of those system generated nodes to be defined like configuration,
-        i.e., made visible to clients in order for being referenced or
-        configurable prior to present in &lt;operational&gt;. "Config false"
-        nodes are out of scope, hence existing "config false" nodes are not
-        impacted by this work.</t>
+        sectionFormat="of" target="RFC8342"/>. &lt;system&gt; enables system
+        generated nodes to be visible to clients in order for being referenced
+        or configurable prior to present in &lt;operational&gt;. "config
+        false" nodes are out of scope, hence existing "config false" nodes are
+        not impacted by this work.</t>
       </section>
     </section>
 
