@@ -1304,6 +1304,25 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
     </section>
 
     <section title="Changes between Revisions">
+      <t>v05 - v06<list style="symbols">
+          <t>remove inactive-until-referenced system config</t>
+
+          <t>add a new section (sec.6) to clarify the interplay bewteen system
+          config and defaults </t>
+
+          <t>add a new section (sec.7) to clarify relation to other
+          datastores, which includes &lt;factory-default&gt; and
+          &lt;candidate&gt;/&lt;priv-candidate&gt;</t>
+
+          <t>leave the merge behavior of &lt;system&gt; and &lt;running&gt;
+          unspecified</t>
+
+          <t>augment &lt;validate&gt; and &lt;commit&gt; PRC operation to
+          support "resolve-system" parameter</t>
+
+          <t>editorial updates</t>
+        </list></t>
+
       <t>v04 - v05<list style="symbols">
           <t>Explicitly state that system configuration copied from
           &lt;system&gt; into &lt;running&gt; have its origin value being
