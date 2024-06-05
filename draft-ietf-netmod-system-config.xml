@@ -495,8 +495,8 @@ boxes denote named datastores</artwork>
         references not resolved by the client. If any child node of the copied
         configuration has its value being set by the system that is not the
         schema default value, it MUST also be copied into the target datastore
-        (<xref target="defaults"/>). The copy operation MUST NOT overwrite any
-        explicit configuration in &lt;running&gt;. The server copies the
+        (<xref target="defaults"/>). The copy operation MUST NOT override any
+        explicit configuration in the target datastore. The server copies the
         referenced system-defined nodes only when triggered by the
         "resolve-system" parameter. Legacy clients don't see any changes in
         the server behaviors.</t>
@@ -555,9 +555,11 @@ boxes denote named datastores</artwork>
 +----------------+---------+-----------------------------------------+
 |resolve-system  | POST,   | resolve any references not resolved by  |
 |                | PUT     | the client and copy referenced          |
-|                | PATCH   | system configuration into &lt;running&gt;     |
-|                |         | automatically. This parameter can be    |
-|                |         | given in any order.                     |
+|                | PATCH   | system configuration into the target    |
+|                |         | datastore where it is missing from      |
+|                |         | without the client doing the copy/paste |
+|                |         | explicitly. This parameter can be given |
+|                |         | in any order.                           |
 +----------------+---------+-----------------------------------------+</artwork>
               </figure></t>
 
@@ -993,7 +995,7 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
 
         <figure>
           <artwork>      name: ietf-system-datastore
-      prefix: sys
+      prefix: sysds
       namespace: urn:ietf:params:xml:ns:yang:ietf-system-datatstore
       maintained by IANA: N
       RFC: XXXX // RFC Ed.: replace XXXX and remove this comment
@@ -1017,7 +1019,7 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
 
       <section title="RESTCONF Capability URN Registry">
         <t>This document registers a capability in the 'RESTCONF Capability
-        URNs' registry [RFC8040]:<figure>
+        URNs' registry <xref target="RFC8040"/>:<figure>
             <artwork>Index            Capability Identifier
 -----------------------------------------------------------------------
 :resolve-system  urn:ietf:params:restconf:capability:resolve-system:1.0</artwork>
@@ -1026,42 +1028,52 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
     </section>
 
     <section anchor="scecurity" title="Security Considerations">
-      <section title="Regarding the &quot;ietf-system-datastore&quot; YANG Module">
-        <t>The YANG module defined in this document extends the base
-        operations for NETCONF <xref target="RFC6241"/> and RESTCONF <xref
-        target="RFC8040"/>. The lowest NETCONF layer is the secure transport
-        layer, and the mandatory-to-implement secure transport is Secure Shell
-        (SSH) <xref target="RFC6242"/>. The lowest RESTCONF layer is HTTPS,
-        and the mandatory-to-implement secure transport is TLS <xref
-        target="RFC8446"/>.</t>
+      <section title="Considerations for the &quot;ietf-system-datastore&quot; YANG Module">
+        <t>This section uses the template described in <xref section="3.7"
+        sectionFormat="of" target="I-D.ietf-netmod-rfc8407bis"/>.</t>
+
+        <t>The YANG module specified in this document defines a schema for
+        data that is designed to be accessed via network management protocols
+        such as NETCONF <xref target="RFC6241"/> or RESTCONF <xref
+        target="RFC8040"/>. These network management protocols are required to
+        use a secure transport layer and mutual authentication, e.g., SSH
+        <xref target="RFC6242"/> without the "none" authentication option,
+        Transport Layer Security (TLS) <xref target="RFC8446"/> with mutual
+        X.509 authentication, and HTTPS with HTTP authentication (<xref
+        section="11" sectionFormat="of" target="RFC9110"/>).</t>
 
         <t>The Network Configuration Access Control Model (NACM) <xref
         target="RFC8341"/> provides the means to restrict access for
-        particular NETCONF users to a preconfigured subset of all available
-        NETCONF protocol operations and content.</t>
+        particular NETCONF or RESTCONF users to a preconfigured subset of all
+        available NETCONF or RESTCONF protocol operations and content.</t>
+
+        <t>The YANG module only defines a identity that uses the
+        "ds:conventional" identity as its base. The module by itself does not
+        expose any data nodes that are writable, date nodes that contain
+        read-only state, or RPCs. As such, there are no additional security
+        issues related to the YANG module that need to be considered.</t>
       </section>
 
-      <section title="Regarding the &quot;ietf-netconf-resolve-system&quot; YANG Module">
+      <section title="Considerations for the &quot;ietf-netconf-resolve-system&quot; YANG Module">
         <t>The YANG module defined in this document extends the base
-        operations for NETCONF <xref target="RFC6241"/> and <xref
+        operations of NETCONF protocol in <xref target="RFC6241"/> and <xref
         target="RFC8526"/>. The lowest NETCONF layer is the secure transport
         layer, and the mandatory-to-implement secure transport is Secure Shell
-        (SSH) <xref target="RFC6242"/>. The lowest RESTCONF layer is HTTPS,
-        and the mandatory-to-implement secure transport is TLS <xref
-        target="RFC8446"/>.</t>
+        (SSH) <xref target="RFC6242"/>.</t>
 
         <t>The Network Configuration Access Control Model (NACM) <xref
         target="RFC8341"/> provides the means to restrict access for
         particular NETCONF users to a preconfigured subset of all available
         NETCONF protocol operations and content.</t>
 
-        <t>The security considerations for the base NETCONF protocol
-        operations (see Section 9 of <xref target="RFC6241"/> apply to the new
+        <t>The security considerations for the NETCONF protocol operations
+        (see <xref section="9" sectionFormat="of" target="RFC6241"/> and <xref
+        section="6" sectionFormat="of" target="RFC8526"/>) apply to the
         extended RPC operations defined in this document. There is not any
         beyond the potential performance impacts of implementing the
-        "resolve-system" parameter, which may mean employing some form of rate
-        limiting or adapting the rate threshold might be a good idea to avoid
-        DoS attacks.</t>
+        "resolve-system" parameter defined in the YANG module, which may mean
+        employing some form of rate limiting or adapting the rate threshold
+        for limiting might be a good idea to avoid DoS attacks.</t>
       </section>
     </section>
   </middle>
@@ -1110,10 +1122,15 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
 
       <?rfc include="reference.RFC.8808.xml"?>
 
+      <?rfc include="reference.RFC.9110.xml"?>
+
       <xi:include href="https://datatracker.ietf.org/doc/bibxml3/reference.I-D.ietf-netmod-immutable-flag.xml"
                   xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
       <xi:include href="https://datatracker.ietf.org/doc/bibxml3/reference.I-D.ietf-netconf-privcand.xml"
+                  xmlns:xi="http://www.w3.org/2001/XInclude"/>
+
+      <xi:include href="https://datatracker.ietf.org/doc/bibxml3/reference.I-D.ietf-netmod-rfc8407bis.xml"
                   xmlns:xi="http://www.w3.org/2001/XInclude"/>
     </references>
 
@@ -1308,7 +1325,7 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
           <t>remove inactive-until-referenced system config</t>
 
           <t>add a new section (sec.6) to clarify the interplay bewteen system
-          config and defaults </t>
+          config and defaults</t>
 
           <t>add a new section (sec.7) to clarify relation to other
           datastores, which includes &lt;factory-default&gt; and
