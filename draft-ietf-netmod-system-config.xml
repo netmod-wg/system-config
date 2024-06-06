@@ -562,16 +562,16 @@ boxes denote named datastores</artwork>
 |                |         | in any order.                           |
 +----------------+---------+-----------------------------------------+</artwork>
               </figure></t>
+          </section>
 
-            <section title="Query Parameter URI">
-              <t>To enable a RESTCONF client to discover if the
-              "resolve-system" query parameter is supported by the server, the
-              following capability URI is defined, which is advertised by the
-              server if supported, using the "ietf-restconf-monitoring" module
-              defined in <xref target="RFC8040"/>:<figure>
-                  <artwork>urn:ietf:params:restconf:capability:resolve-system:1.0</artwork>
-                </figure></t>
-            </section>
+          <section title="Query Parameter URI">
+            <t>To enable a RESTCONF client to discover if the "resolve-system"
+            query parameter is supported by the server, the following
+            capability URI is defined, which is advertised by the server if
+            supported, using the "ietf-restconf-monitoring" module defined in
+            <xref target="RFC8040"/>:<figure>
+                <artwork>urn:ietf:params:restconf:capability:resolve-system:1.0</artwork>
+              </figure></t>
           </section>
         </section>
       </section>
