@@ -1390,10 +1390,24 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
 
     <section numbered="no" title="Contributors">
       <figure>
-        <artwork>Kent Watsen Watsen Networks Email: kent+ietf@watsen.net Jan
-        Lindblad Cisco Systems Email: jlindbla@cisco.com Chongfeng Xie China
-        Telecom Beijing China Email: xiechf@chinatelecom.cn Jason Sterne Nokia
-        Email: jason.sterne@nokia.com</artwork>
+        <artwork>      
+Kent Watsen
+Watsen Networks
+Email: kent+ietf@watsen.net
+
+Jan Lindblad
+Cisco Systems
+Email: jlindbla@cisco.com
+
+Chongfeng Xie
+China Telecom
+Beijing
+China
+Email: xiechf@chinatelecom.cn
+
+Jason Sterne
+Nokia
+Email: jason.sterne@nokia.com</artwork>
       </figure>
     </section>
   </back>
