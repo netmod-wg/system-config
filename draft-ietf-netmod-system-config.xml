@@ -160,17 +160,17 @@
       <t>If a system-defined node is referenced, it refers to one of the
       following cases throughout this document:<list style="symbols">
           <t>It is present in a leafref "path" statement and referred as the
-          leafref value</t>
+          leafref value.</t>
 
-          <t>It is used as an "instance-identifier" type value</t>
+          <t>It is used as an "instance-identifier" type value.</t>
 
           <t>It is present in an XPath expression of "when" or "must"
-          constraints</t>
+          constraints.</t>
 
-          <t>It is defined to satisfy the "mandatory" constraints</t>
+          <t>It is defined to satisfy the "mandatory true" constraints.</t>
 
-          <t>It is defined to exactly satisfy the "min-element"
-          constraints</t>
+          <t>It is defined to exactly satisfy the "min-elements"
+          constraints.</t>
         </list></t>
 
       <t>Conformance to this document requires the NMDA servers to implement
@@ -378,7 +378,9 @@
                title="Conceptual Model of Datastores">
         <t>Clients MAY reference nodes defined in &lt;system&gt;, override
         system-provided values, and configure descendant nodes of
-        system-defined configuration in &lt;running&gt;.</t>
+        system-defined configuration in &lt;running&gt;, as detailed in <xref
+        target="declare"/>, <xref target="resolve-system"/>, and <xref
+        target="modifying"/>.</t>
 
         <t>To ensure the validity of &lt;intended&gt;, configuration in
         &lt;running&gt; is merged with &lt;system&gt; to become
@@ -390,13 +392,17 @@
         applied, configuration transformations MUST be performed before
         &lt;running&gt; is merged with &lt;system&gt;.</t>
 
-        <t>Whenever configuration in &lt;system&gt; changes, the server MUST
-        also immediately update and validate &lt;intended&gt;.</t>
+        <t>What is in &lt;system&gt; would always be present in
+        &lt;intended&gt;, unless system defined values are explicitly
+        overridden by the client. Whenever configuration in &lt;system&gt;
+        changes, the server MUST also immediately update and validate
+        &lt;intended&gt;.</t>
 
         <t>As a result, Figure 2 in <xref section="5" sectionFormat="of"
         target="RFC8342"/> is updated with the below conceptual model of
         datastores which incorporates the system configuration
-        datastore.<figure title="Architectural Model of Datastores">
+        datastore.<figure align="center"
+            title="Architectural Model of Datastores">
             <artwork>               +-------------+                 +-----------+
                | &lt;candidate&gt; |                 | &lt;startup&gt; |
                |  (ct, rw)   |&lt;---+      +----&gt;| (ct, rw)  |
@@ -462,21 +468,43 @@ boxes denote named datastores</artwork>
         </section>
       </section>
 
-      <section title="Explicit Declaration of System Configuration">
+      <section anchor="declare"
+               title="Explicit Declaration of System Configuration">
         <t>It is possible for a client to explicitly declare system
         configuration nodes with the same values as in &lt;system&gt;, by
         configuring a node (list/leaf-list entry, leaf, etc.) in the target
         datastore (e.g., &lt;candidate&gt; and &lt;running&gt;) that matches
         the same node and value in &lt;system&gt;.</t>
 
-        <t>The explicit declaration of system-defined nodes can be useful, for
-        example, when the client does not support the "resolve-system"
-        parameter but needs the datastore to be referentially complete. The
-        client can explicitly copy the list entries (with at least the keys)
-        that are referenced elsewhere in the datastore. The client does not
-        necessarily need to declare all the contents of the list entry (i.e.
-        the descendant nodes), only the parts that are required to make the
-        datastore appear valid.</t>
+        <t>The explicit declaration of system-defined nodes that are
+        referenced elsewhere can be useful, for example, when the client does
+        not support the "resolve-system" parameter (<xref
+        target="resolve-system"/>) but needs the datastore to be referentially
+        complete. More specifically, clients needs to declare system
+        configuration which does not exist in the target datastore in the
+        following cases:<list style="symbols">
+            <t>A system-provided leaf or leaf-list instance is referred to by
+            the "leafref" type and the "require-instance" property is
+            "true".</t>
+
+            <t>A system-provided instance node is identified by the
+            "instance-identifier" type and the "require-instance" property is
+            "true".</t>
+
+            <t>A system-provided instance node is referenced in the XPath
+            expression of the "when" or "must" statement.</t>
+
+            <t>A system-provided leaf instance with a "mandatory" statement
+            with the value "true".</t>
+
+            <t>System-provided list or leaf-list entries satisfy the
+            "min-elements" statement with a value greater than zero.</t>
+          </list></t>
+
+        <t>Clients MUST declare the system configuration that are required to
+        make the datastore appear valid, e.g., the list entry with at least
+        the key. Clients MAY declare all the contents of the list entry (i.e.,
+        all descendant nodes), though this is not necessarily needed.</t>
       </section>
 
       <section anchor="resolve-system"
@@ -492,20 +520,35 @@ boxes denote named datastores</artwork>
         copy referenced system nodes into the target datastore (e.g.,
         &lt;candidate&gt; and &lt;running&gt;) where it is missing from
         without the client doing the copy/paste explicitly, to resolve any
-        references not resolved by the client. If any child node of the copied
-        configuration has its value being set by the system that is not the
-        schema default value, it MUST also be copied into the target datastore
-        (<xref target="defaults"/>). The copy operation MUST NOT overwrite any
-        explicit configuration in &lt;running&gt;. The server copies the
-        referenced system-defined nodes only when triggered by the
-        "resolve-system" parameter. Legacy clients don't see any changes in
-        the server behaviors.</t>
+        references not resolved by the client. More specifically, servers MUST
+        copy referenced system configuration which does not exist in the
+        datastore in the following cases:<list style="symbols">
+            <t>A system-provided leaf or leaf-list instance is referred to by
+            the "leafref" type and the "require-instance" property is
+            "true"</t>
 
-        <t>The server may automatically configure the list entries (with at
-        least the keys) that are referenced elsewhere by the clients.
-        Similarly, not all the contents of the list entry (i.e., the
-        descendant nodes) are necessarily copied by the server - only the
-        parts that are required to make configuration valid.</t>
+            <t>A system-provided instance node is identified by the
+            "instance-identifier" type and the "require-instance" property is
+            "true"</t>
+
+            <t>A system-provided instance node is referenced in the XPath
+            expression of the "when" or "must" statement</t>
+
+            <t>A system-provided leaf instance with a "mandatory" statement
+            with the value "true"</t>
+
+            <t>System-provided list or leaf-list entries satisfy the
+            "min-elements" statement with a value greater than zero</t>
+          </list>If any child node of the copied configuration has its value
+        being set by the system that is not the schema default value, it MUST
+        also be copied into the target datastore (<xref target="defaults"/>).
+        The copy operation MUST NOT overwrite any explicit configuration in
+        &lt;running&gt;. When a particular list entry needs to be copied,
+        e.g., to satisfy the "min-elements" constraints, servers not
+        implementing NMDA MUST also copy an entire node including all
+        descendants.The server copies the referenced system-defined nodes only
+        when triggered by the "resolve-system" parameter. Legacy clients don't
+        see any changes in the server behaviors.</t>
 
         <t>There is no distinction between the configuration automatically
         configured by the server and the one explicitly declared by the
@@ -527,8 +570,10 @@ boxes denote named datastores</artwork>
         configuration via protocol operations. If a server implements
         &lt;system&gt;, referenced system configuration is copied from
         &lt;system&gt; into the target datastore when the "resolve-system"
-        parameter is used; otherwise it is an implementation decision where to
-        copy referenced system configuration.</t>
+        parameter is used. If a server does not implement &lt;system&gt;, it
+        is up to the implementation to determine how the "resolve-system"
+        mechanism fills in the missing configuration items in the target
+        datastore, e.g., &lt;candidate&gt; or &lt;running&gt;.</t>
 
         <section anchor="NETCONF-resolve"
                  title="NETCONF Support for &quot;resolve-system&quot; Parameter">
@@ -577,11 +622,12 @@ boxes denote named datastores</artwork>
       <section anchor="modifying"
                title="Modifying (Overriding) System Configuration">
         <t>In some cases, a server may allow some parts of system
-        configuration to be modified. Modification of system configuration is
-        achieved by the client writing configuration to &lt;running&gt; that
-        overrides the system configuration. Configurations defined in
-        &lt;running&gt; take precedence over system configuration nodes in
-        &lt;system&gt; if the server allows the nodes to be modified.</t>
+        configuration (e.g., a leaf's value) to be modified. Modification of
+        system configuration is achieved by the client writing configuration
+        to &lt;running&gt; that overrides the system configuration.
+        Configurations defined in &lt;running&gt; take precedence over system
+        configuration nodes in &lt;system&gt; if the server allows the nodes
+        to be modified.</t>
 
         <t>For instance, descendant nodes in a system-defined list entry may
         be modifiable or not, even if some system configuration has been
@@ -595,14 +641,22 @@ boxes denote named datastores</artwork>
 
       <section title="Examples">
         <t>This section presents some sample data models and corresponding
-        contents of various datastores with different dynamical behaviors
-        above. The XML snippets are used only for examples.</t>
+        contents of various datastores with different dynamic behaviors
+        described above. The XML snippets are used only for illustration
+        purposes.</t>
+
+        <t/>
 
         <section anchor="automatical"
                  title="Server Configuring of &lt;running&gt; Automatically">
-          <t>In this subsection, the following fictional module is used:</t>
-
-          <t><figure>
+          <t>In this subsection, the following fictional module is
+          used:<figure>
+              <artwork><![CDATA[
+INSERT_TEXT_FROM_FILE(examples/example-application.yang)
+              ]]></artwork>
+            </figure>A fictional ACL YANG module is used as follows, which
+          defines a leafref for the leaf-list "application" data node to refer
+          to an existing application name.<figure>
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/example-application.yang)
               ]]></artwork>
@@ -626,14 +680,6 @@ INSERT_TEXT_FROM_FILE(examples/applications-running.xml)
               ]]></artwork>
             </figure></t>
 
-          <t>A fictional ACL YANG module is used as follows, which defines a
-          leafref for the leaf-list "application" data node to refer to an
-          existing application name.<figure>
-              <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/example-acl.yang)
-              ]]></artwork>
-            </figure></t>
-
           <t>If a client configures an ACL rule referencing system provided
           applications which are not present in &lt;running&gt;, the client
           may issue an &lt;edit-config&gt; operation with the parameter
@@ -643,7 +689,7 @@ INSERT_TEXT_FROM_FILE(examples/applications-resolve-system.xml)
               ]]></artwork>
             </figure></t>
 
-          <t>The following gives the configuration of applications in
+          <t>The following shows the configuration of applications in
           &lt;running&gt; which is returned in the response to a follow-up
           retrieval operation:<figure>
               <artwork><![CDATA[
@@ -651,24 +697,23 @@ INSERT_TEXT_FROM_FILE(examples/applications-running-get-config.xml)
               ]]></artwork>
             </figure></t>
 
-          <t>And the configuration of applications is present in
-          &lt;operational&gt; as follows:<figure>
+          <t>And &lt;operational&gt; might contain the following:<figure>
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/applications-operational.xml)
               ]]></artwork>
             </figure>Since the configuration of application "smtp" is not
           referenced by the client, some implementation may consider it not to
-          be "in use", hence it is omitted from &lt;operational&gt; but only
-          present in &lt;system&gt;.</t>
+          be "in use", hence it is likely to be omitted from
+          &lt;operational&gt; but only present in &lt;system&gt;.</t>
         </section>
 
         <section title="Declaring a System-defined Node in &lt;running&gt; Explicitly">
           <t>It's also possible for a client to explicitly declare the
-          system-defined configurations that are referenced instead of using
-          the "resolve-system" parameter. For instance, in the above example,
-          the client MAY also explicitly configure the following system
-          defined applications "ftp" and "tftp" only with the list key
-          "name":<figure>
+          referenced system configuration instead of using the
+          "resolve-system" parameter. For instance, in the above example, the
+          client MAY also explicitly configure the following system defined
+          applications "ftp" and "tftp" only with the list key "name" and
+          mandatory "protocol":<figure>
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/applications-declare.xml)
               ]]></artwork>
@@ -681,11 +726,14 @@ INSERT_TEXT_FROM_FILE(examples/applications-referenced.xml)
               ]]></artwork>
             </figure></t>
 
-          <t>Once the data is written to &lt;running&gt;, it makes no
-          difference whether it is explicitly declared by the client or
-          automatically copied by the server. The configuration for
-          applications in &lt;running&gt; and &lt;operational&gt; would be
-          identical to the ones in <xref target="automatical"/>.</t>
+          <t>The configuration of applications will apear in
+          &lt;operational&gt; as follows:<figure>
+              <artwork><![CDATA[
+INSERT_TEXT_FROM_FILE(examples/applications-declare-operational.xml)
+              ]]></artwork>
+            </figure></t>
+
+          <t>TBD: add more explanation</t>
         </section>
 
         <section title="Modifying a System-instantiated Leaf's Value">
@@ -753,17 +801,19 @@ INSERT_TEXT_FROM_FILE(examples/interface-operational-addition.xml)
       not the schema default value, and the node is not explicitly set by the
       client, it MUST be copied into the target datastore when its closest
       ancestor node needs to be copied to satisfy referential integrity
-      constraints.</t>
+      constraints, when triggered by the "resolve-system" parameter.</t>
     </section>
 
     <section title="Relation to Other Datastores">
       <section title="The &quot;factory-default&quot; Datastore">
-        <t>Any deletable system-provided configuration that is populated as
-        part of &lt;running&gt; by the system at boot up, without being part
-        of the contents of a &lt;startup&gt; datastore, must be defined in
-        &lt;factory-default&gt; <xref target="RFC8808"/>, which is used to
+        <t>&lt;system&gt; defines the configuration that is non-deletable to
+        clients. Any deletable system-provided configuration that is populated
+        as part of &lt;running&gt; by the system at boot up, without being
+        part of the contents of a &lt;startup&gt; datastore, must be defined
+        in &lt;factory-default&gt; <xref target="RFC8808"/>, which is used to
         initialize &lt;running&gt; when the device is first-time powered on or
-        reset to its factory default condition.</t>
+        reset to its factory default condition. Deletable system configuration
+        must not be defined in &lt;system&gt;.</t>
 
         <t>The &lt;factory-reset&gt; RPC operation can reset &lt;system&gt; to
         its factory default contents.</t>
@@ -825,92 +875,6 @@ INSERT_TEXT_FROM_FILE(examples/interface-operational-addition.xml)
         defined in <xref target="RFC8340"/>.</t>
       </section>
 
-      <section title="Example Usage">
-        <t>This section gives an example of data retrieval from
-        &lt;system&gt;. The fictional YANG module used following are from
-        Appendix C.2 of [RFC8342].</t>
-
-        <figure>
-          <artwork>container bgp {
-  leaf local-as {
-    type uint32;
-  }
-  leaf peer-as {
-    type uint32;
-  }
-  list peer {
-    key name;
-    leaf name {
-      type inet:ip-address;
-    }
-    leaf local-as {
-      type uint32;
-      description
-        "... Defaults to ../local-as.";
-    }
-    leaf peer-as {
-      type uint32;
-      description
-        "... Defaults to ../peer-as.";
-    }
-    leaf local-port {
-      type inet:port;
-    }
-    leaf remote-port {
-      type inet:port;
-      default 179;
-    }
-    leaf state {
-      config false;
-      type enumeration {
-        enum init;
-        enum established;
-        enum closing;
-      }
-    }
-  }
-}</artwork>
-        </figure>
-
-        <t>All the messages are presented in a protocol-independent manner.
-        JSON is used to not imply a preferred encoding in this document.</t>
-
-        <t>Suppose the following BGP peer configuration is added to
-        &lt;running&gt;:</t>
-
-        <figure>
-          <artwork>{
-    "bgp": {
-        "local-as": "64501", 
-        "peer-as": "64502", 
-        "peer": {
-            "name": "2001:db8::2:3",
-            "local-as": "64501",
-            "peer-as": "64502"
-        }
-    }
-}</artwork>
-        </figure>
-
-        <t>The local port and remote port are used when the BGP peer
-        connection is established. Since both are not supplied explicitly in
-        &lt;running&gt; and &lt;intended&gt;, the default value for
-        "bgp/peer/remote-port" is used, and there is no default statement for
-        "bgp/peer/local-port", the system will select a value for it. So the
-        contents of &lt;system&gt; are shown as follows:</t>
-
-        <figure>
-          <artwork>{
-    "bgp": {
-        "peer": {
-            "name": "2001:db8::2:3",
-            "local-port": "60794"
-        }
-    }
-}</artwork>
-        </figure>
-      </section>
-
       <section title="YANG Module">
         <figure>
           <preamble>&lt;CODE BEGINS&gt; file
@@ -945,11 +909,6 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
   augment /ncds:edit-data/ncds:input:
     +---w resolve-system?   empty</artwork>
         </figure>
-      </section>
-
-      <section title="Example Usage">
-        <t>Please refer to <xref target="automatical"/> for example usage of
-        the "resolve-system" parameter.</t>
       </section>
 
       <section title="YANG Module">
@@ -1118,12 +1077,47 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
     </references>
 
     <section title="Key Use Cases">
-      <t>Following provides three use cases related to how &lt;system&gt;
-      interacts with other datastores (e.g., &lt;running&gt;,
-      &lt;intended&gt;, and &lt;operational&gt;). The simple interface data
-      model defined in <xref section="C.3" sectionFormat="of"
-      target="RFC8342"/> is used. For each use case, corresponding sample
-      configuration in &lt;running&gt;, &lt;system&gt;, &lt;intended&gt; and
+      <t>This section provides three use cases related to how &lt;system&gt;
+      interacts with other datastores (e.g., &lt;candidate&gt;,
+      &lt;running&gt;, &lt;intended&gt;, and &lt;operational&gt;). The
+      following fictional interface data model is used:<figure>
+          <artwork>container interfaces {
+  list interface {
+    key name;
+    leaf name {
+      type string;
+    }
+    leaf description {
+      type string;
+    }
+    leaf type {
+      type enumeration {
+        enum ethernet;
+        enum atm;
+      }
+      mandatory true;
+    }
+    leaf enabled {
+      type boolean;
+      default "true";
+    }
+    leaf mtu {
+      type uint32;
+    }
+    leaf-list ip-address {
+      type inet:ip-address;
+    }
+    leaf speed {
+      when "../type = 'ethernet'";
+      type enumeration {
+        enum "10Mb";
+        enum "100Mb";
+      }
+    }
+  }
+}</artwork>
+        </figure>For each use case, corresponding sample configuration in
+      &lt;running&gt;, &lt;system&gt;, &lt;intended&gt; and
       &lt;operational&gt; are shown. The XML snippets are used only for
       illustration purposes.</t>
 
@@ -1308,7 +1302,7 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
           <t>remove inactive-until-referenced system config</t>
 
           <t>add a new section (sec.6) to clarify the interplay bewteen system
-          config and defaults </t>
+          config and defaults</t>
 
           <t>add a new section (sec.7) to clarify relation to other
           datastores, which includes &lt;factory-default&gt; and
@@ -1396,24 +1390,10 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
 
     <section numbered="no" title="Contributors">
       <figure>
-        <artwork>      
-Kent Watsen
-Watsen Networks
-Email: kent+ietf@watsen.net
-
-Jan Lindblad
-Cisco Systems
-Email: jlindbla@cisco.com
-
-Chongfeng Xie
-China Telecom
-Beijing
-China
-Email: xiechf@chinatelecom.cn
-
-Jason Sterne
-Nokia
-Email: jason.sterne@nokia.com</artwork>
+        <artwork>Kent Watsen Watsen Networks Email: kent+ietf@watsen.net Jan
+        Lindblad Cisco Systems Email: jlindbla@cisco.com Chongfeng Xie China
+        Telecom Beijing China Email: xiechf@chinatelecom.cn Jason Sterne Nokia
+        Email: jason.sterne@nokia.com</artwork>
       </figure>
     </section>
   </back>
