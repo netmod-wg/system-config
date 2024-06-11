@@ -1,0 +1,3672 @@
+<!DOCTYPE html>
+<html lang="en" class="Internet-Draft">
+<head>
+<meta charset="utf-8">
+<meta content="Common,Latin" name="scripts">
+<meta content="initial-scale=1.0" name="viewport">
+<title>System-defined Configuration</title>
+<meta content="Qiufang Ma" name="author">
+<meta content="Qin Wu" name="author">
+<meta content="Chong Feng" name="author">
+<meta content='
+       This document defines how a management client and server handle
+      YANG-modeled configuration data that is instantiated by the server
+      itself. The system-defined configuration can be referenced (e.g.,
+      leafref) by configuration explicitly created by a client. 
+       The Network Management Datastore Architecture (NMDA) defined in RFC
+      8342 is updated with a read-only conventional configuration datastore
+      called "system" to expose system-defined configuration. 
+       This document updates RFC 8342, RFC 6241, RFC 8526 and RFC 8040. 
+    ' name="description">
+<meta content="xml2rfc 3.14.2" name="generator">
+<meta content="system config" name="keyword">
+<meta content="draft-ietf-netmod-system-config-07" name="ietf.draft">
+<!-- Generator version information:
+  xml2rfc 3.14.2
+    Python 3.8.10
+    appdirs 1.4.4
+    ConfigArgParse 1.5.3
+    google-i18n-address 2.5.0
+    html5lib 1.1
+    intervaltree 3.1.0
+    Jinja2 3.1.2
+    kitchen 1.2.6
+    lxml 4.9.1
+    MarkupSafe 2.1.1
+    pycountry 22.3.5
+    PyYAML 5.3.1
+    requests 2.22.0
+    setuptools 45.2.0
+    six 1.14.0
+-->
+<link href="draft-ietf-netmod-system-config-07.xml" rel="alternate" type="application/rfc+xml">
+<link href="#copyright" rel="license">
+<style type="text/css">/*
+
+  NOTE: Changes at the bottom of this file overrides some earlier settings.
+
+  Once the style has stabilized and has been adopted as an official RFC style,
+  this can be consolidated so that style settings occur only in one place, but
+  for now the contents of this file consists first of the initial CSS work as
+  provided to the RFC Formatter (xml2rfc) work, followed by itemized and
+  commented changes found necssary during the development of the v3
+  formatters.
+
+*/
+
+/* fonts */
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans'); /* Sans-serif */
+@import url('https://fonts.googleapis.com/css?family=Noto+Serif'); /* Serif (print) */
+@import url('https://fonts.googleapis.com/css?family=Roboto+Mono'); /* Monospace */
+
+@viewport {
+  zoom: 1.0;
+  width: extend-to-zoom;
+}
+@-ms-viewport {
+  width: extend-to-zoom;
+  zoom: 1.0;
+}
+/* general and mobile first */
+html {
+}
+body {
+  max-width: 90%;
+  margin: 1.5em auto;
+  color: #222;
+  background-color: #fff;
+  font-size: 14px;
+  font-family: 'Noto Sans', Arial, Helvetica, sans-serif;
+  line-height: 1.6;
+  scroll-behavior: smooth;
+}
+.ears {
+  display: none;
+}
+
+/* headings */
+#title, h1, h2, h3, h4, h5, h6 {
+  margin: 1em 0 0.5em;
+  font-weight: bold;
+  line-height: 1.3;
+}
+#title {
+  clear: both;
+  border-bottom: 1px solid #ddd;
+  margin: 0 0 0.5em 0;
+  padding: 1em 0 0.5em;
+}
+.author {
+  padding-bottom: 4px;
+}
+h1 {
+  font-size: 26px;
+  margin: 1em 0;
+}
+h2 {
+  font-size: 22px;
+  margin-top: -20px;  /* provide offset for in-page anchors */
+  padding-top: 33px;
+}
+h3 {
+  font-size: 18px;
+  margin-top: -36px;  /* provide offset for in-page anchors */
+  padding-top: 42px;
+}
+h4 {
+  font-size: 16px;
+  margin-top: -36px;  /* provide offset for in-page anchors */
+  padding-top: 42px;
+}
+h5, h6 {
+  font-size: 14px;
+}
+#n-copyright-notice {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 1em;
+  margin-bottom: 1em;
+}
+/* general structure */
+p {
+  padding: 0;
+  margin: 0 0 1em 0;
+  text-align: left;
+}
+div, span {
+  position: relative;
+}
+div {
+  margin: 0;
+}
+.alignRight.art-text {
+  background-color: #f9f9f9;
+  border: 1px solid #eee;
+  border-radius: 3px;
+  padding: 1em 1em 0;
+  margin-bottom: 1.5em;
+}
+.alignRight.art-text pre {
+  padding: 0;
+}
+.alignRight {
+  margin: 1em 0;
+}
+.alignRight > *:first-child {
+  border: none;
+  margin: 0;
+  float: right;
+  clear: both;
+}
+.alignRight > *:nth-child(2) {
+  clear: both;
+  display: block;
+  border: none;
+}
+svg {
+  display: block;
+}
+.alignCenter.art-text {
+  background-color: #f9f9f9;
+  border: 1px solid #eee;
+  border-radius: 3px;
+  padding: 1em 1em 0;
+  margin-bottom: 1.5em;
+}
+.alignCenter.art-text pre {
+  padding: 0;
+}
+.alignCenter {
+  margin: 1em 0;
+}
+.alignCenter > *:first-child {
+  display: table;
+  border: none;
+  margin: 0 auto;
+}
+
+/* lists */
+ol, ul {
+  padding: 0;
+  margin: 0 0 1em 2em;
+}
+ol ol, ul ul, ol ul, ul ol {
+  margin-left: 1em;
+}
+li {
+  margin: 0 0 0.25em 0;
+}
+.ulCompact li {
+  margin: 0;
+}
+ul.empty, .ulEmpty {
+  list-style-type: none;
+}
+ul.empty li, .ulEmpty li {
+  margin-top: 0.5em;
+}
+ul.ulBare, li.ulBare {
+  margin-left: 0em !important;
+}
+ul.compact, .ulCompact,
+ol.compact, .olCompact {
+  line-height: 100%;
+  margin: 0 0 0 2em;
+}
+
+/* definition lists */
+dl {
+}
+dl > dt {
+  float: left;
+  margin-right: 1em;
+}
+/* 
+dl.nohang > dt {
+  float: none;
+}
+*/
+dl > dd {
+  margin-bottom: .8em;
+  min-height: 1.3em;
+}
+dl.compact > dd, .dlCompact > dd {
+  margin-bottom: 0em;
+}
+dl > dd > dl {
+  margin-top: 0.5em;
+  margin-bottom: 0em;
+}
+
+/* links */
+a {
+  text-decoration: none;
+}
+a[href] {
+  color: #22e; /* Arlen: WCAG 2019 */
+}
+a[href]:hover {
+  background-color: #f2f2f2;
+}
+figcaption a[href],
+a[href].selfRef {
+  color: #222;
+}
+/* XXX probably not this:
+a.selfRef:hover {
+  background-color: transparent;
+  cursor: default;
+} */
+
+/* Figures */
+tt, code, pre, code {
+  background-color: #f9f9f9;
+  font-family: 'Roboto Mono', monospace;
+}
+pre {
+  border: 1px solid #eee;
+  margin: 0;
+  padding: 1em;
+}
+img {
+  max-width: 100%;
+}
+figure {
+  margin: 0;
+}
+figure blockquote {
+  margin: 0.8em 0.4em 0.4em;
+}
+figcaption {
+  font-style: italic;
+  margin: 0 0 1em 0;
+}
+@media screen {
+  pre {
+    overflow-x: auto;
+    max-width: 100%;
+    max-width: calc(100% - 22px);
+  }
+}
+
+/* aside, blockquote */
+aside, blockquote {
+  margin-left: 0;
+  padding: 1.2em 2em;
+}
+blockquote {
+  background-color: #f9f9f9;
+  color: #111; /* Arlen: WCAG 2019 */
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  margin: 1em 0;
+}
+cite {
+  display: block;
+  text-align: right;
+  font-style: italic;
+}
+
+/* tables */
+table {
+  width: 100%;
+  margin: 0 0 1em;
+  border-collapse: collapse;
+  border: 1px solid #eee;
+}
+th, td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.5em 0.75em;
+}
+th {
+  text-align: left;
+  background-color: #e9e9e9;
+}
+tr:nth-child(2n+1) > td {
+  background-color: #f5f5f5;
+}
+table caption {
+  font-style: italic;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+table p {
+  /* XXX to avoid bottom margin on table row signifiers. If paragraphs should
+     be allowed within tables more generally, it would be far better to select on a class. */
+  margin: 0;
+}
+
+/* pilcrow */
+a.pilcrow {
+  color: #666; /* Arlen: AHDJ 2019 */
+  text-decoration: none;
+  visibility: hidden;
+  user-select: none;
+  -ms-user-select: none;
+  -o-user-select:none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+@media screen {
+  aside:hover > a.pilcrow,
+  p:hover > a.pilcrow,
+  blockquote:hover > a.pilcrow,
+  div:hover > a.pilcrow,
+  li:hover > a.pilcrow,
+  pre:hover > a.pilcrow {
+    visibility: visible;
+  }
+  a.pilcrow:hover {
+    background-color: transparent;
+  }
+}
+
+/* misc */
+hr {
+  border: 0;
+  border-top: 1px solid #eee;
+}
+.bcp14 {
+  font-variant: small-caps;
+}
+
+.role {
+  font-variant: all-small-caps;
+}
+
+/* info block */
+#identifiers {
+  margin: 0;
+  font-size: 0.9em;
+}
+#identifiers dt {
+  width: 3em;
+  clear: left;
+}
+#identifiers dd {
+  float: left;
+  margin-bottom: 0;
+}
+/* Fix PDF info block run off issue */
+@media print {
+  #identifiers dd {
+    float: none;
+  }
+}
+#identifiers .authors .author {
+  display: inline-block;
+  margin-right: 1.5em;
+}
+#identifiers .authors .org {
+  font-style: italic;
+}
+
+/* The prepared/rendered info at the very bottom of the page */
+.docInfo {
+  color: #666; /* Arlen: WCAG 2019 */
+  font-size: 0.9em;
+  font-style: italic;
+  margin-top: 2em;
+}
+.docInfo .prepared {
+  float: left;
+}
+.docInfo .prepared {
+  float: right;
+}
+
+/* table of contents */
+#toc  {
+  padding: 0.75em 0 2em 0;
+  margin-bottom: 1em;
+}
+nav.toc ul {
+  margin: 0 0.5em 0 0;
+  padding: 0;
+  list-style: none;
+}
+nav.toc li {
+  line-height: 1.3em;
+  margin: 0.75em 0;
+  padding-left: 1.2em;
+  text-indent: -1.2em;
+}
+/* references */
+.references dt {
+  text-align: right;
+  font-weight: bold;
+  min-width: 7em;
+}
+.references dd {
+  margin-left: 8em;
+  overflow: auto;
+}
+
+.refInstance {
+  margin-bottom: 1.25em;
+}
+
+.references .ascii {
+  margin-bottom: 0.25em;
+}
+
+/* index */
+.index ul {
+  margin: 0 0 0 1em;
+  padding: 0;
+  list-style: none;
+}
+.index ul ul {
+  margin: 0;
+}
+.index li {
+  margin: 0;
+  text-indent: -2em;
+  padding-left: 2em;
+  padding-bottom: 5px;
+}
+.indexIndex {
+  margin: 0.5em 0 1em;
+}
+.index a {
+  font-weight: 700;
+}
+/* make the index two-column on all but the smallest screens */
+@media (min-width: 600px) {
+  .index ul {
+    -moz-column-count: 2;
+    -moz-column-gap: 20px;
+  }
+  .index ul ul {
+    -moz-column-count: 1;
+    -moz-column-gap: 0;
+  }
+}
+
+/* authors */
+address.vcard {
+  font-style: normal;
+  margin: 1em 0;
+}
+
+address.vcard .nameRole {
+  font-weight: 700;
+  margin-left: 0;
+}
+address.vcard .label {
+  font-family: "Noto Sans",Arial,Helvetica,sans-serif;
+  margin: 0.5em 0;
+}
+address.vcard .type {
+  display: none;
+}
+.alternative-contact {
+  margin: 1.5em 0 1em;
+}
+hr.addr {
+  border-top: 1px dashed;
+  margin: 0;
+  color: #ddd;
+  max-width: calc(100% - 16px);
+}
+
+/* temporary notes */
+.rfcEditorRemove::before {
+  position: absolute;
+  top: 0.2em;
+  right: 0.2em;
+  padding: 0.2em;
+  content: "The RFC Editor will remove this note";
+  color: #9e2a00; /* Arlen: WCAG 2019 */
+  background-color: #ffd; /* Arlen: WCAG 2019 */
+}
+.rfcEditorRemove {
+  position: relative;
+  padding-top: 1.8em;
+  background-color: #ffd; /* Arlen: WCAG 2019 */
+  border-radius: 3px;
+}
+.cref {
+  background-color: #ffd; /* Arlen: WCAG 2019 */
+  padding: 2px 4px;
+}
+.crefSource {
+  font-style: italic;
+}
+/* alternative layout for smaller screens */
+@media screen and (max-width: 1023px) {
+  body {
+    padding-top: 2em;
+  }
+  #title {
+    padding: 1em 0;
+  }
+  h1 {
+    font-size: 24px;
+  }
+  h2 {
+    font-size: 20px;
+    margin-top: -18px;  /* provide offset for in-page anchors */
+    padding-top: 38px;
+  }
+  #identifiers dd {
+    max-width: 60%;
+  }
+  #toc {
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    right: 0;
+    padding: 0;
+    margin: 0;
+    background-color: inherit;
+    border-bottom: 1px solid #ccc;
+  }
+  #toc h2 {
+    margin: -1px 0 0 0;
+    padding: 4px 0 4px 6px;
+    padding-right: 1em;
+    min-width: 190px;
+    font-size: 1.1em;
+    text-align: right;
+    background-color: #444;
+    color: white;
+    cursor: pointer;
+  }
+  #toc h2::before { /* css hamburger */
+    float: right;
+    position: relative;
+    width: 1em;
+    height: 1px;
+    left: -164px;
+    margin: 6px 0 0 0;
+    background: white none repeat scroll 0 0;
+    box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
+    content: "";
+  }
+  #toc nav {
+    display: none;
+    padding: 0.5em 1em 1em;
+    overflow: auto;
+    height: calc(100vh - 48px);
+    border-left: 1px solid #ddd;
+  }
+}
+
+/* alternative layout for wide screens */
+@media screen and (min-width: 1024px) {
+  body {
+    max-width: 724px;
+    margin: 42px auto;
+    padding-left: 1.5em;
+    padding-right: 29em;
+  }
+  #toc {
+    position: fixed;
+    top: 42px;
+    right: 42px;
+    width: 25%;
+    margin: 0;
+    padding: 0 1em;
+    z-index: 1;
+  }
+  #toc h2 {
+    border-top: none;
+    border-bottom: 1px solid #ddd;
+    font-size: 1em;
+    font-weight: normal;
+    margin: 0;
+    padding: 0.25em 1em 1em 0;
+  }
+  #toc nav {
+    display: block;
+    height: calc(90vh - 84px);
+    bottom: 0;
+    padding: 0.5em 0 0;
+    overflow: auto;
+  }
+  img { /* future proofing */
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* pagination */
+@media print {
+  body {
+
+    width: 100%;
+  }
+  p {
+    orphans: 3;
+    widows: 3;
+  }
+  #n-copyright-notice {
+    border-bottom: none;
+  }
+  #toc, #n-introduction {
+    page-break-before: always;
+  }
+  #toc {
+    border-top: none;
+    padding-top: 0;
+  }
+  figure, pre {
+    page-break-inside: avoid;
+  }
+  figure {
+    overflow: scroll;
+  }
+  pre.breakable {
+    break-inside: auto;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+  }
+  h2+*, h3+*, h4+*, h5+*, h6+* {
+    page-break-before: avoid;
+  }
+  pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: 10pt;
+  }
+  table {
+    border: 1px solid #ddd;
+  }
+  td {
+    border-top: 1px solid #ddd;
+  }
+}
+
+/* This is commented out here, as the string-set: doesn't
+   pass W3C validation currently */
+/*
+.ears thead .left {
+  string-set: ears-top-left content();
+}
+
+.ears thead .center {
+  string-set: ears-top-center content();
+}
+
+.ears thead .right {
+  string-set: ears-top-right content();
+}
+
+.ears tfoot .left {
+  string-set: ears-bottom-left content();
+}
+
+.ears tfoot .center {
+  string-set: ears-bottom-center content();
+}
+
+.ears tfoot .right {
+  string-set: ears-bottom-right content();
+}
+*/
+
+@page :first {
+  padding-top: 0;
+  @top-left {
+    content: normal;
+    border: none;
+  }
+  @top-center {
+    content: normal;
+    border: none;
+  }
+  @top-right {
+    content: normal;
+    border: none;
+  }
+}
+
+@page {
+  size: A4;
+  margin-bottom: 45mm;
+  padding-top: 20px;
+  /* The follwing is commented out here, but set appropriately by in code, as
+     the content depends on the document */
+  /*
+  @top-left {
+    content: 'Internet-Draft';
+    vertical-align: bottom;
+    border-bottom: solid 1px #ccc;
+  }
+  @top-left {
+    content: string(ears-top-left);
+    vertical-align: bottom;
+    border-bottom: solid 1px #ccc;
+  }
+  @top-center {
+    content: string(ears-top-center);
+    vertical-align: bottom;
+    border-bottom: solid 1px #ccc;
+  }
+  @top-right {
+    content: string(ears-top-right);
+    vertical-align: bottom;
+    border-bottom: solid 1px #ccc;
+  }
+  @bottom-left {
+    content: string(ears-bottom-left);
+    vertical-align: top;
+    border-top: solid 1px #ccc;
+  }
+  @bottom-center {
+    content: string(ears-bottom-center);
+    vertical-align: top;
+    border-top: solid 1px #ccc;
+  }
+  @bottom-right {
+      content: '[Page ' counter(page) ']';
+      vertical-align: top;
+      border-top: solid 1px #ccc;
+  }
+  */
+
+}
+
+/* Changes introduced to fix issues found during implementation */
+/* Make sure links are clickable even if overlapped by following H* */
+a {
+  z-index: 2;
+}
+/* Separate body from document info even without intervening H1 */
+section {
+  clear: both;
+}
+
+
+/* Top align author divs, to avoid names without organization dropping level with org names */
+.author {
+  vertical-align: top;
+}
+
+/* Leave room in document info to show Internet-Draft on one line */
+#identifiers dt {
+  width: 8em;
+}
+
+/* Don't waste quite as much whitespace between label and value in doc info */
+#identifiers dd {
+  margin-left: 1em;
+}
+
+/* Give floating toc a background color (needed when it's a div inside section */
+#toc {
+  background-color: white;
+}
+
+/* Make the collapsed ToC header render white on gray also when it's a link */
+@media screen and (max-width: 1023px) {
+  #toc h2 a,
+  #toc h2 a:link,
+  #toc h2 a:focus,
+  #toc h2 a:hover,
+  #toc a.toplink,
+  #toc a.toplink:hover {
+    color: white;
+    background-color: #444;
+    text-decoration: none;
+  }
+}
+
+/* Give the bottom of the ToC some whitespace */
+@media screen and (min-width: 1024px) {
+  #toc {
+    padding: 0 0 1em 1em;
+  }
+}
+
+/* Style section numbers with more space between number and title */
+.section-number {
+  padding-right: 0.5em;
+}
+
+/* prevent monospace from becoming overly large */
+tt, code, pre, code {
+  font-size: 95%;
+}
+
+/* Fix the height/width aspect for ascii art*/
+pre.sourcecode,
+.art-text pre {
+  line-height: 1.12;
+}
+
+
+/* Add styling for a link in the ToC that points to the top of the document */
+a.toplink {
+  float: right;
+  margin-right: 0.5em;
+}
+
+/* Fix the dl styling to match the RFC 7992 attributes */
+dl > dt,
+dl.dlParallel > dt {
+  float: left;
+  margin-right: 1em;
+}
+dl.dlNewline > dt {
+  float: none;
+}
+
+/* Provide styling for table cell text alignment */
+table td.text-left,
+table th.text-left {
+  text-align: left;
+}
+table td.text-center,
+table th.text-center {
+  text-align: center;
+}
+table td.text-right,
+table th.text-right {
+  text-align: right;
+}
+
+/* Make the alternative author contact informatio look less like just another
+   author, and group it closer with the primary author contact information */
+.alternative-contact {
+  margin: 0.5em 0 0.25em 0;
+}
+address .non-ascii {
+  margin: 0 0 0 2em;
+}
+
+/* With it being possible to set tables with alignment
+  left, center, and right, { width: 100%; } does not make sense */
+table {
+  width: auto;
+}
+
+/* Avoid reference text that sits in a block with very wide left margin,
+   because of a long floating dt label.*/
+.references dd {
+  overflow: visible;
+}
+
+/* Control caption placement */
+caption {
+  caption-side: bottom;
+}
+
+/* Limit the width of the author address vcard, so names in right-to-left
+   script don't end up on the other side of the page. */
+
+address.vcard {
+  max-width: 30em;
+  margin-right: auto;
+}
+
+/* For address alignment dependent on LTR or RTL scripts */
+address div.left {
+  text-align: left;
+}
+address div.right {
+  text-align: right;
+}
+
+/* Provide table alignment support.  We can't use the alignX classes above
+   since they do unwanted things with caption and other styling. */
+table.right {
+ margin-left: auto;
+ margin-right: 0;
+}
+table.center {
+ margin-left: auto;
+ margin-right: auto;
+}
+table.left {
+ margin-left: 0;
+ margin-right: auto;
+}
+
+/* Give the table caption label the same styling as the figcaption */
+caption a[href] {
+  color: #222;
+}
+
+@media print {
+  .toplink {
+    display: none;
+  }
+
+  /* avoid overwriting the top border line with the ToC header */
+  #toc {
+    padding-top: 1px;
+  }
+
+  /* Avoid page breaks inside dl and author address entries */
+  .vcard {
+    page-break-inside: avoid;
+  }
+
+}
+/* Tweak the bcp14 keyword presentation */
+.bcp14 {
+  font-variant: small-caps;
+  font-weight: bold;
+  font-size: 0.9em;
+}
+/* Tweak the invisible space above H* in order not to overlay links in text above */
+ h2 {
+  margin-top: -18px;  /* provide offset for in-page anchors */
+  padding-top: 31px;
+ }
+ h3 {
+  margin-top: -18px;  /* provide offset for in-page anchors */
+  padding-top: 24px;
+ }
+ h4 {
+  margin-top: -18px;  /* provide offset for in-page anchors */
+  padding-top: 24px;
+ }
+/* Float artwork pilcrow to the right */
+@media screen {
+  .artwork a.pilcrow {
+    display: block;
+    line-height: 0.7;
+    margin-top: 0.15em;
+  }
+}
+/* Make pilcrows on dd visible */
+@media screen {
+  dd:hover > a.pilcrow {
+    visibility: visible;
+  }
+}
+/* Make the placement of figcaption match that of a table's caption
+   by removing the figure's added bottom margin */
+.alignLeft.art-text,
+.alignCenter.art-text,
+.alignRight.art-text {
+   margin-bottom: 0;
+}
+.alignLeft,
+.alignCenter,
+.alignRight {
+  margin: 1em 0 0 0;
+}
+/* In print, the pilcrow won't show on hover, so prevent it from taking up space,
+   possibly even requiring a new line */
+@media print {
+  a.pilcrow {
+    display: none;
+  }
+}
+/* Styling for the external metadata */
+div#external-metadata {
+  background-color: #eee;
+  padding: 0.5em;
+  margin-bottom: 0.5em;
+  display: none;
+}
+div#internal-metadata {
+  padding: 0.5em;                       /* to match the external-metadata padding */
+}
+/* Styling for title RFC Number */
+h1#rfcnum {
+  clear: both;
+  margin: 0 0 -1em;
+  padding: 1em 0 0 0;
+}
+/* Make .olPercent look the same as <ol><li> */
+dl.olPercent > dd {
+  margin-bottom: 0.25em;
+  min-height: initial;
+}
+/* Give aside some styling to set it apart */
+aside {
+  border-left: 1px solid #ddd;
+  margin: 1em 0 1em 2em;
+  padding: 0.2em 2em;
+}
+aside > dl,
+aside > ol,
+aside > ul,
+aside > table,
+aside > p {
+  margin-bottom: 0.5em;
+}
+/* Additional page break settings */
+@media print {
+  figcaption, table caption {
+    page-break-before: avoid;
+  }
+}
+/* Font size adjustments for print */
+@media print {
+  body  { font-size: 10pt;      line-height: normal; max-width: 96%; }
+  h1    { font-size: 1.72em;    padding-top: 1.5em; } /* 1*1.2*1.2*1.2 */
+  h2    { font-size: 1.44em;    padding-top: 1.5em; } /* 1*1.2*1.2 */
+  h3    { font-size: 1.2em;     padding-top: 1.5em; } /* 1*1.2 */
+  h4    { font-size: 1em;       padding-top: 1.5em; }
+  h5, h6 { font-size: 1em;      margin: initial; padding: 0.5em 0 0.3em; }
+}
+/* Sourcecode margin in print, when there's no pilcrow */
+@media print {
+  .artwork,
+  .sourcecode {
+    margin-bottom: 1em;
+  }
+}
+/* Avoid narrow tables forcing too narrow table captions, which may render badly */
+table {
+  min-width: 20em;
+}
+/* ol type a */
+ol.type-a { list-style-type: lower-alpha; }
+ol.type-A { list-style-type: upper-alpha; }
+ol.type-i { list-style-type: lower-roman; }
+ol.type-I { list-style-type: lower-roman; }
+/* Apply the print table and row borders in general, on request from the RPC,
+and increase the contrast between border and odd row background sligthtly */
+table {
+  border: 1px solid #ddd;
+}
+td {
+  border-top: 1px solid #ddd;
+}
+tr {
+  break-inside: avoid;
+}
+tr:nth-child(2n+1) > td {
+  background-color: #f8f8f8;
+}
+/* Use style rules to govern display of the TOC. */
+@media screen and (max-width: 1023px) {
+  #toc nav { display: none; }
+  #toc.active nav { display: block; }
+}
+/* Add support for keepWithNext */
+.keepWithNext {
+  break-after: avoid-page;
+  break-after: avoid-page;
+}
+/* Add support for keepWithPrevious */
+.keepWithPrevious {
+  break-before: avoid-page;
+}
+/* Change the approach to avoiding breaks inside artwork etc. */
+figure, pre, table, .artwork, .sourcecode  {
+  break-before: auto;
+  break-after: auto;
+}
+/* Avoid breaks between <dt> and <dd> */
+dl {
+  break-before: auto;
+  break-inside: auto;
+}
+dt {
+  break-before: auto;
+  break-after: avoid-page;
+}
+dd {
+  break-before: avoid-page;
+  break-after: auto;
+  orphans: 3;
+  widows: 3
+}
+span.break, dd.break {
+  margin-bottom: 0;
+  min-height: 0;
+  break-before: auto;
+  break-inside: auto;
+  break-after: auto;
+}
+/* Undo break-before ToC */
+@media print {
+  #toc {
+    break-before: auto;
+  }
+}
+/* Text in compact lists should not get extra bottim margin space,
+   since that would makes the list not compact */
+ul.compact p, .ulCompact p,
+ol.compact p, .olCompact p {
+ margin: 0;
+}
+/* But the list as a whole needs the extra space at the end */
+section ul.compact,
+section .ulCompact,
+section ol.compact,
+section .olCompact {
+  margin-bottom: 1em;                    /* same as p not within ul.compact etc. */
+}
+/* The tt and code background above interferes with for instance table cell
+   backgrounds.  Changed to something a bit more selective. */
+tt, code {
+  background-color: transparent;
+}
+p tt, p code, li tt, li code {
+  background-color: #f8f8f8;
+}
+/* Tweak the pre margin -- 0px doesn't come out well */
+pre {
+   margin-top: 0.5px;
+}
+/* Tweak the comact list text */
+ul.compact, .ulCompact,
+ol.compact, .olCompact,
+dl.compact, .dlCompact {
+  line-height: normal;
+}
+/* Don't add top margin for nested lists */
+li > ul, li > ol, li > dl,
+dd > ul, dd > ol, dd > dl,
+dl > dd > dl {
+  margin-top: initial;
+}
+/* Elements that should not be rendered on the same line as a <dt> */
+/* This should match the element list in writer.text.TextWriter.render_dl() */
+dd > div.artwork:first-child,
+dd > aside:first-child,
+dd > figure:first-child,
+dd > ol:first-child,
+dd > div:first-child > pre.sourcecode,
+dd > table:first-child,
+dd > ul:first-child {
+  clear: left;
+}
+/* fix for weird browser behaviour when <dd/> is empty */
+dt+dd:empty::before{
+  content: "\00a0";
+}
+/* Make paragraph spacing inside <li> smaller than in body text, to fit better within the list */
+li > p {
+  margin-bottom: 0.5em
+}
+/* Don't let p margin spill out from inside list items */
+li > p:last-of-type {
+  margin-bottom: 0;
+}
+</style>
+<link href="rfc-local.css" rel="stylesheet" type="text/css">
+<script type="application/javascript">async function addMetadata(){try{const e=document.styleSheets[0].cssRules;for(let t=0;t<e.length;t++)if(/#identifiers/.exec(e[t].selectorText)){const a=e[t].cssText.replace("#identifiers","#external-updates");document.styleSheets[0].insertRule(a,document.styleSheets[0].cssRules.length)}}catch(e){console.log(e)}const e=document.getElementById("external-metadata");if(e)try{var t,a="",o=function(e){const t=document.getElementsByTagName("meta");for(let a=0;a<t.length;a++)if(t[a].getAttribute("name")===e)return t[a].getAttribute("content");return""}("rfc.number");if(o){t="https://www.rfc-editor.org/rfc/rfc"+o+".json";try{const e=await fetch(t);a=await e.json()}catch(e){t=document.URL.indexOf("html")>=0?document.URL.replace(/html$/,"json"):document.URL+".json";const o=await fetch(t);a=await o.json()}}if(!a)return;e.style.display="block";const s="",d="https://datatracker.ietf.org/doc",n="https://datatracker.ietf.org/ipr/search",c="https://www.rfc-editor.org/info",l=a.doc_id.toLowerCase(),i=a.doc_id.slice(0,3).toLowerCase(),f=a.doc_id.slice(3).replace(/^0+/,""),u={status:"Status",obsoletes:"Obsoletes",obsoleted_by:"Obsoleted By",updates:"Updates",updated_by:"Updated By",see_also:"See Also",errata_url:"Errata"};let h="<dl style='overflow:hidden' id='external-updates'>";["status","obsoletes","obsoleted_by","updates","updated_by","see_also","errata_url"].forEach(e=>{if("status"==e){a[e]=a[e].toLowerCase();var t=a[e].split(" "),o=t.length,w="",p=1;for(let e=0;e<o;e++)p<o?w=w+r(t[e])+" ":w+=r(t[e]),p++;a[e]=w}else if("obsoletes"==e||"obsoleted_by"==e||"updates"==e||"updated_by"==e){var g,m="",b=1;g=a[e].length;for(let t=0;t<g;t++)a[e][t]&&(a[e][t]=String(a[e][t]).toLowerCase(),m=b<g?m+"<a href='"+s+"/rfc/".concat(a[e][t])+"'>"+a[e][t].slice(3)+"</a>, ":m+"<a href='"+s+"/rfc/".concat(a[e][t])+"'>"+a[e][t].slice(3)+"</a>",b++);a[e]=m}else if("see_also"==e){var y,L="",C=1;y=a[e].length;for(let t=0;t<y;t++)if(a[e][t]){a[e][t]=String(a[e][t]);var _=a[e][t].slice(0,3),v=a[e][t].slice(3).replace(/^0+/,"");L=C<y?"RFC"!=_?L+"<a href='"+s+"/info/"+_.toLowerCase().concat(v.toLowerCase())+"'>"+_+" "+v+"</a>, ":L+"<a href='"+s+"/info/"+_.toLowerCase().concat(v.toLowerCase())+"'>"+v+"</a>, ":"RFC"!=_?L+"<a href='"+s+"/info/"+_.toLowerCase().concat(v.toLowerCase())+"'>"+_+" "+v+"</a>":L+"<a href='"+s+"/info/"+_.toLowerCase().concat(v.toLowerCase())+"'>"+v+"</a>",C++}a[e]=L}else if("errata_url"==e){var R="";R=a[e]?R+"<a href='"+a[e]+"'>Errata exist</a> | <a href='"+d+"/"+l+"'>Datatracker</a>| <a href='"+n+"/?"+i+"="+f+"&submit="+i+"'>IPR</a> | <a href='"+c+"/"+l+"'>Info page</a>":"<a href='"+d+"/"+l+"'>Datatracker</a> | <a href='"+n+"/?"+i+"="+f+"&submit="+i+"'>IPR</a> | <a href='"+c+"/"+l+"'>Info page</a>",a[e]=R}""!=a[e]?"Errata"==u[e]?h+=`<dt>More info:</dt><dd>${a[e]}</dd>`:h+=`<dt>${u[e]}:</dt><dd>${a[e]}</dd>`:"Errata"==u[e]&&(h+=`<dt>More info:</dt><dd>${a[e]}</dd>`)}),h+="</dl>",e.innerHTML=h}catch(e){console.log(e)}else console.log("Could not locate metadata <div> element");function r(e){return e.charAt(0).toUpperCase()+e.slice(1)}}window.removeEventListener("load",addMetadata),window.addEventListener("load",addMetadata);</script>
+</head>
+<body>
+<script src="metadata.min.js"></script>
+<table class="ears">
+<thead><tr>
+<td class="left">Internet-Draft</td>
+<td class="center">System-defined Configuration</td>
+<td class="right">June 2024</td>
+</tr></thead>
+<tfoot><tr>
+<td class="left">Ma, et al.</td>
+<td class="center">Expires 13 December 2024</td>
+<td class="right">[Page]</td>
+</tr></tfoot>
+</table>
+<div id="external-metadata" class="document-information"></div>
+<div id="internal-metadata" class="document-information">
+<dl id="identifiers">
+<dt class="label-workgroup">Workgroup:</dt>
+<dd class="workgroup">NETMOD</dd>
+<dt class="label-internet-draft">Internet-Draft:</dt>
+<dd class="internet-draft">draft-ietf-netmod-system-config-07</dd>
+<dt class="label-updates">Updates:</dt>
+<dd class="updates">
+<a href="https://www.rfc-editor.org/rfc/rfc8342" class="eref">8342</a>, <a href="https://www.rfc-editor.org/rfc/rfc6241" class="eref">6241</a>, <a href="https://www.rfc-editor.org/rfc/rfc8526" class="eref">8526</a>, <a href="https://www.rfc-editor.org/rfc/rfc8040" class="eref">8040</a> (if approved)</dd>
+<dt class="label-published">Published:</dt>
+<dd class="published">
+<time datetime="2024-06-11" class="published">11 June 2024</time>
+    </dd>
+<dt class="label-intended-status">Intended Status:</dt>
+<dd class="intended-status">Standards Track</dd>
+<dt class="label-expires">Expires:</dt>
+<dd class="expires"><time datetime="2024-12-13">13 December 2024</time></dd>
+<dt class="label-authors">Authors:</dt>
+<dd class="authors">
+<div class="author">
+      <div class="author-name">Q. Ma, <span class="editor">Ed.</span>
+</div>
+<div class="org">Huawei</div>
+</div>
+<div class="author">
+      <div class="author-name">Q. Wu</div>
+<div class="org">Huawei</div>
+</div>
+<div class="author">
+      <div class="author-name">C. Feng</div>
+</div>
+</dd>
+</dl>
+</div>
+<h1 id="title">System-defined Configuration</h1>
+<section id="section-abstract">
+      <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
+<p id="section-abstract-1">This document defines how a management client and server handle
+      YANG-modeled configuration data that is instantiated by the server
+      itself. The system-defined configuration can be referenced (e.g.,
+      leafref) by configuration explicitly created by a client.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-2">The Network Management Datastore Architecture (NMDA) defined in RFC
+      8342 is updated with a read-only conventional configuration datastore
+      called "system" to expose system-defined configuration.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
+<p id="section-abstract-3">This document updates RFC 8342, RFC 6241, RFC 8526 and RFC 8040.<a href="#section-abstract-3" class="pilcrow">¶</a></p>
+</section>
+<div id="status-of-memo">
+<section id="section-boilerplate.1">
+        <h2 id="name-status-of-this-memo">
+<a href="#name-status-of-this-memo" class="section-name selfRef">Status of This Memo</a>
+        </h2>
+<p id="section-boilerplate.1-1">
+        This Internet-Draft is submitted in full conformance with the
+        provisions of BCP 78 and BCP 79.<a href="#section-boilerplate.1-1" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-2">
+        Internet-Drafts are working documents of the Internet Engineering Task
+        Force (IETF). Note that other groups may also distribute working
+        documents as Internet-Drafts. The list of current Internet-Drafts is
+        at <span><a href="https://datatracker.ietf.org/drafts/current/">https://datatracker.ietf.org/drafts/current/</a></span>.<a href="#section-boilerplate.1-2" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-3">
+        Internet-Drafts are draft documents valid for a maximum of six months
+        and may be updated, replaced, or obsoleted by other documents at any
+        time. It is inappropriate to use Internet-Drafts as reference
+        material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-4">
+        This Internet-Draft will expire on 13 December 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="copyright">
+<section id="section-boilerplate.2">
+        <h2 id="name-copyright-notice">
+<a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
+        </h2>
+<p id="section-boilerplate.2-1">
+            Copyright (c) 2024 IETF Trust and the persons identified as the
+            document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.2-2">
+            This document is subject to BCP 78 and the IETF Trust's Legal
+            Provisions Relating to IETF Documents
+            (<span><a href="https://trustee.ietf.org/license-info">https://trustee.ietf.org/license-info</a></span>) in effect on the date of
+            publication of this document. Please review these documents
+            carefully, as they describe your rights and restrictions with
+            respect to this document. Code Components extracted from this
+            document must include Revised BSD License text as described in
+            Section 4.e of the Trust Legal Provisions and are provided without
+            warranty as described in the Revised BSD License.<a href="#section-boilerplate.2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="toc">
+<section id="section-toc.1">
+        <a href="#" onclick="scroll(0,0)" class="toplink">▲</a><h2 id="name-table-of-contents">
+<a href="#name-table-of-contents" class="section-name selfRef">Table of Contents</a>
+        </h2>
+<nav class="toc"><ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1">
+            <p id="section-toc.1-1.1.1"><a href="#section-1" class="xref">1</a>.  <a href="#name-introduction" class="xref">Introduction</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1">
+                <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="xref">1.1</a>.  <a href="#name-terminology" class="xref">Terminology</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.2">
+                <p id="section-toc.1-1.1.2.2.1" class="keepWithNext"><a href="#section-1.2" class="xref">1.2</a>.  <a href="#name-requirements-language" class="xref">Requirements Language</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.3">
+                <p id="section-toc.1-1.1.2.3.1" class="keepWithNext"><a href="#section-1.3" class="xref">1.3</a>.  <a href="#name-updates-to-rfc-8342" class="xref">Updates to RFC 8342</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.4">
+                <p id="section-toc.1-1.1.2.4.1"><a href="#section-1.4" class="xref">1.4</a>.  <a href="#name-updates-to-rfc-6241-and-rfc" class="xref">Updates to RFC 6241 and RFC 8526</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.5">
+                <p id="section-toc.1-1.1.2.5.1"><a href="#section-1.5" class="xref">1.5</a>.  <a href="#name-updates-to-rfc-8040" class="xref">Updates to RFC 8040</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2">
+            <p id="section-toc.1-1.2.1"><a href="#section-2" class="xref">2</a>.  <a href="#name-kinds-of-system-configurati" class="xref">Kinds of System Configuration</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.1">
+                <p id="section-toc.1-1.2.2.1.1"><a href="#section-2.1" class="xref">2.1</a>.  <a href="#name-immediately-present" class="xref">Immediately-Present</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.2">
+                <p id="section-toc.1-1.2.2.2.1"><a href="#section-2.2" class="xref">2.2</a>.  <a href="#name-conditionally-present" class="xref">Conditionally-Present</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3">
+            <p id="section-toc.1-1.3.1"><a href="#section-3" class="xref">3</a>.  <a href="#name-the-system-configuration-da" class="xref">The System Configuration Datastore (&lt;system&gt;)</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4">
+            <p id="section-toc.1-1.4.1"><a href="#section-4" class="xref">4</a>.  <a href="#name-static-characteristics-of-s" class="xref">Static Characteristics of &lt;system&gt;</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.1">
+                <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="xref">4.1</a>.  <a href="#name-read-only-to-clients" class="xref">Read-only to Clients</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2">
+                <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="xref">4.2</a>.  <a href="#name-may-change-via-software-upg" class="xref">May Change via Software Upgrades or Resource Changes</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.3">
+                <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="xref">4.3</a>.  <a href="#name-no-impact-to-operational" class="xref">No Impact to &lt;operational&gt;</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="xref">5</a>.  <a href="#name-dynamic-behaviors" class="xref">Dynamic Behaviors</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1">
+                <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="xref">5.1</a>.  <a href="#name-conceptual-model-of-datasto" class="xref">Conceptual Model of Datastores</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1.2.1">
+                    <p id="section-toc.1-1.5.2.1.2.1.1"><a href="#section-5.1.1" class="xref">5.1.1</a>.  <a href="#name-origin-metadata-annotation" class="xref">Origin Metadata Annotation</a></p>
+</li>
+                </ul>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.2">
+                <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="xref">5.2</a>.  <a href="#name-explicit-declaration-of-sys" class="xref">Explicit Declaration of System Configuration</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.3">
+                <p id="section-toc.1-1.5.2.3.1"><a href="#section-5.3" class="xref">5.3</a>.  <a href="#name-servers-auto-configuring-re" class="xref">Servers Auto-configuring Referenced System Configuration ("resolve-system" parameter)</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.3.2.1">
+                    <p id="section-toc.1-1.5.2.3.2.1.1"><a href="#section-5.3.1" class="xref">5.3.1</a>.  <a href="#name-netconf-support-for-resolve" class="xref">NETCONF Support for "resolve-system" Parameter</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.3.2.2">
+                    <p id="section-toc.1-1.5.2.3.2.2.1"><a href="#section-5.3.2" class="xref">5.3.2</a>.  <a href="#name-restconf-support-for-resolv" class="xref">RESTCONF Support for "resolve-system" Parameter</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.3.2.2.2.1">
+                        <p id="section-toc.1-1.5.2.3.2.2.2.1.1"><a href="#section-5.3.2.1" class="xref">5.3.2.1</a>.  <a href="#name-query-parameter" class="xref">Query Parameter</a></p>
+</li>
+                      <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.3.2.2.2.2">
+                        <p id="section-toc.1-1.5.2.3.2.2.2.2.1"><a href="#section-5.3.2.2" class="xref">5.3.2.2</a>.  <a href="#name-query-parameter-uri" class="xref">Query Parameter URI</a></p>
+</li>
+                    </ul>
+</li>
+                </ul>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.4">
+                <p id="section-toc.1-1.5.2.4.1"><a href="#section-5.4" class="xref">5.4</a>.  <a href="#name-modifying-overriding-system" class="xref">Modifying (Overriding) System Configuration</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.5">
+                <p id="section-toc.1-1.5.2.5.1"><a href="#section-5.5" class="xref">5.5</a>.  <a href="#name-examples" class="xref">Examples</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.5.2.1">
+                    <p id="section-toc.1-1.5.2.5.2.1.1"><a href="#section-5.5.1" class="xref">5.5.1</a>.  <a href="#name-declaring-a-system-defined-" class="xref">Declaring a System-defined Node in &lt;running&gt; Explicitly</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.5.2.2">
+                    <p id="section-toc.1-1.5.2.5.2.2.1"><a href="#section-5.5.2" class="xref">5.5.2</a>.  <a href="#name-server-configuring-of-runni" class="xref">Server Configuring of &lt;running&gt; Automatically</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.5.2.3">
+                    <p id="section-toc.1-1.5.2.5.2.3.1"><a href="#section-5.5.3" class="xref">5.5.3</a>.  <a href="#name-modifying-a-system-instanti" class="xref">Modifying a System-instantiated Leaf's Value</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.5.2.4">
+                    <p id="section-toc.1-1.5.2.5.2.4.1"><a href="#section-5.5.4" class="xref">5.5.4</a>.  <a href="#name-configuring-descendant-node" class="xref">Configuring Descendant Nodes of a System-defined Node</a></p>
+</li>
+                </ul>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="xref">6</a>.  <a href="#name-default-interactions" class="xref">Default Interactions</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="xref">7</a>.  <a href="#name-relation-to-other-datastore" class="xref">Relation to Other Datastores</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.1">
+                <p id="section-toc.1-1.7.2.1.1"><a href="#section-7.1" class="xref">7.1</a>.  <a href="#name-the-factory-default-datasto" class="xref">The "factory-default" Datastore</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.2">
+                <p id="section-toc.1-1.7.2.2.1"><a href="#section-7.2" class="xref">7.2</a>.  <a href="#name-the-candidate-datastore" class="xref">The "candidate" Datastore</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
+            <p id="section-toc.1-1.8.1"><a href="#section-8" class="xref">8</a>.  <a href="#name-the-ietf-system-datastore-m" class="xref">The "ietf-system-datastore" Module</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1">
+                <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="xref">8.1</a>.  <a href="#name-data-model-overview" class="xref">Data Model Overview</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.2">
+                <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="xref">8.2</a>.  <a href="#name-yang-module" class="xref">YANG Module</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
+            <p id="section-toc.1-1.9.1"><a href="#section-9" class="xref">9</a>.  <a href="#name-the-ietf-netconf-resolve-sy" class="xref">The "ietf-netconf-resolve-system" Module</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1">
+                <p id="section-toc.1-1.9.2.1.1"><a href="#section-9.1" class="xref">9.1</a>.  <a href="#name-data-model-overview-2" class="xref">Data Model Overview</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.2">
+                <p id="section-toc.1-1.9.2.2.1"><a href="#section-9.2" class="xref">9.2</a>.  <a href="#name-yang-module-2" class="xref">YANG Module</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
+            <p id="section-toc.1-1.10.1"><a href="#section-10" class="xref">10</a>. <a href="#name-iana-considerations" class="xref">IANA Considerations</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.1">
+                <p id="section-toc.1-1.10.2.1.1"><a href="#section-10.1" class="xref">10.1</a>.  <a href="#name-the-ietf-xml-registry" class="xref">The "IETF XML" Registry</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.2">
+                <p id="section-toc.1-1.10.2.2.1"><a href="#section-10.2" class="xref">10.2</a>.  <a href="#name-the-yang-module-names-regis" class="xref">The "YANG Module Names" Registry</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.3">
+                <p id="section-toc.1-1.10.2.3.1"><a href="#section-10.3" class="xref">10.3</a>.  <a href="#name-netconf-capability-urn-regi" class="xref">NETCONF Capability URN Registry</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.4">
+                <p id="section-toc.1-1.10.2.4.1"><a href="#section-10.4" class="xref">10.4</a>.  <a href="#name-restconf-capability-urn-reg" class="xref">RESTCONF Capability URN Registry</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
+            <p id="section-toc.1-1.11.1"><a href="#section-11" class="xref">11</a>. <a href="#name-security-considerations" class="xref">Security Considerations</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.1">
+                <p id="section-toc.1-1.11.2.1.1"><a href="#section-11.1" class="xref">11.1</a>.  <a href="#name-considerations-for-the-ietf" class="xref">Considerations for the "ietf-system-datastore" YANG Module</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.2">
+                <p id="section-toc.1-1.11.2.2.1"><a href="#section-11.2" class="xref">11.2</a>.  <a href="#name-considerations-for-the-ietf-" class="xref">Considerations for the "ietf-netconf-resolve-system" YANG Module</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
+            <p id="section-toc.1-1.12.1"><a href="#section-12" class="xref">12</a>. <a href="#name-references" class="xref">References</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.1">
+                <p id="section-toc.1-1.12.2.1.1"><a href="#section-12.1" class="xref">12.1</a>.  <a href="#name-normative-references" class="xref">Normative References</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.2">
+                <p id="section-toc.1-1.12.2.2.1"><a href="#section-12.2" class="xref">12.2</a>.  <a href="#name-informative-references" class="xref">Informative References</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13">
+            <p id="section-toc.1-1.13.1"><a href="#appendix-A" class="xref">Appendix A</a>.  <a href="#name-key-use-cases" class="xref">Key Use Cases</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.1">
+                <p id="section-toc.1-1.13.2.1.1"><a href="#appendix-A.1" class="xref">A.1</a>.  <a href="#name-device-powers-on" class="xref">Device Powers On</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.2">
+                <p id="section-toc.1-1.13.2.2.1"><a href="#appendix-A.2" class="xref">A.2</a>.  <a href="#name-client-commits-configuratio" class="xref">Client Commits Configuration</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.3">
+                <p id="section-toc.1-1.13.2.3.1"><a href="#appendix-A.3" class="xref">A.3</a>.  <a href="#name-operator-installs-card-into" class="xref">Operator Installs Card into a Chassis</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.4">
+                <p id="section-toc.1-1.13.2.4.1"><a href="#appendix-A.4" class="xref">A.4</a>.  <a href="#name-client-further-commits-conf" class="xref">Client further Commits Configuration</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14">
+            <p id="section-toc.1-1.14.1"><a href="#appendix-B" class="xref">Appendix B</a>.  <a href="#name-changes-between-revisions" class="xref">Changes between Revisions</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.15">
+            <p id="section-toc.1-1.15.1"><a href="#appendix-C" class="xref"></a><a href="#name-acknowledgements" class="xref">Acknowledgements</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.16">
+            <p id="section-toc.1-1.16.1"><a href="#appendix-D" class="xref"></a><a href="#name-contributors" class="xref">Contributors</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17">
+            <p id="section-toc.1-1.17.1"><a href="#appendix-E" class="xref"></a><a href="#name-authors-addresses" class="xref">Authors' Addresses</a></p>
+</li>
+        </ul>
+</nav>
+</section>
+</div>
+<div id="Introduction">
+<section id="section-1">
+      <h2 id="name-introduction">
+<a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
+      </h2>
+<p id="section-1-1">The Network Management Datastore Architecture (NMDA) <span>[<a href="#RFC8342" class="xref">RFC8342</a>]</span> defines system configuration as the configuration
+      that is supplied by the device itself and appears in &lt;operational&gt;
+      when it is in use (Figure 2 in <span>[<a href="#RFC8342" class="xref">RFC8342</a>]</span>).<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-2">However, there is a desire to enable a server to better structure and
+      expose the system configuration. NETCONF/RESTCONF clients can benefit
+      from a standard mechanism to retrieve what system configuration is
+      available on a server.<a href="#section-1-2" class="pilcrow">¶</a></p>
+<p id="section-1-3">Some servers allow clients to reference a system-defined node which
+      is not present in the datastore. The absence of the system configuration
+      in the datastore can render the datastore invalid from the perspective
+      of a client or offline tools (e.g., missing leafref targets). This
+      document describes several approaches to bring the datastore to a valid
+      state and satisfy referential integrity constraints.<a href="#section-1-3" class="pilcrow">¶</a></p>
+<p id="section-1-4">Some servers allow the descendant nodes of system-defined
+      configuration to be configured or modified. For example, the system
+      configuration may contain an almost empty physical interface, while the
+      client needs to be able to add, modify, or remove a number of descendant
+      nodes. Some descendant nodes may not be modifiable (e.g., the interface
+      "type" set by the system).<a href="#section-1-4" class="pilcrow">¶</a></p>
+<p id="section-1-5">This document updates the Network Management Datastore Architecture
+      (NMDA) defined in <span>[<a href="#RFC8342" class="xref">RFC8342</a>]</span> with a read-only conventional
+      configuration datastore called "system" to expose system-defined
+      configuration.<a href="#section-1-5" class="pilcrow">¶</a></p>
+<p id="section-1-6">As an alternative to clients explicitly copying referenced
+      system-defined configuration so that the datastore is valid, a
+      "resolve-system" parameter is defined to allow the server to copy
+      referenced system nodes automatically. This solution enables clients to
+      reference nodes defined in &lt;system&gt;, override system-provided
+      values, and configure descendant nodes of system-defined
+      configuration.<a href="#section-1-6" class="pilcrow">¶</a></p>
+<p id="section-1-7">If a system-defined node is referenced, it refers to one of the
+      following cases throughout this document:<a href="#section-1-7" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-1-8.1">It is present in a leafref "path" statement and referred as the
+          leafref value.<a href="#section-1-8.1" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="section-1-8.2">It is used as an "instance-identifier" type value.<a href="#section-1-8.2" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="section-1-8.3">It is present in an XPath expression of "when" or "must"
+          constraints.<a href="#section-1-8.3" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="section-1-8.4">It is defined to satisfy the "mandatory true" constraints.<a href="#section-1-8.4" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="section-1-8.5">It is defined to exactly satisfy the "min-elements"
+          constraints.<a href="#section-1-8.5" class="pilcrow">¶</a>
+</li>
+      </ul>
+<p id="section-1-9">Conformance to this document requires the NMDA servers to implement
+      the "ietf-system-datastore" YANG module (<a href="#system-datastore" class="xref">Section 8</a>).<a href="#section-1-9" class="pilcrow">¶</a></p>
+<div id="terminology">
+<section id="section-1.1">
+        <h3 id="name-terminology">
+<a href="#section-1.1" class="section-number selfRef">1.1. </a><a href="#name-terminology" class="section-name selfRef">Terminology</a>
+        </h3>
+<p id="section-1.1-1">This document assumes that the reader is familiar with the contents
+        of <span>[<a href="#RFC6241" class="xref">RFC6241</a>]</span>, <span>[<a href="#RFC7950" class="xref">RFC7950</a>]</span>, <span>[<a href="#RFC8342" class="xref">RFC8342</a>]</span>, <span>[<a href="#RFC8407" class="xref">RFC8407</a>]</span>, and <span>[<a href="#RFC8525" class="xref">RFC8525</a>]</span> and uses terminologies from those documents.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
+<p id="section-1.1-2">The following terms are defined in this document:<a href="#section-1.1-2" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-1.1-3">
+          <dt id="section-1.1-3.1">System configuration: </dt>
+          <dd style="margin-left: 1.5em" id="section-1.1-3.2">
+            <p id="section-1.1-3.2.1">Configuration that is
+            provided by the system itself. System configuration is present in
+            the system configuration datastore (regardless of whether it is
+            applied or referenced). It is a different and separate concept
+            from factory default configuration defined in <span>[<a href="#RFC8808" class="xref">RFC8808</a>]</span> (which represents a preset initial
+            configuration that is used to initialize the configuration of a
+            server).<a href="#section-1.1-3.2.1" class="pilcrow">¶</a></p>
+<p id="section-1.1-3.2.2"></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-1.1-3.3">System configuration datastore: </dt>
+          <dd style="margin-left: 1.5em" id="section-1.1-3.4">A configuration
+            datastore holding configuration provided by the system itself.
+            This datastore is referred to as "&lt;system&gt;".<a href="#section-1.1-3.4" class="pilcrow">¶</a>
+</dd>
+        <dd class="break"></dd>
+</dl>
+<p id="section-1.1-4">This document redefines the term "conventional configuration
+        datastore" in <span><a href="https://rfc-editor.org/rfc/rfc8342#section-3" class="relref">Section 3</a> of [<a href="#RFC8342" class="xref">RFC8342</a>]</span>
+        to add "system" to the list of conventional configuration
+        datastores:<a href="#section-1.1-4" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-1.1-5">
+          <dt id="section-1.1-5.1">Conventional configuration datastore: </dt>
+          <dd style="margin-left: 1.5em" id="section-1.1-5.2">
+            <p id="section-1.1-5.2.1">One of the
+            following set of configuration datastores: &lt;running&gt;,
+            &lt;startup&gt;, &lt;candidate&gt;, &lt;system&gt;, and
+            &lt;intended&gt;. These datastores share a common datastore
+            schema, and protocol operations allow copying data between these
+            datastores. The term "conventional" is chosen as a generic
+            umbrella term for these datastores.<a href="#section-1.1-5.2.1" class="pilcrow">¶</a></p>
+<p id="section-1.1-5.2.2"></p>
+</dd>
+        <dd class="break"></dd>
+</dl>
+</section>
+</div>
+<section id="section-1.2">
+        <h3 id="name-requirements-language">
+<a href="#section-1.2" class="section-number selfRef">1.2. </a><a href="#name-requirements-language" class="section-name selfRef">Requirements Language</a>
+        </h3>
+<p id="section-1.2-1">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+        "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+        "OPTIONAL" in this document are to be interpreted as described in BCP
+        14 <span>[<a href="#RFC2119" class="xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="xref">RFC8174</a>]</span> when, and only
+        when, they appear in all capitals, as shown here.<a href="#section-1.2-1" class="pilcrow">¶</a></p>
+</section>
+<section id="section-1.3">
+        <h3 id="name-updates-to-rfc-8342">
+<a href="#section-1.3" class="section-number selfRef">1.3. </a><a href="#name-updates-to-rfc-8342" class="section-name selfRef">Updates to RFC 8342</a>
+        </h3>
+<p id="section-1.3-1">This document updates <a href="#RFC8342" class="xref">RFC
+        8342</a> to define a configuration datastore called "system" to
+        hold system configuration (<a href="#system-ds-def" class="xref">Section 3</a>), it also
+        redefines the term "conventional configuration datastore" from <span>[<a href="#RFC8342" class="xref">RFC8342</a>]</span> to add "system" to the list of conventional
+        configuration datastores.<a href="#section-1.3-1" class="pilcrow">¶</a></p>
+<p id="section-1.3-2">Configuration in &lt;running&gt; is merged with &lt;system&gt; to
+        create the contents of &lt;intended&gt; after the configuration
+        transformations to &lt;running&gt; (e.g., template expansion, removal
+        of inactive configuration defined in <span>[<a href="#RFC8342" class="xref">RFC8342</a>]</span>) have
+        been performed (<a href="#conceptual-model" class="xref">Section 5.1</a>).<a href="#section-1.3-2" class="pilcrow">¶</a></p>
+<p id="section-1.3-3">The definition of "intended" origin metadata annotation identity is
+        also updated (<a href="#origin" class="xref">Section 5.1.1</a>).<a href="#section-1.3-3" class="pilcrow">¶</a></p>
+</section>
+<section id="section-1.4">
+        <h3 id="name-updates-to-rfc-6241-and-rfc">
+<a href="#section-1.4" class="section-number selfRef">1.4. </a><a href="#name-updates-to-rfc-6241-and-rfc" class="section-name selfRef">Updates to RFC 6241 and RFC 8526</a>
+        </h3>
+<p id="section-1.4-1">This document updates <a href="#RFC6241" class="xref">RFC
+        6241</a> to augment the NETCONF &lt;edit-config&gt;,
+        &lt;copy-config&gt;, &lt;validate&gt;, and &lt;commit&gt; operations
+        with an additional input parameter named "resolve-system", as
+        specified in <a href="#resolve-system" class="xref">Section 5.3</a>.<a href="#section-1.4-1" class="pilcrow">¶</a></p>
+<p id="section-1.4-2">This document also updates <a href="#RFC8526" class="xref">RFC
+        8526</a> to augment the NETCONF &lt;edit-data&gt; operation with
+        the "resolve-system" parameter, as specified in <a href="#resolve-system" class="xref">Section 5.3</a>.<a href="#section-1.4-2" class="pilcrow">¶</a></p>
+</section>
+<section id="section-1.5">
+        <h3 id="name-updates-to-rfc-8040">
+<a href="#section-1.5" class="section-number selfRef">1.5. </a><a href="#name-updates-to-rfc-8040" class="section-name selfRef">Updates to RFC 8040</a>
+        </h3>
+<p id="section-1.5-1">This document extends sections <a href="https://rfc-editor.org/rfc/rfc8040#section-4.8" class="relref">4.8</a> and <a href="https://rfc-editor.org/rfc/rfc8040#section-9.1.1" class="relref">9.1.1</a> in <span>[<a href="#RFC8040" class="xref">RFC8040</a>]</span> to
+        add a new query parameter "resolve-system" and corresponding query
+        parameter capability URI (<a href="#RESTCONF-resolve" class="xref">Section 5.3.2</a>).<a href="#section-1.5-1" class="pilcrow">¶</a></p>
+</section>
+</section>
+</div>
+<div id="categories">
+<section id="section-2">
+      <h2 id="name-kinds-of-system-configurati">
+<a href="#section-2" class="section-number selfRef">2. </a><a href="#name-kinds-of-system-configurati" class="section-name selfRef">Kinds of System Configuration</a>
+      </h2>
+<p id="section-2-1">This document defines two types of system configuration:
+      configuration that is generated in &lt;system&gt; immediately when the
+      device boots and configuration that is generated in &lt;system&gt; only
+      when specific conditions being met on a device, they are described in
+      <a href="#immediate" class="xref">Section 2.1</a> and <a href="#conditional" class="xref">Section 2.2</a>,
+      respectively.<a href="#section-2-1" class="pilcrow">¶</a></p>
+<div id="immediate">
+<section id="section-2.1">
+        <h3 id="name-immediately-present">
+<a href="#section-2.1" class="section-number selfRef">2.1. </a><a href="#name-immediately-present" class="section-name selfRef">Immediately-Present</a>
+        </h3>
+<p id="section-2.1-1">Immediately-present refers to system configuration which is
+        generated in &lt;system&gt; when the device is powered on,
+        irrespective of physical resource present or not, a special
+        functionality enabled or not. An example of immediately-present system
+        configuration is an always-existing loopback interface.<a href="#section-2.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="conditional">
+<section id="section-2.2">
+        <h3 id="name-conditionally-present">
+<a href="#section-2.2" class="section-number selfRef">2.2. </a><a href="#name-conditionally-present" class="section-name selfRef">Conditionally-Present</a>
+        </h3>
+<p id="section-2.2-1">Conditionally-present refers to system configuration which is
+        generated in &lt;system&gt; based on specific conditions being met in
+        a system. For example, if a physical resource is present (e.g., an
+        interface card is inserted), the system automatically detects it and
+        loads associated configuration; when the physical resource is not
+        present (an interface card is removed), the system configuration will
+        be automatically cleared. Another example is when a special
+        functionality is enabled, e.g., when a license or feature is enabled,
+        specific configuration may be created by the system.<a href="#section-2.2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="system-ds-def">
+<section id="section-3">
+      <h2 id="name-the-system-configuration-da">
+<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-the-system-configuration-da" class="section-name selfRef">The System Configuration Datastore (&lt;system&gt;)</a>
+      </h2>
+<p id="section-3-1">Following guidelines for defining datastores in the <span><a href="https://rfc-editor.org/rfc/rfc8342#appendix-A" class="relref">Appendix A</a> of [<a href="#RFC8342" class="xref">RFC8342</a>]</span>, this document introduces a new
+      datastore resource named "system" that represents the system
+      configuration. NMDA servers compliant with this document MUST implement
+      a system configuration datastore, and they SHOULD also implement
+      &lt;intended&gt;.<a href="#section-3-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-3-2.1">Name: "system"<a href="#section-3-2.1" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="section-3-2.2">YANG modules: all<a href="#section-3-2.2" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="section-3-2.3">YANG nodes: all "config true" data nodes up to the root of the
+          tree, generated by the system<a href="#section-3-2.3" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="section-3-2.4">Management operations: The datastore can be read using network
+          management protocols such as NETCONF and RESTCONF, but its contents
+          cannot be changed by manage operations via NETCONF and RESTCONF
+          protocols.<a href="#section-3-2.4" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="section-3-2.5">Origin: This document does not define any new origin identity.
+          The "system" origin Metadata Annotation <span>[<a href="#RFC7952" class="xref">RFC7952</a>]</span> is
+          used to indicate the origin of a data item in system (<a href="#origin" class="xref">Section 5.1.1</a>).<a href="#section-3-2.5" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="section-3-2.6">Protocols: YANG-driven management protocols, such as NETCONF and
+          RESTCONF.<a href="#section-3-2.6" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="section-3-2.7">Defining YANG module: "ietf-system-datastore" (<a href="#system-datastore" class="xref">Section 8</a>).<a href="#section-3-2.7" class="pilcrow">¶</a>
+</li>
+      </ul>
+<p id="section-3-3">The system configuration datastore doesn't persist across
+      reboots.<a href="#section-3-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<section id="section-4">
+      <h2 id="name-static-characteristics-of-s">
+<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-static-characteristics-of-s" class="section-name selfRef">Static Characteristics of &lt;system&gt;</a>
+      </h2>
+<section id="section-4.1">
+        <h3 id="name-read-only-to-clients">
+<a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-read-only-to-clients" class="section-name selfRef">Read-only to Clients</a>
+        </h3>
+<p id="section-4.1-1">The system datastore is read-only (i.e., edits towards
+        &lt;system&gt; directly MUST be denied), though the client may be
+        allowed to override the value of a system-initialized node (see <a href="#modifying" class="xref">Section 5.4</a>).<a href="#section-4.1-1" class="pilcrow">¶</a></p>
+</section>
+<section id="section-4.2">
+        <h3 id="name-may-change-via-software-upg">
+<a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-may-change-via-software-upg" class="section-name selfRef">May Change via Software Upgrades or Resource Changes</a>
+        </h3>
+<p id="section-4.2-1">The contents of &lt;system&gt; MAY change dynamically under various
+        conditions, such as license change, software upgrade, and
+        system-controlled resources change (see <a href="#conditional" class="xref">Section 2.2</a>).
+        The updates of system configuration may be obtained through YANG
+        notifications (e.g., on-change notification) <span>[<a href="#RFC6470" class="xref">RFC6470</a>]</span><span>[<a href="#RFC8639" class="xref">RFC8639</a>]</span><span>[<a href="#RFC8641" class="xref">RFC8641</a>]</span>.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
+<p id="section-4.2-2">Generally speaking, any update of &lt;system&gt; should not cause
+        the automatic update of &lt;running&gt; to not surprise clients with
+        unexpected changes. In particular, the behavior of system data
+        migration during software upgrade is outside the scope of this
+        document. That said, here are some examples of how a server might
+        handle this scenario ensuring &lt;running&gt; remains accurate:<a href="#section-4.2-2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.2-3.1">Servers migrate system configuration update in
+            &lt;running&gt;.<a href="#section-4.2-3.1" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-4.2-3.2">Servers reject the operation to change system configuration
+            (e.g., software upgrade fails) and needs the client to update the
+            configuration in &lt;running&gt; as a prerequisite. Servers are
+            recommended to include some hints in error responses to help
+            clients understand how &lt;running&gt; should be updated.<a href="#section-4.2-3.2" class="pilcrow">¶</a>
+</li>
+        </ul>
+</section>
+<section id="section-4.3">
+        <h3 id="name-no-impact-to-operational">
+<a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-no-impact-to-operational" class="section-name selfRef">No Impact to &lt;operational&gt;</a>
+        </h3>
+<p id="section-4.3-1">This work intends to have no impact to &lt;operational&gt; and does
+        not define any new origin identity beyond <span><a href="https://rfc-editor.org/rfc/rfc8342#section-5.3.4" class="relref">Section 5.3.4</a> of [<a href="#RFC8342" class="xref">RFC8342</a>]</span>. The existence of &lt;system&gt;
+        enables a subset of those system-generated nodes to be defined like
+        configuration, i.e., made visible to clients in order for being
+        referenced or configurable prior to present in &lt;operational&gt;.
+        "config false" nodes are out of scope, hence existing "config false"
+        nodes are not impacted by this work.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
+</section>
+</section>
+<section id="section-5">
+      <h2 id="name-dynamic-behaviors">
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-dynamic-behaviors" class="section-name selfRef">Dynamic Behaviors</a>
+      </h2>
+<div id="conceptual-model">
+<section id="section-5.1">
+        <h3 id="name-conceptual-model-of-datasto">
+<a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-conceptual-model-of-datasto" class="section-name selfRef">Conceptual Model of Datastores</a>
+        </h3>
+<p id="section-5.1-1">Clients MAY reference nodes defined in &lt;system&gt;, override
+        system-provided values, and configure descendant nodes of
+        system-defined configuration in &lt;running&gt;, as detailed in <a href="#declare" class="xref">Section 5.2</a>, <a href="#resolve-system" class="xref">Section 5.3</a>, and <a href="#modifying" class="xref">Section 5.4</a>.<a href="#section-5.1-1" class="pilcrow">¶</a></p>
+<p id="section-5.1-2">To ensure the validity of &lt;intended&gt;, configuration in
+        &lt;running&gt; is merged with &lt;system&gt; to become
+        &lt;intended&gt;, in which process, configuration appearing in
+        &lt;running&gt; takes precedence over the same node in &lt;system&gt;.
+        If &lt;running&gt; includes configuration that requires further
+        transformation (e.g., template expansion, removal of inactive
+        configuration defined in <span>[<a href="#RFC8342" class="xref">RFC8342</a>]</span>) before it can be
+        applied, configuration transformations MUST be performed before
+        &lt;running&gt; is merged with &lt;system&gt;.<a href="#section-5.1-2" class="pilcrow">¶</a></p>
+<p id="section-5.1-3">Unless explicitly overridden by the client, what is in
+        &lt;system&gt; would always be present in &lt;intended&gt;. Whenever
+        configuration in &lt;system&gt; changes, the server MUST also
+        immediately update and validate &lt;intended&gt;.<a href="#section-5.1-3" class="pilcrow">¶</a></p>
+<p id="section-5.1-4">As a result, Figure 2 in <span><a href="https://rfc-editor.org/rfc/rfc8342#section-5" class="relref">Section 5</a> of [<a href="#RFC8342" class="xref">RFC8342</a>]</span> is updated with the below conceptual model of
+        datastores which incorporates the system configuration
+        datastore.<a href="#section-5.1-4" class="pilcrow">¶</a></p>
+<span id="name-architectural-model-of-data"></span><figure id="figure-1">
+          <div class="alignLeft art-text artwork" id="section-5.1-5.1">
+<pre>               +-------------+                 +-----------+
+               | &lt;candidate&gt; |                 | &lt;startup&gt; |
+               |  (ct, rw)   |&lt;---+      +----&gt;| (ct, rw)  |
+               +-------------+    |      |     +-----------+
+                      |           |      |           |
++-----------+         |        +-----------+         |
+| &lt;system&gt;  |         +-------&gt;| &lt;running&gt; |&lt;--------+
+| (ct, ro)  |                  | (ct, rw)  |
++-----------+                  +-----------+
+     |                              | // configuration transformations,
+     |                              | // e.g., removal of nodes marked
+     |           // merge           | // as "inactive", expansion of
+     +--------------+---------------+ // templates
+                    |
+                    |
+                    v
+              +------------+
+              | &lt;intended&gt; |  // subject to validation
+              | (ct, ro)   |
+              +------------+
+                     |       // changes applied, subject to
+                     |       // local factors, e.g., missing
+                     |       // resources, delays
+ dynamic             |
+ configuration       |   +-------- learned configuration
+ datastores -----+   |   +-------- default configuration
+                 |   |   |
+                 v   v   v
+             +---------------+
+             | &lt;operational&gt; | &lt;-- system state
+             | (ct + cf, ro) |
+             +---------------+
+
+ct = config true; cf = config false
+rw = read-write; ro = read-only
+boxes denote named datastores</pre>
+</div>
+<figcaption><a href="#figure-1" class="selfRef">Figure 1</a>:
+<a href="#name-architectural-model-of-data" class="selfRef">Architectural Model of Datastores</a>
+          </figcaption></figure>
+<p id="section-5.1-6">Configuration in &lt;system&gt; is non-deletable to clients, even
+        though a client may delete a copied system node from &lt;running&gt;.
+        If system initializes a value for a particular leaf which is
+        overridden by the client with a different value in &lt;running&gt;,
+        the client may delete it in &lt;running&gt;, in which case
+        system-initialized value defined in &lt;system&gt; may still be in use
+        and appear in &lt;operational&gt;.<a href="#section-5.1-6" class="pilcrow">¶</a></p>
+<div id="origin">
+<section id="section-5.1.1">
+          <h4 id="name-origin-metadata-annotation">
+<a href="#section-5.1.1" class="section-number selfRef">5.1.1. </a><a href="#name-origin-metadata-annotation" class="section-name selfRef">Origin Metadata Annotation</a>
+          </h4>
+<p id="section-5.1.1-1">This document does not define any new origin identity when
+          &lt;system&gt; interacts with &lt;intended&gt; and flows into
+          &lt;operational&gt;.<a href="#section-5.1.1-1" class="pilcrow">¶</a></p>
+<p id="section-5.1.1-2">The "intended" identity of origin value defined in <span>[<a href="#RFC8342" class="xref">RFC8342</a>]</span> to represent the origin of configuration provided
+          by &lt;intended&gt;, this document updates its definition as origin
+          source of configuration explicitly provided by &lt;running&gt;, and
+          allows a subset of configuration in &lt;intended&gt; that flows from
+          &lt;system&gt; yet is not configured or overridden explicitly in
+          &lt;running&gt; to use "system" as its origin value.<a href="#section-5.1.1-2" class="pilcrow">¶</a></p>
+<p id="section-5.1.1-3">Configuration copied from &lt;system&gt; into &lt;running&gt; has
+          its origin value reported as "intended" when it flows into
+          &lt;operational&gt;.<a href="#section-5.1.1-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="declare">
+<section id="section-5.2">
+        <h3 id="name-explicit-declaration-of-sys">
+<a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-explicit-declaration-of-sys" class="section-name selfRef">Explicit Declaration of System Configuration</a>
+        </h3>
+<p id="section-5.2-1">It is possible for a client to explicitly declare system
+        configuration nodes with the same values as in &lt;system&gt;, by
+        configuring a node (list/leaf-list entry, leaf, etc.) in the target
+        datastore (e.g., &lt;candidate&gt; and &lt;running&gt;) that matches
+        the same node and value in &lt;system&gt;.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
+<p id="section-5.2-2">The explicit declaration of system-defined nodes that are
+        referenced elsewhere can be useful, for example, when the client does
+        not support the "resolve-system" parameter (<a href="#resolve-system" class="xref">Section 5.3</a>) but needs the datastore to be referentially
+        complete. Clients needs to declare system configuration which does not
+        exist in the target datastore in the following cases:<a href="#section-5.2-2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5.2-3.1">A system-provided leaf or leaf-list instance is referred to by
+            the "leafref" type and the "require-instance" property is
+            "true".<a href="#section-5.2-3.1" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-5.2-3.2">A system-provided instance node is identified by the
+            "instance-identifier" type and the "require-instance" property is
+            "true".<a href="#section-5.2-3.2" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-5.2-3.3">A system-provided instance node is referenced in the XPath
+            expression of the "when" or "must" statement.<a href="#section-5.2-3.3" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-5.2-3.4">A system-provided leaf instance with a "mandatory" statement
+            with the value "true".<a href="#section-5.2-3.4" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-5.2-3.5">System-provided list or leaf-list entries satisfy the
+            "min-elements" statement with a value greater than zero.<a href="#section-5.2-3.5" class="pilcrow">¶</a>
+</li>
+        </ul>
+<p id="section-5.2-4">Clients MUST declare the system configuration that are required to
+        make the datastore appear valid, e.g., the list entry with at least
+        the key. Clients MAY declare all the contents of the list entry (i.e.,
+        all descendant nodes), though this is not necessarily needed.<a href="#section-5.2-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="resolve-system">
+<section id="section-5.3">
+        <h3 id="name-servers-auto-configuring-re">
+<a href="#section-5.3" class="section-number selfRef">5.3. </a><a href="#name-servers-auto-configuring-re" class="section-name selfRef">Servers Auto-configuring Referenced System Configuration ("resolve-system" parameter)</a>
+        </h3>
+<p id="section-5.3-1">This document defines a new parameter "resolve-system" to the input
+        for some of the NETCONF and RESTCONF operations. Clients that are
+        aware of the "resolve-system" parameter MAY use this parameter to
+        avoid the requirement to provide a referentially complete
+        configuration.<a href="#section-5.3-1" class="pilcrow">¶</a></p>
+<p id="section-5.3-2">The "resolve-system" parameter is optional and has no value. If it
+        is present, and the server supports this capability, the server MUST
+        copy referenced system nodes into the target datastore (e.g.,
+        &lt;candidate&gt; and &lt;running&gt;) where it is missing from
+        without the client doing the copy/paste explicitly, to resolve any
+        references not resolved by the client. Servers MUST copy referenced
+        system configuration which does not exist in the datastore in the
+        following cases:<a href="#section-5.3-2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5.3-3.1">A system-provided leaf or leaf-list instance is referred to by
+            the "leafref" type and the "require-instance" property is
+            "true".<a href="#section-5.3-3.1" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-5.3-3.2">A system-provided instance node is identified by the
+            "instance-identifier" type and the "require-instance" property is
+            "true".<a href="#section-5.3-3.2" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-5.3-3.3">A system-provided instance node is referenced in the XPath
+            expression of the "when" or "must" statement.<a href="#section-5.3-3.3" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-5.3-3.4">A system-provided leaf instance with a "mandatory" statement
+            with the value "true".<a href="#section-5.3-3.4" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-5.3-3.5">System-provided list or leaf-list entries satisfy the
+            "min-elements" statement with a value greater than zero.<a href="#section-5.3-3.5" class="pilcrow">¶</a>
+</li>
+        </ul>
+<p id="section-5.3-4">If any child node of the copied configuration has its value
+        being set by the system that is not the schema default value, it MUST
+        also be copied into the target datastore (<a href="#defaults" class="xref">Section 6</a>).
+        If any child node of the copied configuration is a presence container
+        being defined only in &lt;system&gt;, the presence container with its
+        all decedents MUST also be copied into the target datastore. The copy
+        operation MUST NOT overwrite any explicit configuration in
+        &lt;running&gt;. When a particular node instance (e.g., a list entry)
+        needs to be copied to satisfy referential integrity constraints,
+        servers not implementing NMDA <span>[<a href="#RFC8342" class="xref">RFC8342</a>]</span> MUST also copy
+        an entire node including all descendants. The server copies the
+        referenced system-defined nodes only when triggered by the
+        "resolve-system" parameter. Legacy clients don't see any changes in
+        the server behaviors.<a href="#section-5.3-4" class="pilcrow">¶</a></p>
+<p id="section-5.3-5">There is no distinction between the configuration automatically
+        configured by the server and the one explicitly declared by the
+        client, e.g., a read back of the datastore (e.g., NETCONF
+        &lt;get&gt;/&lt;get-config&gt;/&lt;get-data&gt; operation, or RESTCONF
+        GET method) returns automatically configured nodes.<a href="#section-5.3-5" class="pilcrow">¶</a></p>
+<p id="section-5.3-6">Note that even though an auto-configured node is allowed to be
+        deleted from the target datastore by the client, the system may
+        automatically recreate the deleted node to make configuration valid,
+        when a "resolve-system" parameter is carried. It is also possible that
+        the operation request (e.g., &lt;edit-config&gt;) may not succeed due
+        to incomplete referential integrity.<a href="#section-5.3-6" class="pilcrow">¶</a></p>
+<p id="section-5.3-7">Support for the "resolve-system" parameter is OPTIONAL. Servers not
+        supporting NMDA <span>[<a href="#RFC8342" class="xref">RFC8342</a>]</span> MAY also implement this
+        parameter without implementing the system configuration datastore,
+        which would only eliminate the ability to retrieve the system
+        configuration via protocol operations. If a server implements
+        &lt;system&gt;, referenced system configuration is copied from
+        &lt;system&gt; into the target datastore when the "resolve-system"
+        parameter is used. If a server does not implement &lt;system&gt;, it
+        is up to the implementation to determine how the "resolve-system"
+        mechanism fills in the missing configuration items in the target
+        datastore, e.g., &lt;candidate&gt; or &lt;running&gt;.<a href="#section-5.3-7" class="pilcrow">¶</a></p>
+<div id="NETCONF-resolve">
+<section id="section-5.3.1">
+          <h4 id="name-netconf-support-for-resolve">
+<a href="#section-5.3.1" class="section-number selfRef">5.3.1. </a><a href="#name-netconf-support-for-resolve" class="section-name selfRef">NETCONF Support for "resolve-system" Parameter</a>
+          </h4>
+<p id="section-5.3.1-1">This document defines a NETCONF protocol capability to indicate
+          support for this parameter. NETCONF server that supports
+          "resolve-system" parameter MUST advertise the following capability
+          identifier:<a href="#section-5.3.1-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.3.1-2">
+<pre>urn:ietf:params:netconf:capability:resolve-system:1.0</pre><a href="#section-5.3.1-2" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="RESTCONF-resolve">
+<section id="section-5.3.2">
+          <h4 id="name-restconf-support-for-resolv">
+<a href="#section-5.3.2" class="section-number selfRef">5.3.2. </a><a href="#name-restconf-support-for-resolv" class="section-name selfRef">RESTCONF Support for "resolve-system" Parameter</a>
+          </h4>
+<section id="section-5.3.2.1">
+            <h5 id="name-query-parameter">
+<a href="#section-5.3.2.1" class="section-number selfRef">5.3.2.1. </a><a href="#name-query-parameter" class="section-name selfRef">Query Parameter</a>
+            </h5>
+<p id="section-5.3.2.1-1">The "resolve-system" parameter may be present in the request
+            URI of some RESTCONF operations as shown in <a href="#RESTCONF-fig" class="xref">Figure 2</a>. This parameter is only allowed with no
+            values carried. If this parameter has any unexpected value, then a
+            "400 Bad Request" status-line is returned.<a href="#section-5.3.2.1-1" class="pilcrow">¶</a></p>
+<span id="name-restconf-resolve-system-que"></span><div id="RESTCONF-fig">
+<figure id="figure-2">
+              <div class="alignLeft art-text artwork" id="section-5.3.2.1-2.1">
+<pre>+----------------+---------+-----------------------------------------+
+| Name           | Methods | Description                             |
++----------------+---------+-----------------------------------------+
+|resolve-system  | POST,   | resolve any references not resolved by  |
+|                | PUT     | the client and copy referenced          |
+|                | PATCH   | system configuration into the target    |
+|                |         | datastore where it is missing from      |
+|                |         | without the client doing the copy/paste |
+|                |         | explicitly. This parameter can be given |
+|                |         | in any order.                           |
++----------------+---------+-----------------------------------------+</pre>
+</div>
+<figcaption><a href="#figure-2" class="selfRef">Figure 2</a>:
+<a href="#name-restconf-resolve-system-que" class="selfRef">RESTCONF "resolve-system" Query Parameter</a>
+              </figcaption></figure>
+</div>
+</section>
+<section id="section-5.3.2.2">
+            <h5 id="name-query-parameter-uri">
+<a href="#section-5.3.2.2" class="section-number selfRef">5.3.2.2. </a><a href="#name-query-parameter-uri" class="section-name selfRef">Query Parameter URI</a>
+            </h5>
+<p id="section-5.3.2.2-1">To enable a RESTCONF client to discover if the "resolve-system"
+            query parameter is supported by the server, the following
+            capability URI is defined, which is advertised by the server if
+            supported, using the "ietf-restconf-monitoring" module defined in
+            <span>[<a href="#RFC8040" class="xref">RFC8040</a>]</span>:<a href="#section-5.3.2.2-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.3.2.2-2">
+<pre>urn:ietf:params:restconf:capability:resolve-system:1.0</pre><a href="#section-5.3.2.2-2" class="pilcrow">¶</a>
+</div>
+</section>
+</section>
+</div>
+</section>
+</div>
+<div id="modifying">
+<section id="section-5.4">
+        <h3 id="name-modifying-overriding-system">
+<a href="#section-5.4" class="section-number selfRef">5.4. </a><a href="#name-modifying-overriding-system" class="section-name selfRef">Modifying (Overriding) System Configuration</a>
+        </h3>
+<p id="section-5.4-1">In some cases, a server may allow some parts of system
+        configuration (e.g., a leaf's value) to be modified. Modification of
+        system configuration is achieved by the client writing configuration
+        to &lt;running&gt; that overrides the system configuration.
+        Configurations defined in &lt;running&gt; take precedence over system
+        configuration nodes in &lt;system&gt; if the server allows the nodes
+        to be modified.<a href="#section-5.4-1" class="pilcrow">¶</a></p>
+<p id="section-5.4-2">For instance, descendant nodes in a system-defined list entry may
+        be modifiable or not, even if some system configuration has been
+        copied into &lt;running&gt; earlier. If a system node is
+        non-modifiable, then writing a different value for that node MUST
+        return an error during a &lt;edit-config&gt;, &lt;validate&gt; or
+        &lt;commit&gt; operation, depending on the target datastore. The
+        immutability of system configuration is defined in <span>[<a href="#I-D.ietf-netmod-immutable-flag" class="xref">I-D.ietf-netmod-immutable-flag</a>]</span>.<a href="#section-5.4-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<section id="section-5.5">
+        <h3 id="name-examples">
+<a href="#section-5.5" class="section-number selfRef">5.5. </a><a href="#name-examples" class="section-name selfRef">Examples</a>
+        </h3>
+<p id="section-5.5-1">This section presents some sample data models and corresponding
+        contents of various datastores with different dynamic behaviors
+        described above. The XML snippets are used only for illustration
+        purposes.<a href="#section-5.5-1" class="pilcrow">¶</a></p>
+<p id="section-5.5-2"></p>
+<section id="section-5.5.1">
+          <h4 id="name-declaring-a-system-defined-">
+<a href="#section-5.5.1" class="section-number selfRef">5.5.1. </a><a href="#name-declaring-a-system-defined-" class="section-name selfRef">Declaring a System-defined Node in &lt;running&gt; Explicitly</a>
+          </h4>
+<p id="section-5.5.1-1">In this subsection, the following fictional module is
+          used:<a href="#section-5.5.1-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.5.1-2">
+<pre>
+module example-application {
+  yang-version 1.1;
+  namespace "urn:example:application";
+  prefix "app";
+
+  import ietf-inet-types {
+    prefix "inet";
+  }
+  container applications {
+    list application {
+      key "name";
+      leaf name {
+        type string;
+      }
+      leaf app-id {
+        type string;
+      }
+      leaf protocol {
+        type enumeration {
+          enum tcp;
+          enum udp;
+        }
+        mandatory true;
+      }
+      leaf destination-port {
+        default "0";
+        type inet:port-number;
+      }
+      leaf description {
+        type string;
+      }
+      container security-protection {
+        presence "Indicates that security protection is enabled.";
+        leaf risk-level {
+          type enumeration {
+            enum high;
+            enum low;
+          }
+        }
+        //additional leafs for security-specific configuration...
+      }
+    }
+  }
+}
+</pre><a href="#section-5.5.1-2" class="pilcrow">¶</a>
+</div>
+<p id="section-5.5.1-3">A fictional ACL YANG module is used as follows, which
+          defines a leafref for the leaf-list "application" data node to refer
+          to an existing application name.<a href="#section-5.5.1-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.5.1-4">
+<pre>
+module example-acl {
+  yang-version 1.1;
+  namespace "urn:example:acl";
+  prefix "acl";
+
+  import example-application {
+    prefix "app";
+  }
+
+  import ietf-inet-types {
+    prefix "inet";
+  }
+
+  container acl {
+    list acl-rule {
+      key "name";
+      leaf name {
+        type string;
+      }
+      container matches {
+        choice l3 {
+          container ipv4 {
+            leaf src-address {
+              type inet:ipv4-prefix;
+            }
+            leaf dst-address {
+              type inet:ipv4-prefix;
+            }
+          }
+        }
+        choice applications {
+          leaf-list application {
+            type leafref {
+            path "/app:applications/app:application/app:name";
+            }
+          }
+        }
+      }
+      leaf packet-action {
+        type enumeration {
+          enum forward;
+          enum drop;
+          enum redirect;
+        }
+      }
+    }
+  }
+}
+</pre><a href="#section-5.5.1-4" class="pilcrow">¶</a>
+</div>
+<p id="section-5.5.1-5">The server may predefine some applications as a convenience for
+          clients. The system-instantiated application entries may be present
+          in &lt;system&gt; as follows:<a href="#section-5.5.1-5" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.5.1-6">
+<pre>
+&lt;applications xmlns="urn:example:application"&gt;
+  &lt;application&gt;
+    &lt;name&gt;ftp&lt;/name&gt;
+    &lt;app-id&gt;001&lt;/app-id&gt;
+    &lt;protocol&gt;tcp&lt;/protocol&gt;
+    &lt;destination-port&gt;21&lt;/destination-port&gt;
+    &lt;security-protection&gt;
+      &lt;risk-level&gt;low&lt;/risk-level&gt;
+    &lt;/security-protection&gt;
+  &lt;/application&gt;
+  &lt;application&gt;
+    &lt;name&gt;tftp&lt;/name&gt;
+    &lt;app-id&gt;002&lt;/app-id&gt;
+    &lt;protocol&gt;udp&lt;/protocol&gt;
+    &lt;destination-port&gt;69&lt;/destination-port&gt;
+    &lt;security-protection&gt;
+      &lt;risk-level&gt;low&lt;/risk-level&gt;
+    &lt;/security-protection&gt;
+  &lt;/application&gt;
+  &lt;application&gt;
+    &lt;name&gt;smtp&lt;/name&gt;
+    &lt;app-id&gt;003&lt;/app-id&gt;
+    &lt;protocol&gt;tcp&lt;/protocol&gt;
+    &lt;destination-port&gt;25&lt;/destination-port&gt;
+    &lt;security-protection&gt;
+      &lt;risk-level&gt;low&lt;/risk-level&gt;
+    &lt;/security-protection&gt;
+  &lt;/application&gt;
+&lt;/applications&gt;
+</pre><a href="#section-5.5.1-6" class="pilcrow">¶</a>
+</div>
+<p id="section-5.5.1-7">The client may also define its customized applications. Suppose
+          the configuration of applications is present in &lt;running&gt; as
+          follows:<a href="#section-5.5.1-7" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.5.1-8">
+<pre>
+&lt;applications xmlns="urn:example:application"&gt;
+  &lt;application&gt;
+    &lt;name&gt;my-app-1&lt;/name&gt;
+    &lt;app-id&gt;101&lt;/app-id&gt;
+    &lt;protocol&gt;tcp&lt;/protocol&gt;
+    &lt;destination-port&gt;2345&lt;/destination-port&gt;
+    &lt;description&gt;customized application&lt;/description&gt;
+    &lt;security-protection&gt;
+      &lt;risk-level&gt;high&lt;/risk-level&gt;
+    &lt;/security-protection&gt;
+  &lt;/application&gt;
+  &lt;application&gt;
+    &lt;name&gt;my-app-2&lt;/name&gt;
+    &lt;app-id&gt;102&lt;/app-id&gt;
+    &lt;protocol&gt;udp&lt;/protocol&gt;
+    &lt;destination-port&gt;69&lt;/destination-port&gt;
+    &lt;description&gt;customized application&lt;/description&gt;
+  &lt;/application&gt;
+&lt;/applications&gt;
+</pre><a href="#section-5.5.1-8" class="pilcrow">¶</a>
+</div>
+<p id="section-5.5.1-9">If a client configures an ACL rule referencing system-provided
+          applications which are not present in &lt;running&gt;, it is
+          possible for the client to explicitly declare the referenced system
+          configuration. For instance, the client MAY explicitly configure the
+          following system-defined applications "ftp" and "tftp" only with the
+          list key "name" and mandatory "protocol":<a href="#section-5.5.1-9" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.5.1-10">
+<pre>
+&lt;applications xmlns="urn:example:application"&gt;
+  &lt;application&gt;
+    &lt;name&gt;ftp&lt;/name&gt;
+    &lt;protocol&gt;tcp&lt;/protocol&gt;
+  &lt;/application&gt;
+  &lt;application&gt;
+    &lt;name&gt;tftp&lt;/name&gt;
+    &lt;protocol&gt;udp&lt;/protocol&gt;
+  &lt;/application&gt;
+&lt;/applications&gt;
+
+</pre><a href="#section-5.5.1-10" class="pilcrow">¶</a>
+</div>
+<p id="section-5.5.1-11">And the configuration of ACL rules referencing application "ftp"
+          and "tftp":<a href="#section-5.5.1-11" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.5.1-12">
+<pre>
+&lt;acl xmlns="urn:example:acl"&gt;
+  &lt;acl-rule&gt;
+    &lt;name&gt;allow-access-to-ftp-tftp&lt;/name&gt;
+    &lt;matches&gt;
+      &lt;ipv4&gt;
+        &lt;src-address&gt;198.51.100.0/24&lt;/src-address&gt;
+        &lt;dst-address&gt;192.0.2.0/24&lt;/dst-address&gt;
+      &lt;/ipv4&gt;
+      &lt;application&gt;ftp&lt;/application&gt;
+      &lt;application&gt;tftp&lt;/application&gt;
+      &lt;application&gt;my-app-1&lt;/application&gt;
+    &lt;/matches&gt;
+    &lt;packet-action&gt;forward&lt;/packet-action&gt;
+  &lt;/acl-rule&gt;
+&lt;/acl&gt;
+</pre><a href="#section-5.5.1-12" class="pilcrow">¶</a>
+</div>
+<p id="section-5.5.1-13">The configuration of applications will appear in
+          &lt;operational&gt; as follows:<a href="#section-5.5.1-13" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.5.1-14">
+<pre>
+&lt;applications xmlns="urn:example:application"
+              xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
+              or:origin="or:intended"&gt;
+  &lt;application&gt;
+    &lt;name&gt;my-app-1&lt;/name&gt;
+    &lt;app-id&gt;101&lt;/app-id&gt;
+    &lt;protocol&gt;tcp&lt;/protocol&gt;
+    &lt;destination-port&gt;2345&lt;/destination-port&gt;
+    &lt;description&gt;customized application&lt;/description&gt;
+    &lt;security-protection&gt;
+      &lt;risk-level&gt;high&lt;/risk-level&gt;
+    &lt;/security-protection&gt;
+  &lt;/application&gt;
+  &lt;application&gt;
+    &lt;name&gt;my-app-2&lt;/name&gt;
+    &lt;app-id&gt;102&lt;/app-id&gt;
+    &lt;protocol&gt;udp&lt;/protocol&gt;
+    &lt;destination-port&gt;69&lt;/destination-port&gt;
+    &lt;description&gt;customized application&lt;/description&gt;
+  &lt;/application&gt;
+  &lt;application&gt;
+    &lt;name&gt;ftp&lt;/name&gt;
+    &lt;app-id or:origin="or:system"&gt;001&lt;/app-id&gt;
+    &lt;protocol&gt;tcp&lt;/protocol&gt;
+    &lt;destination-port or:origin="or:system"&gt;21&lt;/destination-port&gt;
+    &lt;security-protection or:origin="or:system"&gt;
+      &lt;risk-level&gt;low&lt;/risk-level&gt;
+    &lt;/security-protection&gt;
+  &lt;/application&gt;
+  &lt;application&gt;
+    &lt;name&gt;tftp&lt;/name&gt;
+    &lt;app-id or:origin="or:system"&gt;002&lt;/app-id&gt;
+    &lt;protocol&gt;udp&lt;/protocol&gt;
+    &lt;destination-port or:origin="or:system"&gt;69&lt;/destination-port&gt;
+    &lt;security-protection or:origin="or:system"&gt;
+      &lt;risk-level&gt;low&lt;/risk-level&gt;
+    &lt;/security-protection&gt;
+  &lt;/application&gt;
+&lt;/applications&gt;
+</pre><a href="#section-5.5.1-14" class="pilcrow">¶</a>
+</div>
+</section>
+<div id="automatical">
+<section id="section-5.5.2">
+          <h4 id="name-server-configuring-of-runni">
+<a href="#section-5.5.2" class="section-number selfRef">5.5.2. </a><a href="#name-server-configuring-of-runni" class="section-name selfRef">Server Configuring of &lt;running&gt; Automatically</a>
+          </h4>
+<p id="section-5.5.2-1">In the above example, a client configures an ACL rule referencing
+          system-provided applications which are not present in
+          &lt;running&gt;, the client may also issue an &lt;edit-config&gt;
+          operation with the parameter "resolve-system" to the NETCONF server
+          as follows:<a href="#section-5.5.2-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.5.2-2">
+<pre>
+=============== NOTE: '\' line wrapping per RFC 8792 ================
+
+&lt;rpc  message-id="101"
+      xmlns="urn:ietf:params:xml:ns:netconf:base:1.0"
+      xmlns:ncrs="urn:ietf:params:xml:ns:yang:ietf-netconf-resolve-s\
+ystem"&gt;
+  &lt;edit-config&gt;
+    &lt;target&gt;
+      &lt;running/&gt;
+    &lt;/target&gt;
+    &lt;config&gt;
+      &lt;acl xmlns="urn:example:acl"&gt;
+        &lt;acl-rule&gt;
+          &lt;name&gt;allow-access-to-ftp-tftp&lt;/name&gt;
+          &lt;matches&gt;
+            &lt;ipv4&gt;
+              &lt;src-address&gt;198.51.100.0/24&lt;/src-address&gt;
+              &lt;dst-address&gt;192.0.2.0/24&lt;/dst-address&gt;
+            &lt;/ipv4&gt;
+            &lt;application&gt;ftp&lt;/application&gt;
+            &lt;application&gt;tftp&lt;/application&gt;
+            &lt;application&gt;my-app-1&lt;/application&gt;
+          &lt;/matches&gt;
+          &lt;packet-action&gt;forward&lt;/packet-action&gt;
+        &lt;/acl-rule&gt;
+      &lt;/acl&gt;
+    &lt;/config&gt;
+    &lt;ncrs:resolve-system/&gt;
+  &lt;/edit-config&gt;
+&lt;/rpc&gt;
+</pre><a href="#section-5.5.2-2" class="pilcrow">¶</a>
+</div>
+<p id="section-5.5.2-3">The following shows the configuration of applications in
+          &lt;running&gt; which is returned in the response to a follow-up
+          retrieval operation:<a href="#section-5.5.2-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.5.2-4">
+<pre>
+&lt;applications xmlns="urn:example:application"&gt;
+  &lt;application&gt;
+    &lt;name&gt;my-app-1&lt;/name&gt;
+    &lt;app-id&gt;101&lt;/app-id&gt;
+    &lt;protocol&gt;tcp&lt;/protocol&gt;
+    &lt;destination-port&gt;2345&lt;/destination-port&gt;
+    &lt;description&gt;customized application&lt;/description&gt;
+    &lt;security-protection&gt;
+      &lt;risk-level&gt;high&lt;/risk-level&gt;
+    &lt;/security-protection&gt;
+  &lt;/application&gt;
+  &lt;application&gt;
+    &lt;name&gt;my-app-2&lt;/name&gt;
+    &lt;app-id&gt;102&lt;/app-id&gt;
+    &lt;protocol&gt;udp&lt;/protocol&gt;
+    &lt;destination-port&gt;69&lt;/destination-port&gt;
+    &lt;description&gt;customized application&lt;/description&gt;
+  &lt;/application&gt;
+  &lt;application&gt;
+    &lt;name&gt;ftp&lt;/name&gt;
+    &lt;app-id&gt;001&lt;/app-id&gt;
+    &lt;protocol&gt;tcp&lt;/protocol&gt;
+    &lt;destination-port&gt;21&lt;/destination-port&gt;
+    &lt;security-protection&gt;
+      &lt;risk-level&gt;low&lt;/risk-level&gt;
+    &lt;/security-protection&gt;
+  &lt;/application&gt;
+  &lt;application&gt;
+    &lt;name&gt;tftp&lt;/name&gt;
+    &lt;app-id&gt;002&lt;/app-id&gt;
+    &lt;protocol&gt;udp&lt;/protocol&gt;
+    &lt;destination-port&gt;69&lt;/destination-port&gt;
+    &lt;security-protection&gt;
+      &lt;risk-level&gt;low&lt;/risk-level&gt;
+    &lt;/security-protection&gt;
+  &lt;/application&gt;
+&lt;/applications&gt;
+</pre><a href="#section-5.5.2-4" class="pilcrow">¶</a>
+</div>
+<p id="section-5.5.2-5">And &lt;operational&gt; might contain the following:<a href="#section-5.5.2-5" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.5.2-6">
+<pre>
+&lt;applications xmlns="urn:example:application"
+              xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
+              or:origin="or:intended"&gt;
+  &lt;application&gt;
+    &lt;name&gt;my-app-1&lt;/name&gt;
+    &lt;app-id&gt;101&lt;/app-id&gt;
+    &lt;protocol&gt;tcp&lt;/protocol&gt;
+    &lt;destination-port&gt;2345&lt;/destination-port&gt;
+    &lt;description&gt;customized application&lt;/description&gt;
+    &lt;security-protection&gt;
+      &lt;risk-level&gt;high&lt;/risk-level&gt;
+    &lt;/security-protection&gt;
+  &lt;/application&gt;
+  &lt;application&gt;
+    &lt;name&gt;my-app-2&lt;/name&gt;
+    &lt;app-id&gt;102&lt;/app-id&gt;
+    &lt;protocol&gt;udp&lt;/protocol&gt;
+    &lt;destination-port&gt;69&lt;/destination-port&gt;
+    &lt;description&gt;customized application&lt;/description&gt;
+  &lt;/application&gt;
+  &lt;application&gt;
+    &lt;name&gt;ftp&lt;/name&gt;
+    &lt;app-id&gt;001&lt;/app-id&gt;
+    &lt;protocol&gt;tcp&lt;/protocol&gt;
+    &lt;destination-port&gt;21&lt;/destination-port&gt;
+    &lt;security-protection&gt;
+      &lt;risk-level&gt;low&lt;/risk-level&gt;
+    &lt;/security-protection&gt;
+  &lt;/application&gt;
+  &lt;application&gt;
+    &lt;name&gt;tftp&lt;/name&gt;
+    &lt;app-id&gt;002&lt;/app-id&gt;
+    &lt;protocol&gt;udp&lt;/protocol&gt;
+    &lt;destination-port&gt;69&lt;/destination-port&gt;
+    &lt;security-protection&gt;
+      &lt;risk-level&gt;low&lt;/risk-level&gt;
+    &lt;/security-protection&gt;
+  &lt;/application&gt;
+&lt;/applications&gt;
+
+</pre><a href="#section-5.5.2-6" class="pilcrow">¶</a>
+</div>
+<p id="section-5.5.2-7">Since the configuration of application "smtp" is not
+          referenced by the client, some implementation may consider it not to
+          be "in use", hence it is likely to be omitted from
+          &lt;operational&gt; but only present in &lt;system&gt;.<a href="#section-5.5.2-7" class="pilcrow">¶</a></p>
+</section>
+</div>
+<section id="section-5.5.3">
+          <h4 id="name-modifying-a-system-instanti">
+<a href="#section-5.5.3" class="section-number selfRef">5.5.3. </a><a href="#name-modifying-a-system-instanti" class="section-name selfRef">Modifying a System-instantiated Leaf's Value</a>
+          </h4>
+<p id="section-5.5.3-1">This subsection uses the following fictional interface YANG
+          module:<a href="#section-5.5.3-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.5.3-2">
+<pre>
+module example-interface {
+  yang-version 1.1;
+  namespace "urn:example:interface";
+  prefix "exif";
+
+  import ietf-inet-types {
+    prefix "inet";
+  }
+
+  container interfaces {
+    list interface {
+      key name;
+      leaf name {
+        type string;
+      }
+      leaf description {
+        type string;
+      }
+      leaf mtu {
+        type uint32;
+      }
+      leaf-list ip-address {
+        type inet:ip-address;
+      }
+    }
+  }
+}
+
+</pre><a href="#section-5.5.3-2" class="pilcrow">¶</a>
+</div>
+<p id="section-5.5.3-3">Suppose the system provides a loopback interface (named "lo0")
+          with a MTU value "65536", a default IPv4 address of "127.0.0.1", and
+          a default IPv6 address of "::1". The configuration of "lo0"
+          interface is present in &lt;system&gt; as follows:<a href="#section-5.5.3-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.5.3-4">
+<pre>
+&lt;interfaces xmlns="urn:example:interface"&gt;
+  &lt;interface&gt;
+    &lt;name&gt;lo0&lt;/name&gt;
+    &lt;mtu&gt;65536&lt;/mtu&gt;
+    &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
+    &lt;ip-address&gt;::1&lt;/ip-address&gt;
+  &lt;/interface&gt;
+&lt;/interfaces&gt;
+</pre><a href="#section-5.5.3-4" class="pilcrow">¶</a>
+</div>
+<p id="section-5.5.3-5">A client modifies the value of MTU to 9216 and adds the following
+          configuration into &lt;running&gt; using a "merge" operation:<a href="#section-5.5.3-5" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.5.3-6">
+<pre>
+&lt;interfaces xmlns="urn:example:interface"&gt;
+  &lt;interface&gt;
+    &lt;name&gt;lo0&lt;/name&gt;
+    &lt;mtu&gt;9216&lt;/mtu&gt;
+  &lt;/interface&gt;
+&lt;/interfaces&gt;
+</pre><a href="#section-5.5.3-6" class="pilcrow">¶</a>
+</div>
+<p id="section-5.5.3-7">Then the configuration of interfaces is present in
+          &lt;operational&gt; as follows:<a href="#section-5.5.3-7" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.5.3-8">
+<pre>
+&lt;interfaces xmlns="urn:example:interface"
+            xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
+            or:origin="or:intended"&gt;
+  &lt;interface&gt;
+    &lt;name&gt;lo0&lt;/name&gt;
+    &lt;mtu&gt;9216&lt;/mtu&gt;
+    &lt;ip-address or:origin="or:system"&gt;127.0.0.1&lt;/ip-address&gt;
+    &lt;ip-address or:origin="or:system"&gt;::1&lt;/ip-address&gt;
+  &lt;/interface&gt;
+&lt;/interfaces&gt;
+</pre><a href="#section-5.5.3-8" class="pilcrow">¶</a>
+</div>
+</section>
+<section id="section-5.5.4">
+          <h4 id="name-configuring-descendant-node">
+<a href="#section-5.5.4" class="section-number selfRef">5.5.4. </a><a href="#name-configuring-descendant-node" class="section-name selfRef">Configuring Descendant Nodes of a System-defined Node</a>
+          </h4>
+<p id="section-5.5.4-1">In the above example, imagine the client further configures the
+          description node of a "lo0" interface in &lt;running&gt; using a
+          "merge" operation as follows:<a href="#section-5.5.4-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.5.4-2">
+<pre>
+&lt;interfaces xmlns="urn:example:interface"&gt;
+  &lt;interface&gt;
+    &lt;name&gt;lo0&lt;/name&gt;
+    &lt;description&gt;loopback&lt;/description&gt;
+  &lt;/interface&gt;
+&lt;/interfaces&gt;
+</pre><a href="#section-5.5.4-2" class="pilcrow">¶</a>
+</div>
+<p id="section-5.5.4-3">The configuration of interface "lo0" is present in
+          &lt;operational&gt; as follows:<a href="#section-5.5.4-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.5.4-4">
+<pre>
+&lt;interfaces xmlns="urn:example:interface"
+            xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
+            or:origin="or:intended"&gt;
+  &lt;interface&gt;
+    &lt;name&gt;lo0&lt;/name&gt;
+    &lt;description&gt;loopback&lt;/description&gt;
+    &lt;mtu&gt;9216&lt;/mtu&gt;
+    &lt;ip-address or:origin="or:system"&gt;127.0.0.1&lt;/ip-address&gt;
+    &lt;ip-address or:origin="or:system"&gt;::1&lt;/ip-address&gt;
+  &lt;/interface&gt;
+&lt;/interfaces&gt;
+</pre><a href="#section-5.5.4-4" class="pilcrow">¶</a>
+</div>
+</section>
+</section>
+</section>
+<div id="defaults">
+<section id="section-6">
+      <h2 id="name-default-interactions">
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-default-interactions" class="section-name selfRef">Default Interactions</a>
+      </h2>
+<p id="section-6-1">&lt;system&gt; should not contain the configuration using the schema
+      default value, either specified in the "default" statement or described
+      in the "description" statement.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-6-2">Any value provided by the system that is not the schema default value
+      MUST be contained in &lt;system&gt;. If system provides a value that is
+      not the schema default value, and the node is not explicitly set by the
+      client, it MUST be copied into the target datastore when its closest
+      ancestor node needs to be copied to satisfy referential integrity
+      constraints, when triggered by the "resolve-system" parameter.<a href="#section-6-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<section id="section-7">
+      <h2 id="name-relation-to-other-datastore">
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-relation-to-other-datastore" class="section-name selfRef">Relation to Other Datastores</a>
+      </h2>
+<section id="section-7.1">
+        <h3 id="name-the-factory-default-datasto">
+<a href="#section-7.1" class="section-number selfRef">7.1. </a><a href="#name-the-factory-default-datasto" class="section-name selfRef">The "factory-default" Datastore</a>
+        </h3>
+<p id="section-7.1-1">&lt;system&gt; defines the configuration that is non-deletable to
+        clients. Any deletable system-provided configuration that is populated
+        as part of &lt;running&gt; by the system at boot up, without being
+        part of the contents of a &lt;startup&gt; datastore, must be defined
+        in &lt;factory-default&gt; <span>[<a href="#RFC8808" class="xref">RFC8808</a>]</span>, which is used to
+        initialize &lt;running&gt; when the device is first-time powered on or
+        reset to its factory default condition. Deletable system configuration
+        must not be defined in &lt;system&gt;.<a href="#section-7.1-1" class="pilcrow">¶</a></p>
+<p id="section-7.1-2">The &lt;factory-reset&gt; RPC operation can reset &lt;system&gt; to
+        its factory default contents.<a href="#section-7.1-2" class="pilcrow">¶</a></p>
+</section>
+<section id="section-7.2">
+        <h3 id="name-the-candidate-datastore">
+<a href="#section-7.2" class="section-number selfRef">7.2. </a><a href="#name-the-candidate-datastore" class="section-name selfRef">The "candidate" Datastore</a>
+        </h3>
+<p id="section-7.2-1">If the device supports the :candidate or :private-candidate <span>[<a href="#I-D.ietf-netconf-privcand" class="xref">I-D.ietf-netconf-privcand</a>]</span> capability, a client may edit the
+        candidate or private-candidate datastore without expecting it to be
+        valid until a &lt;commit&gt; or &lt;validate&gt; operation takes
+        place. The client may use the "resolve-system" parameter in one of the
+        following situations:<a href="#section-7.2-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-7.2-2.1">The client makes an edit (e.g., NETCONF
+            &lt;edit-config&gt;/&lt;edit-data&gt;, or RESTCONF edit operation)
+            to the candidate/private-candidate datastore. This is possible,
+            though may not be required.<a href="#section-7.2-2.1" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-7.2-2.2">The client issues a &lt;validate&gt; operation.<a href="#section-7.2-2.2" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-7.2-2.3">The client issues a &lt;commit&gt; operation.<a href="#section-7.2-2.3" class="pilcrow">¶</a>
+</li>
+        </ul>
+<p id="section-7.2-3">In particular, <span>[<a href="#I-D.ietf-netconf-privcand" class="xref">I-D.ietf-netconf-privcand</a>]</span> defines
+        the concept of conflict, the server's copy referenced system nodes
+        triggered by "resolve-system" parameter might conflict with the
+        contents of &lt;running&gt;, the conflict resolution is no different
+        than the resolution of conflict caused by configuration explicitly
+        provided by the client.<a href="#section-7.2-3" class="pilcrow">¶</a></p>
+</section>
+</section>
+<div id="system-datastore">
+<section id="section-8">
+      <h2 id="name-the-ietf-system-datastore-m">
+<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-the-ietf-system-datastore-m" class="section-name selfRef">The "ietf-system-datastore" Module</a>
+      </h2>
+<section id="section-8.1">
+        <h3 id="name-data-model-overview">
+<a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-data-model-overview" class="section-name selfRef">Data Model Overview</a>
+        </h3>
+<p id="section-8.1-1">This YANG module defines a new YANG identity named "system" that
+        uses the "ds:datastore" identity defined in [RFC8342]. A client can
+        discover the system configuration datastore support on the server by
+        reading the YANG library information from the operational state
+        datastore.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
+<p id="section-8.1-2">The system datastore is defined as a conventional configuration
+        datastore and shares a common datastore schema with other conventional
+        datastores.<a href="#section-8.1-2" class="pilcrow">¶</a></p>
+<p id="section-8.1-3">The following diagram illustrates the relationship amongst the
+        "identity" statements defined in the "ietf-system-datastore" and
+        "ietf-datastores" YANG modules:<a href="#section-8.1-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-8.1-4">
+<pre>Identities:
+    +--- datastore
+    |  +--- conventional
+    |  |  +--- running
+    |  |  +--- candidate
+    |  |  +--- startup
+    |  |  +--- system
+    |  |  +--- intended
+    |  +--- dynamic
+    |  +--- operational</pre><a href="#section-8.1-4" class="pilcrow">¶</a>
+</div>
+<p id="section-8.1-5">The diagram above uses syntax that is similar to but not
+        defined in <span>[<a href="#RFC8340" class="xref">RFC8340</a>]</span>.<a href="#section-8.1-5" class="pilcrow">¶</a></p>
+</section>
+<section id="section-8.2">
+        <h3 id="name-yang-module">
+<a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-yang-module" class="section-name selfRef">YANG Module</a>
+        </h3>
+<p id="section-8.2-1" class="keepWithNext">&lt;CODE BEGINS&gt; file
+          "ietf-system-datastore@2024-06-11.yang"<a href="#section-8.2-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-8.2-2">
+<pre>
+module ietf-system-datastore {
+  yang-version 1.1;
+  namespace "urn:ietf:params:xml:ns:yang:ietf-system-datastore";
+  prefix sysds;
+
+  import ietf-datastores {
+    prefix ds;
+    reference
+      "RFC 8342: Network Management Datastore Architecture(NMDA)";
+  }
+
+  organization
+    "IETF NETMOD (Network Modeling) Working Group";
+  contact
+    "WG Web:   https://datatracker.ietf.org/wg/netmod/
+     WG List:  NETMOD WG list &lt;mailto:netmod@ietf.org&gt;
+
+     Author: Qiufang Ma
+             &lt;mailto:maqiufang1@huawei.com&gt;
+     Author: Qin Wu
+             &lt;mailto:bill.wu@huawei.com&gt;
+     Author: Chong Feng
+             &lt;mailto:fengchongllly@gmail.com&gt;";
+  description
+    "This module defines a new YANG identity that uses the
+     ds:datastore identity defined in [RFC8342].
+
+     Copyright (c) 2024 IETF Trust and the persons identified
+     as authors of the code. All rights reserved.
+
+     Redistribution and use in source and binary forms, with
+     or without modification, is permitted pursuant to, and
+     subject to the license terms contained in, the Revised
+     BSD License set forth in Section 4.c of the IETF Trust's
+     Legal Provisions Relating to IETF Documents
+     (https://trustee.ietf.org/license-info).
+
+     This version of this YANG module is part of RFC XXXX
+     (https://www.rfc-editor.org/info/rfcXXXX); see the RFC
+     itself for full legal notices.
+
+     The key words 'MUST', 'MUST NOT', 'REQUIRED', 'SHALL',
+     'SHALL NOT', 'SHOULD', 'SHOULD NOT', 'RECOMMENDED',
+     'NOT RECOMMENDED', 'MAY', and 'OPTIONAL' in this document
+     are to be interpreted as described in BCP 14 (RFC 2119)
+     (RFC 8174) when, and only when, they appear in all
+     capitals, as shown here.";
+
+  revision 2024-06-11 {
+    description
+      "Initial version.";
+    reference
+      "RFC XXXX: System-defined Configuration";
+  }
+
+  identity system {
+    base ds:conventional;
+    description
+      "This read-only datastore contains the configuration
+       provided by the system itself.";
+  }
+}
+</pre><a href="#section-8.2-2" class="pilcrow">¶</a>
+</div>
+<p id="section-8.2-3" class="keepWithPrevious">&lt;CODE ENDS&gt;<a href="#section-8.2-3" class="pilcrow">¶</a></p>
+</section>
+</section>
+</div>
+<section id="section-9">
+      <h2 id="name-the-ietf-netconf-resolve-sy">
+<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-the-ietf-netconf-resolve-sy" class="section-name selfRef">The "ietf-netconf-resolve-system" Module</a>
+      </h2>
+<p id="section-9-1">This YANG module is optional to implement.<a href="#section-9-1" class="pilcrow">¶</a></p>
+<section id="section-9.1">
+        <h3 id="name-data-model-overview-2">
+<a href="#section-9.1" class="section-number selfRef">9.1. </a><a href="#name-data-model-overview-2" class="section-name selfRef">Data Model Overview</a>
+        </h3>
+<p id="section-9.1-1">The following tree diagram <span>[<a href="#RFC8340" class="xref">RFC8340</a>]</span> illustrates the
+        "ietf-netconf-resolve-system" module:<a href="#section-9.1-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-9.1-2">
+<pre>module: ietf-netconf-resolve-system
+  augment /nc:edit-config/nc:input:
+    +---w resolve-system?   empty
+  augment /nc:copy-config/nc:input:
+    +---w resolve-system?   empty
+  augment /nc:validate/nc:input:
+    +---w resolve-system?   empty
+  augment /nc:commit/nc:input:
+    +---w resolve-system?   empty
+  augment /ncds:edit-data/ncds:input:
+    +---w resolve-system?   empty</pre><a href="#section-9.1-2" class="pilcrow">¶</a>
+</div>
+</section>
+<section id="section-9.2">
+        <h3 id="name-yang-module-2">
+<a href="#section-9.2" class="section-number selfRef">9.2. </a><a href="#name-yang-module-2" class="section-name selfRef">YANG Module</a>
+        </h3>
+<p id="section-9.2-1">This module imports modules "ietf-netconf" and "ietf-netconf-nmda",
+        defined in <span>[<a href="#RFC6241" class="xref">RFC6241</a>]</span> and <span>[<a href="#RFC8526" class="xref">RFC8526</a>]</span>,
+        respectively.<a href="#section-9.2-1" class="pilcrow">¶</a></p>
+<p id="section-9.2-2" class="keepWithNext">&lt;CODE BEGINS&gt; file
+          "ietf-netconf-resolve-system@2024-06-11.yang"<a href="#section-9.2-2" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-9.2-3">
+<pre>
+module ietf-netconf-resolve-system {
+  yang-version 1.1;
+  namespace
+    "urn:ietf:params:xml:ns:yang:ietf-netconf-resolve-system";
+  prefix ncrs;
+
+  import ietf-netconf {
+    prefix nc;
+    reference
+      "RFC 6241: Network Configuration Protocol (NETCONF)";
+  }
+  import ietf-netconf-nmda {
+    prefix ncds;
+    reference
+      "RFC 8526: NETCONF Extensions to Support the Network
+       Management Datastore Architecture";
+  }
+
+  organization
+    "IETF NETMOD (Network Modeling) Working Group";
+  contact
+    "WG Web:   &lt;https://datatracker.ietf.org/wg/netmod/&gt;
+     WG List:  &lt;mailto:netmod@ietf.org&gt;
+
+     Author: Qiufang Ma
+             &lt;mailto:maqiufang1@huawei.com&gt;
+     Author: Qin Wu
+             &lt;mailto:bill.wu@huawei.com&gt;
+     Author: Chong Feng
+             &lt;mailto:fengchongllly@gmail.com&gt;";
+  description
+    "This module defines an extension to the NETCONF protocol
+     that allows the NETCONF client to control whether the server
+     is allowed to copy referenced system configuration
+     automatically without the client doing so explicitly.
+
+      Copyright (c) 2024 IETF Trust and the persons identified
+      as authors of the code. All rights reserved.
+
+      Redistribution and use in source and binary forms, with
+      or without modification, is permitted pursuant to, and
+      subject to the license terms contained in, the Revised
+      BSD License set forth in Section 4.c of the IETF Trust's
+      Legal Provisions Relating to IETF Documents
+      (https://trustee.ietf.org/license-info).
+
+      This version of this YANG module is part of RFC XXXX
+      (https://www.rfc-editor.org/info/rfcXXXX); see the RFC
+      itself for full legal notices.
+
+      The key words 'MUST', 'MUST NOT', 'REQUIRED', 'SHALL',
+      'SHALL NOT', 'SHOULD', 'SHOULD NOT', 'RECOMMENDED',
+      'NOT RECOMMENDED', 'MAY', and 'OPTIONAL' in this document
+      are to be interpreted as described in BCP 14 (RFC 2119)
+      (RFC 8174) when, and only when, they appear in all
+      capitals, as shown here.";
+
+  revision 2024-06-11 {
+    description
+      "Initial version.";
+    reference
+      "RFC XXXX: System-defined Configuration";
+  }
+
+  grouping resolve-system-grouping {
+    description
+      "Define the resolve-system parameter grouping.";
+    leaf resolve-system {
+      type empty;
+      description
+        "When present, the server MUST copy referenced system
+         configuration into the target configuration datastore
+         where it is missing from without the client doing the
+         copy/paste explicitly.";
+    }
+  }
+
+  augment "/nc:edit-config/nc:input" {
+    description
+      "Adds the 'resolve-system' parameter to the input of the
+       NETCONF &lt;edit-config&gt; operation.";
+    uses resolve-system-grouping;
+  }
+
+  augment "/nc:copy-config/nc:input" {
+    description
+      "Adds the 'resolve-system' parameter to the input of the
+       NETCONF &lt;copy-config&gt; operation.";
+    uses resolve-system-grouping;
+  }
+  augment "/nc:validate/nc:input" {
+    description
+      "Adds the 'resolve-system' parameter to the input of the
+       NETCONF &lt;validate&gt; operation.";
+    uses resolve-system-grouping;
+  }
+  augment "/nc:commit/nc:input" {
+    description
+      "Adds the 'resolve-system' parameter to the input of the
+       NETCONF &lt;commit&gt; operation.";
+    uses resolve-system-grouping;
+  }
+  augment "/ncds:edit-data/ncds:input" {
+    description
+      "Adds the 'resolve-system' parameter to the input of the
+       NETCONF &lt;edit-data&gt; operation.";
+    uses resolve-system-grouping;
+  }
+}
+
+</pre><a href="#section-9.2-3" class="pilcrow">¶</a>
+</div>
+<p id="section-9.2-4" class="keepWithPrevious">&lt;CODE ENDS&gt;<a href="#section-9.2-4" class="pilcrow">¶</a></p>
+</section>
+</section>
+<div id="IANA">
+<section id="section-10">
+      <h2 id="name-iana-considerations">
+<a href="#section-10" class="section-number selfRef">10. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
+      </h2>
+<section id="section-10.1">
+        <h3 id="name-the-ietf-xml-registry">
+<a href="#section-10.1" class="section-number selfRef">10.1. </a><a href="#name-the-ietf-xml-registry" class="section-name selfRef">The "IETF XML" Registry</a>
+        </h3>
+<p id="section-10.1-1">This document registers two XML namespace URNs in the 'IETF XML
+        registry', following the format defined in <span>[<a href="#RFC3688" class="xref">RFC3688</a>]</span>.<a href="#section-10.1-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-10.1-2">
+<pre>   URI: urn:ietf:params:xml:ns:yang:ietf-system-datastore
+   Registrant Contact: The IESG.
+   XML: N/A, the requested URIs are XML namespaces.
+
+   URI: urn:ietf:params:xml:ns:yang:ietf-netconf-resolve-system
+   Registrant Contact: The IESG.
+   XML: N/A, the requested URIs are XML namespaces.</pre><a href="#section-10.1-2" class="pilcrow">¶</a>
+</div>
+</section>
+<section id="section-10.2">
+        <h3 id="name-the-yang-module-names-regis">
+<a href="#section-10.2" class="section-number selfRef">10.2. </a><a href="#name-the-yang-module-names-regis" class="section-name selfRef">The "YANG Module Names" Registry</a>
+        </h3>
+<p id="section-10.2-1">This document registers two module names in the 'YANG Module Names'
+        registry, defined in <span>[<a href="#RFC6020" class="xref">RFC6020</a>]</span>.<a href="#section-10.2-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-10.2-2">
+<pre>      name: ietf-system-datastore
+      prefix: sysds
+      namespace: urn:ietf:params:xml:ns:yang:ietf-system-datatstore
+      maintained by IANA: N
+      RFC: XXXX // RFC Ed.: replace XXXX and remove this comment
+
+
+      name: ietf-netconf-resolve-system
+      prefix: ncrs
+      namespace: urn:ietf:params:xml:ns:yang:ietf-netconf-resolve-system
+      maintained by IANA: N
+      RFC: XXXX // RFC Ed.: replace XXXX and remove this comment</pre><a href="#section-10.2-2" class="pilcrow">¶</a>
+</div>
+</section>
+<section id="section-10.3">
+        <h3 id="name-netconf-capability-urn-regi">
+<a href="#section-10.3" class="section-number selfRef">10.3. </a><a href="#name-netconf-capability-urn-regi" class="section-name selfRef">NETCONF Capability URN Registry</a>
+        </h3>
+<p id="section-10.3-1">This document registers the following capability identifier URN in
+        the 'Network Configuration Protocol (NETCONF) Capability URNs'
+        registry:<a href="#section-10.3-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-10.3-2">
+<pre>urn:ietf:params:netconf:capability:resolve-system:1.0</pre><a href="#section-10.3-2" class="pilcrow">¶</a>
+</div>
+</section>
+<section id="section-10.4">
+        <h3 id="name-restconf-capability-urn-reg">
+<a href="#section-10.4" class="section-number selfRef">10.4. </a><a href="#name-restconf-capability-urn-reg" class="section-name selfRef">RESTCONF Capability URN Registry</a>
+        </h3>
+<p id="section-10.4-1">This document registers a capability in the 'RESTCONF Capability
+        URNs' registry <span>[<a href="#RFC8040" class="xref">RFC8040</a>]</span>:<a href="#section-10.4-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-10.4-2">
+<pre>Index            Capability Identifier
+-----------------------------------------------------------------------
+:resolve-system  urn:ietf:params:restconf:capability:resolve-system:1.0</pre><a href="#section-10.4-2" class="pilcrow">¶</a>
+</div>
+</section>
+</section>
+</div>
+<div id="scecurity">
+<section id="section-11">
+      <h2 id="name-security-considerations">
+<a href="#section-11" class="section-number selfRef">11. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
+      </h2>
+<section id="section-11.1">
+        <h3 id="name-considerations-for-the-ietf">
+<a href="#section-11.1" class="section-number selfRef">11.1. </a><a href="#name-considerations-for-the-ietf" class="section-name selfRef">Considerations for the "ietf-system-datastore" YANG Module</a>
+        </h3>
+<p id="section-11.1-1">This section uses the template described in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-netmod-rfc8407bis-11#section-3.7" class="relref">Section 3.7</a> of [<a href="#I-D.ietf-netmod-rfc8407bis" class="xref">I-D.ietf-netmod-rfc8407bis</a>]</span>.<a href="#section-11.1-1" class="pilcrow">¶</a></p>
+<p id="section-11.1-2">The YANG module specified in this document defines a schema for
+        data that is designed to be accessed via network management protocols
+        such as NETCONF <span>[<a href="#RFC6241" class="xref">RFC6241</a>]</span> or RESTCONF <span>[<a href="#RFC8040" class="xref">RFC8040</a>]</span>. These network management protocols are required to
+        use a secure transport layer and mutual authentication, e.g., SSH
+        <span>[<a href="#RFC6242" class="xref">RFC6242</a>]</span> without the "none" authentication option,
+        Transport Layer Security (TLS) <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span> with mutual
+        X.509 authentication, and HTTPS with HTTP authentication (<span><a href="https://rfc-editor.org/rfc/rfc9110#section-11" class="relref">Section 11</a> of [<a href="#RFC9110" class="xref">RFC9110</a>]</span>).<a href="#section-11.1-2" class="pilcrow">¶</a></p>
+<p id="section-11.1-3">The Network Configuration Access Control Model (NACM) <span>[<a href="#RFC8341" class="xref">RFC8341</a>]</span> provides the means to restrict access for
+        particular NETCONF or RESTCONF users to a preconfigured subset of all
+        available NETCONF or RESTCONF protocol operations and content.<a href="#section-11.1-3" class="pilcrow">¶</a></p>
+<p id="section-11.1-4">The YANG module only defines a identity that uses the
+        "ds:conventional" identity as its base. The module by itself does not
+        expose any data nodes that are writable, date nodes that contain
+        read-only state, or RPCs. As such, there are no additional security
+        issues related to the YANG module that need to be considered.<a href="#section-11.1-4" class="pilcrow">¶</a></p>
+</section>
+<section id="section-11.2">
+        <h3 id="name-considerations-for-the-ietf-">
+<a href="#section-11.2" class="section-number selfRef">11.2. </a><a href="#name-considerations-for-the-ietf-" class="section-name selfRef">Considerations for the "ietf-netconf-resolve-system" YANG Module</a>
+        </h3>
+<p id="section-11.2-1">The YANG module defined in this document extends the base
+        operations of NETCONF protocol in <span>[<a href="#RFC6241" class="xref">RFC6241</a>]</span> and <span>[<a href="#RFC8526" class="xref">RFC8526</a>]</span>. The lowest NETCONF layer is the secure transport
+        layer, and the mandatory-to-implement secure transport is Secure Shell
+        (SSH) <span>[<a href="#RFC6242" class="xref">RFC6242</a>]</span>.<a href="#section-11.2-1" class="pilcrow">¶</a></p>
+<p id="section-11.2-2">The Network Configuration Access Control Model (NACM) <span>[<a href="#RFC8341" class="xref">RFC8341</a>]</span> provides the means to restrict access for
+        particular NETCONF users to a preconfigured subset of all available
+        NETCONF protocol operations and content.<a href="#section-11.2-2" class="pilcrow">¶</a></p>
+<p id="section-11.2-3">The security considerations for the NETCONF protocol operations
+        (see <span><a href="https://rfc-editor.org/rfc/rfc6241#section-9" class="relref">Section 9</a> of [<a href="#RFC6241" class="xref">RFC6241</a>]</span> and <span><a href="https://rfc-editor.org/rfc/rfc8526#section-6" class="relref">Section 6</a> of [<a href="#RFC8526" class="xref">RFC8526</a>]</span>) apply to the
+        extended RPC operations defined in this document. There is not any
+        beyond the potential performance impacts of implementing the
+        "resolve-system" parameter defined in the YANG module, which may mean
+        employing some form of rate limiting or adapting the rate threshold
+        for limiting might be a good idea to avoid DoS attacks.<a href="#section-11.2-3" class="pilcrow">¶</a></p>
+</section>
+</section>
+</div>
+<section id="section-12">
+      <h2 id="name-references">
+<a href="#section-12" class="section-number selfRef">12. </a><a href="#name-references" class="section-name selfRef">References</a>
+      </h2>
+<section id="section-12.1">
+        <h3 id="name-normative-references">
+<a href="#section-12.1" class="section-number selfRef">12.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+        </h3>
+<dl class="references">
+<dt id="RFC2119">[RFC2119]</dt>
+        <dd>
+<span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc2119">https://www.rfc-editor.org/info/rfc2119</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC6241">[RFC6241]</dt>
+        <dd>
+<span class="refAuthor">Enns, R., Ed.</span>, <span class="refAuthor">Bjorklund, M., Ed.</span>, <span class="refAuthor">Schoenwaelder, J., Ed.</span>, and <span class="refAuthor">A. Bierman, Ed.</span>, <span class="refTitle">"Network Configuration Protocol (NETCONF)"</span>, <span class="seriesInfo">RFC 6241</span>, <span class="seriesInfo">DOI 10.17487/RFC6241</span>, <time datetime="2011-06" class="refDate">June 2011</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6241">https://www.rfc-editor.org/info/rfc6241</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC6470">[RFC6470]</dt>
+        <dd>
+<span class="refAuthor">Bierman, A.</span>, <span class="refTitle">"Network Configuration Protocol (NETCONF) Base Notifications"</span>, <span class="seriesInfo">RFC 6470</span>, <span class="seriesInfo">DOI 10.17487/RFC6470</span>, <time datetime="2012-02" class="refDate">February 2012</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6470">https://www.rfc-editor.org/info/rfc6470</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC7950">[RFC7950]</dt>
+        <dd>
+<span class="refAuthor">Bjorklund, M., Ed.</span>, <span class="refTitle">"The YANG 1.1 Data Modeling Language"</span>, <span class="seriesInfo">RFC 7950</span>, <span class="seriesInfo">DOI 10.17487/RFC7950</span>, <time datetime="2016-08" class="refDate">August 2016</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7950">https://www.rfc-editor.org/info/rfc7950</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8040">[RFC8040]</dt>
+        <dd>
+<span class="refAuthor">Bierman, A.</span>, <span class="refAuthor">Bjorklund, M.</span>, and <span class="refAuthor">K. Watsen</span>, <span class="refTitle">"RESTCONF Protocol"</span>, <span class="seriesInfo">RFC 8040</span>, <span class="seriesInfo">DOI 10.17487/RFC8040</span>, <time datetime="2017-01" class="refDate">January 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8040">https://www.rfc-editor.org/info/rfc8040</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8341">[RFC8341]</dt>
+        <dd>
+<span class="refAuthor">Bierman, A.</span> and <span class="refAuthor">M. Bjorklund</span>, <span class="refTitle">"Network Configuration Access Control Model"</span>, <span class="seriesInfo">STD 91</span>, <span class="seriesInfo">RFC 8341</span>, <span class="seriesInfo">DOI 10.17487/RFC8341</span>, <time datetime="2018-03" class="refDate">March 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8341">https://www.rfc-editor.org/info/rfc8341</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8342">[RFC8342]</dt>
+        <dd>
+<span class="refAuthor">Bjorklund, M.</span>, <span class="refAuthor">Schoenwaelder, J.</span>, <span class="refAuthor">Shafer, P.</span>, <span class="refAuthor">Watsen, K.</span>, and <span class="refAuthor">R. Wilton</span>, <span class="refTitle">"Network Management Datastore Architecture (NMDA)"</span>, <span class="seriesInfo">RFC 8342</span>, <span class="seriesInfo">DOI 10.17487/RFC8342</span>, <time datetime="2018-03" class="refDate">March 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8342">https://www.rfc-editor.org/info/rfc8342</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8526">[RFC8526]</dt>
+        <dd>
+<span class="refAuthor">Bjorklund, M.</span>, <span class="refAuthor">Schoenwaelder, J.</span>, <span class="refAuthor">Shafer, P.</span>, <span class="refAuthor">Watsen, K.</span>, and <span class="refAuthor">R. Wilton</span>, <span class="refTitle">"NETCONF Extensions to Support the Network Management Datastore Architecture"</span>, <span class="seriesInfo">RFC 8526</span>, <span class="seriesInfo">DOI 10.17487/RFC8526</span>, <time datetime="2019-03" class="refDate">March 2019</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8526">https://www.rfc-editor.org/info/rfc8526</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8639">[RFC8639]</dt>
+        <dd>
+<span class="refAuthor">Voit, E.</span>, <span class="refAuthor">Clemm, A.</span>, <span class="refAuthor">Gonzalez Prieto, A.</span>, <span class="refAuthor">Nilsen-Nygaard, E.</span>, and <span class="refAuthor">A. Tripathy</span>, <span class="refTitle">"Subscription to YANG Notifications"</span>, <span class="seriesInfo">RFC 8639</span>, <span class="seriesInfo">DOI 10.17487/RFC8639</span>, <time datetime="2019-09" class="refDate">September 2019</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8639">https://www.rfc-editor.org/info/rfc8639</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8641">[RFC8641]</dt>
+      <dd>
+<span class="refAuthor">Clemm, A.</span> and <span class="refAuthor">E. Voit</span>, <span class="refTitle">"Subscription to YANG Notifications for Datastore Updates"</span>, <span class="seriesInfo">RFC 8641</span>, <span class="seriesInfo">DOI 10.17487/RFC8641</span>, <time datetime="2019-09" class="refDate">September 2019</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8641">https://www.rfc-editor.org/info/rfc8641</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+<section id="section-12.2">
+        <h3 id="name-informative-references">
+<a href="#section-12.2" class="section-number selfRef">12.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+        </h3>
+<dl class="references">
+<dt id="I-D.ietf-netconf-privcand">[I-D.ietf-netconf-privcand]</dt>
+        <dd>
+<span class="refAuthor">Cumming, J.</span> and <span class="refAuthor">R. Wills</span>, <span class="refTitle">"NETCONF Private Candidates"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-netconf-privcand-03</span>, <time datetime="2024-05-30" class="refDate">30 May 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-netconf-privcand-03">https://datatracker.ietf.org/doc/html/draft-ietf-netconf-privcand-03</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.ietf-netmod-immutable-flag">[I-D.ietf-netmod-immutable-flag]</dt>
+        <dd>
+<span class="refAuthor">Ma, Q.</span>, <span class="refAuthor">Wu, Q.</span>, <span class="refAuthor">Lengyel, B.</span>, and <span class="refAuthor">H. Li</span>, <span class="refTitle">"YANG Metadata Annotation for Immutable Flag"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-netmod-immutable-flag-00</span>, <time datetime="2024-03-18" class="refDate">18 March 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-netmod-immutable-flag-00">https://datatracker.ietf.org/doc/html/draft-ietf-netmod-immutable-flag-00</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.ietf-netmod-rfc8407bis">[I-D.ietf-netmod-rfc8407bis]</dt>
+        <dd>
+<span class="refAuthor">Bierman, A.</span>, <span class="refAuthor">Boucadair, M.</span>, and <span class="refAuthor">Q. Wu</span>, <span class="refTitle">"Guidelines for Authors and Reviewers of Documents Containing YANG Data Models"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-netmod-rfc8407bis-11</span>, <time datetime="2024-04-18" class="refDate">18 April 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-netmod-rfc8407bis-11">https://datatracker.ietf.org/doc/html/draft-ietf-netmod-rfc8407bis-11</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC3688">[RFC3688]</dt>
+        <dd>
+<span class="refAuthor">Mealling, M.</span>, <span class="refTitle">"The IETF XML Registry"</span>, <span class="seriesInfo">BCP 81</span>, <span class="seriesInfo">RFC 3688</span>, <span class="seriesInfo">DOI 10.17487/RFC3688</span>, <time datetime="2004-01" class="refDate">January 2004</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc3688">https://www.rfc-editor.org/info/rfc3688</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC6020">[RFC6020]</dt>
+        <dd>
+<span class="refAuthor">Bjorklund, M., Ed.</span>, <span class="refTitle">"YANG - A Data Modeling Language for the Network Configuration Protocol (NETCONF)"</span>, <span class="seriesInfo">RFC 6020</span>, <span class="seriesInfo">DOI 10.17487/RFC6020</span>, <time datetime="2010-10" class="refDate">October 2010</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6020">https://www.rfc-editor.org/info/rfc6020</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC6242">[RFC6242]</dt>
+        <dd>
+<span class="refAuthor">Wasserman, M.</span>, <span class="refTitle">"Using the NETCONF Protocol over Secure Shell (SSH)"</span>, <span class="seriesInfo">RFC 6242</span>, <span class="seriesInfo">DOI 10.17487/RFC6242</span>, <time datetime="2011-06" class="refDate">June 2011</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6242">https://www.rfc-editor.org/info/rfc6242</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC7952">[RFC7952]</dt>
+        <dd>
+<span class="refAuthor">Lhotka, L.</span>, <span class="refTitle">"Defining and Using Metadata with YANG"</span>, <span class="seriesInfo">RFC 7952</span>, <span class="seriesInfo">DOI 10.17487/RFC7952</span>, <time datetime="2016-08" class="refDate">August 2016</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7952">https://www.rfc-editor.org/info/rfc7952</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8174">[RFC8174]</dt>
+        <dd>
+<span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8174">https://www.rfc-editor.org/info/rfc8174</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8340">[RFC8340]</dt>
+        <dd>
+<span class="refAuthor">Bjorklund, M.</span> and <span class="refAuthor">L. Berger, Ed.</span>, <span class="refTitle">"YANG Tree Diagrams"</span>, <span class="seriesInfo">BCP 215</span>, <span class="seriesInfo">RFC 8340</span>, <span class="seriesInfo">DOI 10.17487/RFC8340</span>, <time datetime="2018-03" class="refDate">March 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8340">https://www.rfc-editor.org/info/rfc8340</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8407">[RFC8407]</dt>
+        <dd>
+<span class="refAuthor">Bierman, A.</span>, <span class="refTitle">"Guidelines for Authors and Reviewers of Documents Containing YANG Data Models"</span>, <span class="seriesInfo">BCP 216</span>, <span class="seriesInfo">RFC 8407</span>, <span class="seriesInfo">DOI 10.17487/RFC8407</span>, <time datetime="2018-10" class="refDate">October 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8407">https://www.rfc-editor.org/info/rfc8407</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8446">[RFC8446]</dt>
+        <dd>
+<span class="refAuthor">Rescorla, E.</span>, <span class="refTitle">"The Transport Layer Security (TLS) Protocol Version 1.3"</span>, <span class="seriesInfo">RFC 8446</span>, <span class="seriesInfo">DOI 10.17487/RFC8446</span>, <time datetime="2018-08" class="refDate">August 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8446">https://www.rfc-editor.org/info/rfc8446</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8525">[RFC8525]</dt>
+        <dd>
+<span class="refAuthor">Bierman, A.</span>, <span class="refAuthor">Bjorklund, M.</span>, <span class="refAuthor">Schoenwaelder, J.</span>, <span class="refAuthor">Watsen, K.</span>, and <span class="refAuthor">R. Wilton</span>, <span class="refTitle">"YANG Library"</span>, <span class="seriesInfo">RFC 8525</span>, <span class="seriesInfo">DOI 10.17487/RFC8525</span>, <time datetime="2019-03" class="refDate">March 2019</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8525">https://www.rfc-editor.org/info/rfc8525</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8808">[RFC8808]</dt>
+        <dd>
+<span class="refAuthor">Wu, Q.</span>, <span class="refAuthor">Lengyel, B.</span>, and <span class="refAuthor">Y. Niu</span>, <span class="refTitle">"A YANG Data Model for Factory Default Settings"</span>, <span class="seriesInfo">RFC 8808</span>, <span class="seriesInfo">DOI 10.17487/RFC8808</span>, <time datetime="2020-08" class="refDate">August 2020</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8808">https://www.rfc-editor.org/info/rfc8808</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9110">[RFC9110]</dt>
+      <dd>
+<span class="refAuthor">Fielding, R., Ed.</span>, <span class="refAuthor">Nottingham, M., Ed.</span>, and <span class="refAuthor">J. Reschke, Ed.</span>, <span class="refTitle">"HTTP Semantics"</span>, <span class="seriesInfo">STD 97</span>, <span class="seriesInfo">RFC 9110</span>, <span class="seriesInfo">DOI 10.17487/RFC9110</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9110">https://www.rfc-editor.org/info/rfc9110</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+</section>
+<section id="appendix-A">
+      <h2 id="name-key-use-cases">
+<a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-key-use-cases" class="section-name selfRef">Key Use Cases</a>
+      </h2>
+<p id="appendix-A-1">This section provides three use cases related to how &lt;system&gt;
+      interacts with other datastores (e.g., &lt;candidate&gt;,
+      &lt;running&gt;, &lt;intended&gt;, and &lt;operational&gt;). The
+      following fictional interface data model is used:<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-A-2">
+<pre>container interfaces {
+  list interface {
+    key name;
+    leaf name {
+      type string;
+    }
+    leaf type {
+      type enumeration {
+        enum ethernet;
+        enum atm;
+        enum loopback;
+      }
+    }
+    leaf enabled {
+      type boolean;
+      default "false";
+    }
+    leaf mtu {
+      type uint32;
+    }
+    leaf-list ip-address {
+      type inet:ip-address;
+    }
+    leaf speed {
+      when "../type = 'ethernet'";
+      type enumeration {
+        enum "10Mb";
+        enum "100Mb";
+      }
+    }
+    leaf description {
+      type string;
+    }
+  }
+}</pre><a href="#appendix-A-2" class="pilcrow">¶</a>
+</div>
+<p id="appendix-A-3">For each use case, corresponding sample configuration in
+      &lt;running&gt;, &lt;system&gt;, &lt;intended&gt; and
+      &lt;operational&gt; are shown. The XML snippets are used only for
+      illustration purposes.<a href="#appendix-A-3" class="pilcrow">¶</a></p>
+<section id="appendix-A.1">
+        <h3 id="name-device-powers-on">
+<a href="#appendix-A.1" class="section-number selfRef">A.1. </a><a href="#name-device-powers-on" class="section-name selfRef">Device Powers On</a>
+        </h3>
+<p id="appendix-A.1-1">When the device is powered on, suppose the system provides a
+        loopback interface (named "lo0") which is not explicitly configured in
+        &lt;running&gt;. Thus, no configuration for interfaces appears in
+        &lt;running&gt;;<a href="#appendix-A.1-1" class="pilcrow">¶</a></p>
+<p id="appendix-A.1-2">And the contents of &lt;system&gt; are:<a href="#appendix-A.1-2" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-A.1-3">
+<pre>&lt;interfaces&gt;
+  &lt;interface&gt;
+    &lt;name&gt;lo0&lt;/name&gt;
+    &lt;type&gt;loopback&lt;/type&gt;
+    &lt;enabled&gt;true&lt;/enabled&gt;
+    &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
+    &lt;ip-address&gt;::1&lt;/ip-address&gt;
+    &lt;description&gt;predefined interface&lt;/description&gt;
+  &lt;/interface&gt;
+&lt;/interfaces&gt;</pre><a href="#appendix-A.1-3" class="pilcrow">¶</a>
+</div>
+<p id="appendix-A.1-4">In this case, the configuration of loopback interface is only
+        present in &lt;system&gt;, the configuration of interface in
+        &lt;intended&gt; would be identical to the one in &lt;system&gt; shown
+        above.<a href="#appendix-A.1-4" class="pilcrow">¶</a></p>
+<p id="appendix-A.1-5">And &lt;operational&gt; will show the system-provided loopback
+        interface:<a href="#appendix-A.1-5" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-A.1-6">
+<pre>&lt;interfaces xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
+            or:origin="or:system"&gt;
+  &lt;interface&gt;
+    &lt;name&gt;lo0&lt;/name&gt;
+    &lt;type&gt;loopback&lt;/type&gt;
+    &lt;enabled&gt;true&lt;/enabled&gt;
+    &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
+    &lt;ip-address&gt;::1&lt;/ip-address&gt;
+    &lt;description&gt;predefined interface&lt;/description&gt;
+  &lt;/interface&gt;
+&lt;/interfaces&gt;</pre><a href="#appendix-A.1-6" class="pilcrow">¶</a>
+</div>
+</section>
+<section id="appendix-A.2">
+        <h3 id="name-client-commits-configuratio">
+<a href="#appendix-A.2" class="section-number selfRef">A.2. </a><a href="#name-client-commits-configuratio" class="section-name selfRef">Client Commits Configuration</a>
+        </h3>
+<p id="appendix-A.2-1">If a client creates an interface "et-0/0/0" but the interface does
+        not physically exist at this point, what is in &lt;running&gt; appears
+        as follows:<a href="#appendix-A.2-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-A.2-2">
+<pre>&lt;interfaces&gt;
+  &lt;interface&gt;
+    &lt;name&gt;et-0/0/0&lt;/name&gt;
+    &lt;type&gt;ethernet&lt;/type&gt;
+    &lt;description&gt;pre-provisioned interface&lt;/description&gt;
+  &lt;/interface&gt;
+&lt;/interfaces&gt;</pre><a href="#appendix-A.2-2" class="pilcrow">¶</a>
+</div>
+<p id="appendix-A.2-3">And the contents of &lt;system&gt; keep unchanged since the
+        interface is not physically present:<a href="#appendix-A.2-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-A.2-4">
+<pre>&lt;interfaces&gt;
+  &lt;interface&gt;
+    &lt;name&gt;lo0&lt;/name&gt;
+    &lt;type&gt;loopback&lt;/type&gt;
+    &lt;enabled&gt;true&lt;/enabled&gt;
+    &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
+    &lt;ip-address&gt;::1&lt;/ip-address&gt;
+    &lt;description&gt;predefined interface&lt;/description&gt;
+  &lt;/interface&gt;
+&lt;/interfaces&gt;</pre><a href="#appendix-A.2-4" class="pilcrow">¶</a>
+</div>
+<p id="appendix-A.2-5">The contents of &lt;intended&gt; represent the merged data of
+        &lt;system&gt; and &lt;running&gt;:<a href="#appendix-A.2-5" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-A.2-6">
+<pre>&lt;interfaces&gt;
+  &lt;interface&gt;
+    &lt;name&gt;lo0&lt;/name&gt;
+    &lt;type&gt;loopback&lt;/type&gt;
+    &lt;enabled&gt;true&lt;/enabled&gt;
+    &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
+    &lt;ip-address&gt;::1&lt;/ip-address&gt;
+    &lt;description&gt;predefined interface&lt;/description&gt;
+  &lt;/interface&gt;
+  &lt;interface&gt;
+    &lt;name&gt;et-0/0/0&lt;/name&gt;
+    &lt;type&gt;ethernet&lt;/type&gt;
+    &lt;description&gt;pre-provisioned interface&lt;/description&gt;
+  &lt;/interface&gt;
+&lt;/interfaces&gt;</pre><a href="#appendix-A.2-6" class="pilcrow">¶</a>
+</div>
+<p id="appendix-A.2-7">Since the interface named "eth-0/0/0" does not exist, the
+        associated configuration is not present in &lt;operational&gt;, which
+        appears as follows:<a href="#appendix-A.2-7" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-A.2-8">
+<pre>&lt;interfaces xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
+            or:origin="or:intended"&gt;
+  &lt;interface or:origin="or:system"&gt;
+    &lt;name&gt;lo0&lt;/name&gt;
+    &lt;type&gt;loopback&lt;/type&gt;
+    &lt;enabled&gt;true&lt;/enabled&gt;
+    &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
+    &lt;ip-address&gt;::1&lt;/ip-address&gt;
+    &lt;description&gt;predefined interface&lt;/description&gt;
+  &lt;/interface&gt;
+&lt;/interfaces&gt;</pre><a href="#appendix-A.2-8" class="pilcrow">¶</a>
+</div>
+</section>
+<section id="appendix-A.3">
+        <h3 id="name-operator-installs-card-into">
+<a href="#appendix-A.3" class="section-number selfRef">A.3. </a><a href="#name-operator-installs-card-into" class="section-name selfRef">Operator Installs Card into a Chassis</a>
+        </h3>
+<p id="appendix-A.3-1">When the interface is installed by the operator, the system will
+        detect it and generate the associated configuration in &lt;system&gt;.
+        The contents of &lt;running&gt; keep unchanged:<a href="#appendix-A.3-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-A.3-2">
+<pre>&lt;interfaces&gt;
+  &lt;interface&gt;
+    &lt;name&gt;et-0/0/0&lt;/name&gt;
+    &lt;type&gt;ethernet&lt;/type&gt;
+    &lt;description&gt;pre-provisioned interface&lt;/description&gt;
+  &lt;/interface&gt;
+&lt;/interfaces&gt;</pre><a href="#appendix-A.3-2" class="pilcrow">¶</a>
+</div>
+<p id="appendix-A.3-3">And &lt;system&gt; might appear as follows:<a href="#appendix-A.3-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-A.3-4">
+<pre>&lt;interfaces&gt;
+  &lt;interface&gt;
+    &lt;name&gt;lo0&lt;/name&gt;
+    &lt;type&gt;loopback&lt;/type&gt;
+    &lt;enabled&gt;true&lt;/enabled&gt;
+    &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
+    &lt;ip-address&gt;::1&lt;/ip-address&gt;
+    &lt;description&gt;predefined interface&lt;/description&gt;
+  &lt;/interface&gt;
+  &lt;interface&gt;
+    &lt;name&gt;et-0/0/0&lt;/name&gt;
+    &lt;type&gt;ethernet&lt;/type&gt;
+    &lt;mtu&gt;1500&lt;/mtu&gt;
+    &lt;speed&gt;100Mb&lt;/speed&gt;
+  &lt;/interface&gt;
+&lt;/interfaces&gt;</pre><a href="#appendix-A.3-4" class="pilcrow">¶</a>
+</div>
+<p id="appendix-A.3-5">Then &lt;intended&gt; contains the merged configuration of
+        &lt;system&gt; and &lt;running&gt;:<a href="#appendix-A.3-5" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-A.3-6">
+<pre>&lt;interfaces&gt;
+  &lt;interface&gt;
+    &lt;name&gt;lo0&lt;/name&gt;
+    &lt;type&gt;loopback&lt;/type&gt;
+    &lt;enabled&gt;true&lt;/enabled&gt;
+    &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
+    &lt;ip-address&gt;::1&lt;/ip-address&gt;
+    &lt;description&gt;predefined interface&lt;/description&gt;
+  &lt;/interface&gt;
+  &lt;interface&gt;
+    &lt;name&gt;et-0/0/0&lt;/name&gt;
+    &lt;type&gt;ethernet&lt;/type&gt;
+    &lt;mtu&gt;1500&lt;/mtu&gt;
+    &lt;speed&gt;100Mb&lt;/speed&gt;
+    &lt;description&gt;pre-provisioned interface&lt;/description&gt;
+  &lt;/interface&gt;
+&lt;/interfaces&gt;</pre><a href="#appendix-A.3-6" class="pilcrow">¶</a>
+</div>
+<p id="appendix-A.3-7">And the contents of &lt;operational&gt; appear as follows:<a href="#appendix-A.3-7" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-A.3-8">
+<pre>&lt;interfaces xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
+            or:origin="or:intended"&gt;
+  &lt;interface or:origin="or:system"&gt;
+    &lt;name&gt;lo0&lt;/name&gt;
+    &lt;type&gt;loopback&lt;/type&gt;
+    &lt;enabled&gt;true&lt;/enabled&gt;
+    &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
+    &lt;ip-address&gt;::1&lt;/ip-address&gt;
+    &lt;description&gt;predefined interface&lt;/description&gt;
+  &lt;/interface&gt;
+  &lt;interface&gt;
+    &lt;name&gt;et-0/0/0&lt;/name&gt;
+    &lt;type&gt;ethernet&lt;/type&gt;
+    &lt;enabled or:origin="or:default"&gt;false&lt;/enabled&gt;
+    &lt;mtu or:origin="or:system"&gt;1500&lt;/mtu&gt;
+    &lt;speed or:origin="or:system"&gt;100Mb&lt;/speed&gt;
+    &lt;description&gt;pre-provisioned interface&lt;/description&gt;
+  &lt;/interface&gt;
+&lt;/interfaces&gt;</pre><a href="#appendix-A.3-8" class="pilcrow">¶</a>
+</div>
+</section>
+<section id="appendix-A.4">
+        <h3 id="name-client-further-commits-conf">
+<a href="#appendix-A.4" class="section-number selfRef">A.4. </a><a href="#name-client-further-commits-conf" class="section-name selfRef">Client further Commits Configuration</a>
+        </h3>
+<p id="appendix-A.4-1">If the client further sets the speed of interface "eth-0/0/0" to a
+        lower rate in &lt;running&gt; using a "merge" operation with the
+        referenced node "type" being explicitly declared and enables this
+        interface:<a href="#appendix-A.4-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-A.4-2">
+<pre>&lt;interfaces&gt;
+  &lt;interface&gt;
+    &lt;name&gt;et-0/0/0&lt;/name&gt;
+    &lt;type&gt;ethernet&lt;/type&gt;
+    &lt;enabled&gt;true&lt;/enabled&gt;
+    &lt;speed&gt;10Mb&lt;/speed&gt;
+    &lt;description&gt;pre-provisioned interface&lt;/description&gt;
+  &lt;/interface&gt;
+&lt;/interfaces&gt;</pre><a href="#appendix-A.4-2" class="pilcrow">¶</a>
+</div>
+<p id="appendix-A.4-3">The contents of &lt;system&gt; keep unchanged:<a href="#appendix-A.4-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-A.4-4">
+<pre>&lt;interfaces&gt;
+  &lt;interface&gt;
+    &lt;name&gt;lo0&lt;/name&gt;
+    &lt;type&gt;loopback&lt;/type&gt;
+    &lt;enabled&gt;true&lt;/enabled&gt;
+    &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
+    &lt;ip-address&gt;::1&lt;/ip-address&gt;
+    &lt;description&gt;predefined interface&lt;/description&gt;
+  &lt;/interface&gt;
+  &lt;interface&gt;
+    &lt;name&gt;et-0/0/0&lt;/name&gt;
+    &lt;type&gt;ethernet&lt;/type&gt;
+    &lt;mtu&gt;1500&lt;/mtu&gt;
+    &lt;speed&gt;100Mb&lt;/speed&gt;
+  &lt;/interface&gt;
+&lt;/interfaces&gt;</pre><a href="#appendix-A.4-4" class="pilcrow">¶</a>
+</div>
+<p id="appendix-A.4-5">And the contents of &lt;intended&gt; which represents a merged
+        results of &lt;running&gt; and &lt;system&gt; as follows:<a href="#appendix-A.4-5" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-A.4-6">
+<pre>&lt;interfaces&gt;
+  &lt;interface&gt;
+    &lt;name&gt;lo0&lt;/name&gt;
+    &lt;type&gt;loopback&lt;/type&gt;
+    &lt;enabled&gt;true&lt;/enabled&gt;
+    &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
+    &lt;ip-address&gt;::1&lt;/ip-address&gt;
+    &lt;description&gt;predefined interface&lt;/description&gt;
+  &lt;/interface&gt;
+  &lt;interface&gt;
+    &lt;name&gt;et-0/0/0&lt;/name&gt;
+    &lt;type&gt;ethernet&lt;/type&gt;
+    &lt;enabled&gt;true&lt;/enabled&gt;
+    &lt;mtu&gt;1500&lt;/mtu&gt;
+    &lt;speed&gt;10Mb&lt;/speed&gt;
+    &lt;description&gt;pre-provisioned interface&lt;/description&gt;
+  &lt;/interface&gt;
+&lt;/interfaces&gt;</pre><a href="#appendix-A.4-6" class="pilcrow">¶</a>
+</div>
+<p id="appendix-A.4-7">And &lt;operational&gt; would appear as follows:<a href="#appendix-A.4-7" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-A.4-8">
+<pre>&lt;interfaces xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
+            or:origin="or:intended"&gt;
+  &lt;interface or:origin="or:system"&gt;
+    &lt;name&gt;lo0&lt;/name&gt;
+    &lt;type&gt;loopback&lt;/type&gt;
+    &lt;enabled&gt;true&lt;/enabled&gt;
+    &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
+    &lt;ip-address&gt;::1&lt;/ip-address&gt;
+    &lt;description&gt;predefined interface&lt;/description&gt;
+  &lt;/interface&gt;
+  &lt;interface&gt;
+    &lt;name&gt;et-0/0/0&lt;/name&gt;
+    &lt;type&gt;ethernet&lt;/type&gt;
+    &lt;enabled&gt;true&lt;/enabled&gt;
+    &lt;mtu or:origin="or:system"&gt;1500&lt;/mtu&gt;
+    &lt;speed&gt;10Mb&lt;/speed&gt;
+    &lt;description&gt;pre-provisioned interface&lt;/description&gt;
+  &lt;/interface&gt;
+&lt;/interfaces&gt;</pre><a href="#appendix-A.4-8" class="pilcrow">¶</a>
+</div>
+</section>
+</section>
+<section id="appendix-B">
+      <h2 id="name-changes-between-revisions">
+<a href="#appendix-B" class="section-number selfRef">Appendix B. </a><a href="#name-changes-between-revisions" class="section-name selfRef">Changes between Revisions</a>
+      </h2>
+<p id="appendix-B-1">v05 - v06<a href="#appendix-B-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="appendix-B-2.1">remove inactive-until-referenced system config<a href="#appendix-B-2.1" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="appendix-B-2.2">add a new section (sec.6) to clarify the interplay between system
+          config and defaults<a href="#appendix-B-2.2" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="appendix-B-2.3">add a new section (sec.7) to clarify relation to other
+          datastores, which includes &lt;factory-default&gt; and
+          &lt;candidate&gt;/&lt;priv-candidate&gt;<a href="#appendix-B-2.3" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="appendix-B-2.4">leave the merge behavior of &lt;system&gt; and &lt;running&gt;
+          unspecified<a href="#appendix-B-2.4" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="appendix-B-2.5">augment &lt;validate&gt; and &lt;commit&gt; PRC operation to
+          support "resolve-system" parameter<a href="#appendix-B-2.5" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="appendix-B-2.6">editorial updates<a href="#appendix-B-2.6" class="pilcrow">¶</a>
+</li>
+      </ul>
+<p id="appendix-B-3">v04 - v05<a href="#appendix-B-3" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="appendix-B-4.1">Explicitly state that system configuration copied from
+          &lt;system&gt; into &lt;running&gt; have its origin value being
+          reported as "intended" and update the examples accordingly to
+          reflect it<a href="#appendix-B-4.1" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="appendix-B-4.2">Update the definition of "intended" origin identity in 8342 to
+          allow a subset of configuration in &lt;intended&gt; to use "system"
+          as origin value<a href="#appendix-B-4.2" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="appendix-B-4.3">State server behaviors of migrating updated system data into
+          &lt;running&gt; is beyond the scope of this document, and give a
+          couple of implementation examples<a href="#appendix-B-4.3" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="appendix-B-4.4">Remove the related statement which mandates referenced system
+          configuration must be copied into &lt;running&gt;<a href="#appendix-B-4.4" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="appendix-B-4.5">Refine usage examples (e.g., fix validation errors, remove
+          redundancy)<a href="#appendix-B-4.5" class="pilcrow">¶</a>
+</li>
+      </ul>
+<p id="appendix-B-5">v03 - v04<a href="#appendix-B-5" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="appendix-B-6.1">Add some implementation consideration for "resolve-system"
+          parameter<a href="#appendix-B-6.1" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="appendix-B-6.2">Define a NETCONF capability identifier for "resolve-system"
+          parameter so that the client can discover if it is supported by the
+          server.<a href="#appendix-B-6.2" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="appendix-B-6.3">state servers may upgrade copied system configuration in
+          &lt;running&gt; as well during device upgrade or licensing
+          change.<a href="#appendix-B-6.3" class="pilcrow">¶</a>
+</li>
+      </ul>
+<p id="appendix-B-7">v02 - v03<a href="#appendix-B-7" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="appendix-B-8.1">remove the merge mechanism related comments, as discussed in
+          https://github.com/netconf-wg/netconf-next/issues/19<a href="#appendix-B-8.1" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="appendix-B-8.2">Editorial changes<a href="#appendix-B-8.2" class="pilcrow">¶</a>
+</li>
+      </ul>
+<p id="appendix-B-9">v01 - v02<a href="#appendix-B-9" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="appendix-B-10.1">Define referenced system configuration<a href="#appendix-B-10.1" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="appendix-B-10.2">better clarify "resolve-system" parameter<a href="#appendix-B-10.2" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="appendix-B-10.3">update Figure 2 in NMDA RFC<a href="#appendix-B-10.3" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="appendix-B-10.4">Editorial changes<a href="#appendix-B-10.4" class="pilcrow">¶</a>
+</li>
+      </ul>
+<p id="appendix-B-11">v00 - v01<a href="#appendix-B-11" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="appendix-B-12.1">Clarify why client's explicit copy is not preferred but cannot be
+          avoided if resolve-system parameter is not defined<a href="#appendix-B-12.1" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="appendix-B-12.2">Clarify active system configuration<a href="#appendix-B-12.2" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="appendix-B-12.3">Update the timing when the server's auto copy should be enforced
+          if a resolve-system parameter is used<a href="#appendix-B-12.3" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="appendix-B-12.4">Editorial changes<a href="#appendix-B-12.4" class="pilcrow">¶</a>
+</li>
+      </ul>
+</section>
+<div id="Acknowledgements">
+<section id="appendix-C">
+      <h2 id="name-acknowledgements">
+<a href="#name-acknowledgements" class="section-name selfRef">Acknowledgements</a>
+      </h2>
+<p id="appendix-C-1">The authors would like to thank for following for discussions and
+      providing input to this document: Balazs Lengyel, Robert Wilton, Juergen
+      Schoenwaelder, Andy Bierman, Martin Bjorklund, Mohamed Boucadair,
+      Alexander Clemm, and Timothy Carey.<a href="#appendix-C-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<section id="appendix-D">
+      <h2 id="name-contributors">
+<a href="#name-contributors" class="section-name selfRef">Contributors</a>
+      </h2>
+<div class="alignLeft art-text artwork" id="appendix-D-1">
+<pre>
+Kent Watsen
+Watsen Networks
+Email: kent+ietf@watsen.net
+
+Jan Lindblad
+Cisco Systems
+Email: jlindbla@cisco.com
+
+Chongfeng Xie
+China Telecom
+Beijing
+China
+Email: xiechf@chinatelecom.cn
+
+Jason Sterne
+Nokia
+Email: jason.sterne@nokia.com</pre><a href="#appendix-D-1" class="pilcrow">¶</a>
+</div>
+</section>
+<div id="authors-addresses">
+<section id="appendix-E">
+      <h2 id="name-authors-addresses">
+<a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
+      </h2>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Qiufang Ma (<span class="role">editor</span>)</span></div>
+<div dir="auto" class="left"><span class="org">Huawei</span></div>
+<div dir="auto" class="left"><span class="street-address">101 Software Avenue, Yuhua District</span></div>
+<div dir="auto" class="left"><span class="locality">Nanjing</span></div>
+<div dir="auto" class="left">
+<span class="region">Jiangsu</span>, <span class="postal-code">210012</span>
+</div>
+<div dir="auto" class="left"><span class="country-name">China</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:maqiufang1@huawei.com" class="email">maqiufang1@huawei.com</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Qin Wu</span></div>
+<div dir="auto" class="left"><span class="org">Huawei</span></div>
+<div dir="auto" class="left"><span class="street-address">101 Software Avenue, Yuhua District</span></div>
+<div dir="auto" class="left"><span class="locality">Nanjing</span></div>
+<div dir="auto" class="left">
+<span class="region">Jiangsu</span>, <span class="postal-code">210012</span>
+</div>
+<div dir="auto" class="left"><span class="country-name">China</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:bill.wu@huawei.com" class="email">bill.wu@huawei.com</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Chong Feng</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:fengchongllly@gmail.com" class="email">fengchongllly@gmail.com</a>
+</div>
+</address>
+</section>
+</div>
+<script>const toc = document.getElementById("toc");
+toc.querySelector("h2").addEventListener("click", e => {
+  toc.classList.toggle("active");
+});
+toc.querySelector("nav").addEventListener("click", e => {
+  toc.classList.remove("active");
+});
+</script>
+</body>
+</html>
