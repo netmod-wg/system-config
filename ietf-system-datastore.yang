@@ -10,7 +10,7 @@
     }
 
     organization
-      "IETF NETDOD (Network Modeling) Working Group";
+      "IETF NETMOD (Network Modeling) Working Group";
 
     contact
       "WG Web:   https://datatracker.ietf.org/wg/netmod/
