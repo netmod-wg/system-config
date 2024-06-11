@@ -1,17 +1,29 @@
 <applications xmlns="urn:example:application">  
   <application> 
     <name>ftp</name>  
+    <app-id>001</app-id>  
     <protocol>tcp</protocol>  
-    <destination-port>21</destination-port> 
+    <destination-port>21</destination-port>  
+    <security-protection> 
+      <risk-level>low</risk-level> 
+    </security-protection> 
   </application>  
   <application> 
     <name>tftp</name>  
+    <app-id>002</app-id>  
     <protocol>udp</protocol>  
-    <destination-port>69</destination-port> 
+    <destination-port>69</destination-port>  
+    <security-protection> 
+      <risk-level>low</risk-level> 
+    </security-protection> 
   </application>  
   <application> 
     <name>smtp</name>  
+    <app-id>003</app-id>  
     <protocol>tcp</protocol>  
-    <destination-port>25</destination-port> 
+    <destination-port>25</destination-port>  
+    <security-protection> 
+      <risk-level>low</risk-level> 
+    </security-protection> 
   </application> 
 </applications>

@@ -1,8 +1,11 @@
 <applications xmlns="urn:example:application">  
   <application> 
-    <name>ftp</name> 
+    <name>ftp</name>  
+    <protocol>tcp</protocol> 
   </application>  
   <application> 
-    <name>tftp</name> 
+    <name>tftp</name>  
+    <protocol>udp</protocol> 
   </application> 
 </applications>
+

@@ -3,7 +3,7 @@
             or:origin="or:intended">
   <interface>
     <name>lo0</name>
-    <mtu>65535</mtu>
+    <mtu>9216</mtu>
     <ip-address or:origin="or:system">127.0.0.1</ip-address>
     <ip-address or:origin="or:system">::1</ip-address>
   </interface>

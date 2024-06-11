@@ -2,7 +2,7 @@ module example-application {
   yang-version 1.1;
   namespace "urn:example:application";
   prefix "app";
-           
+
   import ietf-inet-types {
     prefix "inet";
   }
@@ -12,15 +12,33 @@ module example-application {
       leaf name {
         type string;
       }
+      leaf app-id {
+        type string;
+      }
       leaf protocol {
         type enumeration {
           enum tcp;
           enum udp;
         }
+        mandatory true;
       }
       leaf destination-port {
+        default "0";
         type inet:port-number;
+      }
+      leaf description {
+        type string;
+      }
+      container security-protection {
+        presence "Indicates that security protection is enabled.";
+        leaf risk-level {
+          type enumeration {
+            enum high;
+            enum low;
+          }
+        }
+        //additional leafs for security-specific configuration...
       }
     }
   }
-}  
+}
