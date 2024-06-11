@@ -1,27 +1,27 @@
-<rpc message-id="101"
-     xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
-  <edit-config>
-    <target>
-      <running/>
-    </target>
-    <config>
-      <acl xmlns="urn:example:acl">
-        <acl-rule>
-          <name>allow-access-to-ftp-tftp</name>
-          <matches>
-            <ipv4>
-              <src-address>198.51.100.0/24</src-address>
-              <dst-address>192.0.2.0/24</dst-address>
-            </ipv4>
-            <application>ftp</application>
-            <application>tftp</application>
-            <application>my-app-1</application>
-          </matches>
-          <packet-action>forward</packet-action>
-        </acl-rule>
-      </acl>
-    </config>
-    <resolve-system/>
-  </edit-config>
+<rpc  message-id="101"
+      xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" 
+      xmlns:ncrs="urn:ietf:params:xml:ns:yang:ietf-netconf-resolve-system">  
+  <edit-config> 
+    <target> 
+      <running/> 
+    </target>  
+    <config> 
+      <acl xmlns="urn:example:acl">  
+        <acl-rule> 
+          <name>allow-access-to-ftp-tftp</name>  
+          <matches> 
+            <ipv4> 
+              <src-address>198.51.100.0/24</src-address>  
+              <dst-address>192.0.2.0/24</dst-address> 
+            </ipv4>  
+            <application>ftp</application>  
+            <application>tftp</application>  
+            <application>my-app-1</application> 
+          </matches>  
+          <packet-action>forward</packet-action> 
+        </acl-rule> 
+      </acl> 
+    </config>  
+    <ncrs:resolve-system/> 
+  </edit-config> 
 </rpc>
-
