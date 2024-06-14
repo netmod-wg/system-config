@@ -577,7 +577,7 @@ Internet-Draft        System-defined Configuration             June 2024
    configuration.
 
    The "resolve-system" parameter is optional and has no value.  If it
-   is present, and the server supports this capability, similarly to
+   is present, and the server supports this capability, similar to
    Section 5.2, the server MUST copy the entire referenced system
    configuration, including all descendants into the target datastore
    (e.g., <candidate> and <running>) without the client doing the copy/

@@ -508,7 +508,7 @@ boxes denote named datastores</artwork>
         configuration.</t>
 
         <t>The "resolve-system" parameter is optional and has no value. If it
-        is present, and the server supports this capability, similarly to
+        is present, and the server supports this capability, similar to
         <xref target="declare"/>, the server MUST copy the entire referenced
         system configuration, including all descendants into the target
         datastore (e.g., &lt;candidate&gt; and &lt;running&gt;) without the
