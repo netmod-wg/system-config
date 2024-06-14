@@ -1,35 +1,45 @@
 module example-interface-management {
   yang-version 1.1;
   namespace "urn:example:interfacemgmt";
-  prefix "inm";
-  
+  prefix exifm;
+
   import ietf-inet-types {
-    prefix "inet";
+    prefix inet;
   }
-  
+
   container interfaces {
     list interface {
-      key name;
+      key "name";
       leaf name {
         type string;
+      }
+      leaf type {
+        type enumeration {
+          enum ethernet;
+          enum atm;
+          enum loopback;
+        }
+      }
+      leaf enabled {
+        type boolean;
+        default "false";
+      }
+      leaf mtu {
+        type uint32;
+      }
+      leaf-list ip-address {
+        type inet:ip-address;
+      }
+      leaf speed {
+        when "../type = 'ethernet'";
+        type enumeration {
+          enum 10Mb;
+          enum 100Mb;
+        }
       }
       leaf description {
         type string;
       }
-      leaf mtu {
-        type uint16;
-      }
-      leaf ip-address {
-        type inet:ip-address;
-      }
-    }
-  }
-  container default-address {
-    leaf ifname {
-      type leafref {
-        path "../../interfaces/interface/name";
-      }
     }
   }
 }
-

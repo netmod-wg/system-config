@@ -20,19 +20,28 @@
   </application>  
   <application> 
     <name>ftp</name>  
-    <app-id or:origin="or:system">001</app-id>  
+    <app-id>001</app-id>  
     <protocol>tcp</protocol>  
-    <destination-port or:origin="or:system">21</destination-port>  
-    <security-protection or:origin="or:system"> 
+    <destination-port>21</destination-port>  
+    <security-protection> 
       <risk-level>low</risk-level> 
     </security-protection> 
   </application>  
   <application> 
     <name>tftp</name>  
-    <app-id or:origin="or:system">002</app-id>  
+    <app-id>002</app-id>  
     <protocol>udp</protocol>  
-    <destination-port or:origin="or:system">69</destination-port>  
-    <security-protection or:origin="or:system"> 
+    <destination-port>69</destination-port>  
+    <security-protection> 
+      <risk-level>low</risk-level> 
+    </security-protection> 
+  </application>  
+  <application or:origin="or:system"> 
+    <name>smtp</name>  
+    <app-id>003</app-id>  
+    <protocol>tcp</protocol>  
+    <destination-port>25</destination-port>  
+    <security-protection> 
       <risk-level>low</risk-level> 
     </security-protection> 
   </application> 

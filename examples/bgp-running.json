@@ -1,0 +1,11 @@
+{
+    "exbgp:bgp": {
+        "local-as": 64501,
+        "peer-as": 64502,
+        "peer": {
+            "ip-address": "2001:db8::2:3",
+            "local-as": 64501,
+            "peer-as": 64502
+        }
+    }
+}

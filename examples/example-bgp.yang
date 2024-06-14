@@ -1,0 +1,49 @@
+module example-bgp {
+  yang-version 1.1;
+  namespace "urn:example:bgp";
+  prefix exbgp;
+
+  import ietf-inet-types {
+    prefix inet;
+  }
+
+  container bgp {
+    leaf local-as {
+      type uint32;
+    }
+    leaf peer-as {
+      type uint32;
+    }
+    list peer {
+      key "name";
+      leaf name {
+        type inet:ip-address;
+      }
+      leaf local-as {
+        type uint32;
+        description
+          "... Defaults to ../local-as.";
+      }
+      leaf peer-as {
+        type uint32;
+        description
+          "... Defaults to ../peer-as.";
+      }
+      leaf local-port {
+        type inet:port-number;
+      }
+      leaf remote-port {
+        type inet:port-number;
+        default "179";
+      }
+      leaf state {
+        config false;
+        type enumeration {
+          enum init;
+          enum established;
+          enum closing;
+        }
+      }
+    }
+  }
+}

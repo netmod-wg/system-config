@@ -6,7 +6,7 @@ NETMOD                                                        Q. Ma, Ed.
 Internet-Draft                                                     Q. Wu
 Updates: 8342, 6241, 8526, 8040 (if approved)                     Huawei
 Intended status: Standards Track                                 C. Feng
-Expires: 13 December 2024                                   11 June 2024
+Expires: 16 December 2024                                   14 June 2024
 
 
                       System-defined Configuration
@@ -40,7 +40,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 13 December 2024.
+   This Internet-Draft will expire on 16 December 2024.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Ma, et al.              Expires 13 December 2024                [Page 1]
+Ma, et al.              Expires 16 December 2024                [Page 1]
 
 Internet-Draft        System-defined Configuration             June 2024
 
@@ -84,53 +84,55 @@ Table of Contents
      5.1.  Conceptual Model of Datastores  . . . . . . . . . . . . .   8
        5.1.1.  Origin Metadata Annotation  . . . . . . . . . . . . .  10
      5.2.  Explicit Declaration of System Configuration  . . . . . .  10
-     5.3.  Servers Auto-configuring Referenced System Configuration
+     5.3.  Servers Auto-configuring System Configuration
            ("resolve-system" parameter)  . . . . . . . . . . . . . .  11
        5.3.1.  NETCONF Support for "resolve-system" Parameter  . . .  12
        5.3.2.  RESTCONF Support for "resolve-system" Parameter . . .  12
-         5.3.2.1.  Query Parameter . . . . . . . . . . . . . . . . .  13
+         5.3.2.1.  Query Parameter . . . . . . . . . . . . . . . . .  12
          5.3.2.2.  Query Parameter URI . . . . . . . . . . . . . . .  13
      5.4.  Modifying (Overriding) System Configuration . . . . . . .  13
-     5.5.  Examples  . . . . . . . . . . . . . . . . . . . . . . . .  14
+     5.5.  Examples  . . . . . . . . . . . . . . . . . . . . . . . .  13
        5.5.1.  Declaring a System-defined Node in <running>
-               Explicitly  . . . . . . . . . . . . . . . . . . . . .  14
-       5.5.2.  Server Configuring of <running> Automatically . . . .  20
-       5.5.3.  Modifying a System-instantiated Leaf's Value  . . . .  24
+               Explicitly  . . . . . . . . . . . . . . . . . . . . .  13
+       5.5.2.  Server Configuring of <running> Automatically . . . .  19
+       5.5.3.  Modifying a System-instantiated Leaf's Value  . . . .  21
        5.5.4.  Configuring Descendant Nodes of a System-defined
-               Node  . . . . . . . . . . . . . . . . . . . . . . . .  25
-   6.  Default Interactions  . . . . . . . . . . . . . . . . . . . .  26
-   7.  Relation to Other Datastores  . . . . . . . . . . . . . . . .  26
-     7.1.  The "factory-default" Datastore . . . . . . . . . . . . .  26
-     7.2.  The "candidate" Datastore . . . . . . . . . . . . . . . .  27
-   8.  The "ietf-system-datastore" Module  . . . . . . . . . . . . .  27
-     8.1.  Data Model Overview . . . . . . . . . . . . . . . . . . .  27
-     8.2.  YANG Module . . . . . . . . . . . . . . . . . . . . . . .  28
-   9.  The "ietf-netconf-resolve-system" Module  . . . . . . . . . .  29
+               Node  . . . . . . . . . . . . . . . . . . . . . . . .  23
+   6.  Default Interactions  . . . . . . . . . . . . . . . . . . . .  24
+   7.  Relation to Other Datastores  . . . . . . . . . . . . . . . .  24
+     7.1.  The "factory-default" Datastore . . . . . . . . . . . . .  24
+     7.2.  The "candidate" Datastore . . . . . . . . . . . . . . . .  24
+   8.  The "ietf-system-datastore" Module  . . . . . . . . . . . . .  25
+     8.1.  Data Model Overview . . . . . . . . . . . . . . . . . . .  25
+     8.2.  Example Usage . . . . . . . . . . . . . . . . . . . . . .  25
+     8.3.  YANG Module . . . . . . . . . . . . . . . . . . . . . . .  28
 
 
 
-Ma, et al.              Expires 13 December 2024                [Page 2]
+Ma, et al.              Expires 16 December 2024                [Page 2]
 
 Internet-Draft        System-defined Configuration             June 2024
 
 
+   9.  The "ietf-netconf-resolve-system" Module  . . . . . . . . . .  29
      9.1.  Data Model Overview . . . . . . . . . . . . . . . . . . .  29
-     9.2.  YANG Module . . . . . . . . . . . . . . . . . . . . . . .  30
+     9.2.  Example Usage . . . . . . . . . . . . . . . . . . . . . .  30
+     9.3.  YANG Module . . . . . . . . . . . . . . . . . . . . . . .  30
    10. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  32
      10.1.  The "IETF XML" Registry  . . . . . . . . . . . . . . . .  32
-     10.2.  The "YANG Module Names" Registry . . . . . . . . . . . .  33
+     10.2.  The "YANG Module Names" Registry . . . . . . . . . . . .  32
      10.3.  NETCONF Capability URN Registry  . . . . . . . . . . . .  33
      10.4.  RESTCONF Capability URN Registry . . . . . . . . . . . .  33
    11. Security Considerations . . . . . . . . . . . . . . . . . . .  33
      11.1.  Considerations for the "ietf-system-datastore" YANG
-            Module . . . . . . . . . . . . . . . . . . . . . . . . .  34
+            Module . . . . . . . . . . . . . . . . . . . . . . . . .  33
      11.2.  Considerations for the "ietf-netconf-resolve-system" YANG
             Module . . . . . . . . . . . . . . . . . . . . . . . . .  34
    12. References  . . . . . . . . . . . . . . . . . . . . . . . . .  34
      12.1.  Normative References . . . . . . . . . . . . . . . . . .  34
      12.2.  Informative References . . . . . . . . . . . . . . . . .  35
    Appendix A.  Key Use Cases  . . . . . . . . . . . . . . . . . . .  37
-     A.1.  Device Powers On  . . . . . . . . . . . . . . . . . . . .  38
+     A.1.  Device Powers On  . . . . . . . . . . . . . . . . . . . .  39
      A.2.  Client Commits Configuration  . . . . . . . . . . . . . .  39
      A.3.  Operator Installs Card into a Chassis . . . . . . . . . .  41
      A.4.  Client further Commits Configuration  . . . . . . . . . .  42
@@ -159,17 +161,18 @@ Internet-Draft        System-defined Configuration             June 2024
    datastore to a valid state and satisfy referential integrity
    constraints.
 
-   Some servers allow the descendant nodes of system-defined
-   configuration to be configured or modified.  For example, the system
-   configuration may contain an almost empty physical interface, while
 
 
 
-Ma, et al.              Expires 13 December 2024                [Page 3]
+
+Ma, et al.              Expires 16 December 2024                [Page 3]
 
 Internet-Draft        System-defined Configuration             June 2024
 
 
+   Some servers allow the descendant nodes of system-defined
+   configuration to be configured or modified.  For example, the system
+   configuration may contain an almost empty physical interface, while
    the client needs to be able to add, modify, or remove a number of
    descendant nodes.  Some descendant nodes may not be modifiable (e.g.,
    the interface "type" set by the system).
@@ -194,12 +197,13 @@ Internet-Draft        System-defined Configuration             June 2024
 
    *  It is used as an "instance-identifier" type value.
 
-   *  It is present in an XPath expression of "when" or "must"
-      constraints.
+   *  It is present in an XPath expression of "when" constraints.
+
+   *  It is present in an XPath expression of "must" constraints.
 
    *  It is defined to satisfy the "mandatory true" constraints.
 
-   *  It is defined to exactly satisfy the "min-elements" constraints.
+   *  It is defined to satisfy the "min-elements" constraints.
 
    Conformance to this document requires the NMDA servers to implement
    the "ietf-system-datastore" YANG module (Section 8).
@@ -217,11 +221,7 @@ Internet-Draft        System-defined Configuration             June 2024
 
 
 
-
-
-
-
-Ma, et al.              Expires 13 December 2024                [Page 4]
+Ma, et al.              Expires 16 December 2024                [Page 4]
 
 Internet-Draft        System-defined Configuration             June 2024
 
@@ -277,7 +277,7 @@ Internet-Draft        System-defined Configuration             June 2024
 
 
 
-Ma, et al.              Expires 13 December 2024                [Page 5]
+Ma, et al.              Expires 16 December 2024                [Page 5]
 
 Internet-Draft        System-defined Configuration             June 2024
 
@@ -333,7 +333,7 @@ Internet-Draft        System-defined Configuration             June 2024
 
 
 
-Ma, et al.              Expires 13 December 2024                [Page 6]
+Ma, et al.              Expires 16 December 2024                [Page 6]
 
 Internet-Draft        System-defined Configuration             June 2024
 
@@ -389,7 +389,7 @@ Internet-Draft        System-defined Configuration             June 2024
 
 
 
-Ma, et al.              Expires 13 December 2024                [Page 7]
+Ma, et al.              Expires 16 December 2024                [Page 7]
 
 Internet-Draft        System-defined Configuration             June 2024
 
@@ -445,7 +445,7 @@ Internet-Draft        System-defined Configuration             June 2024
 
 
 
-Ma, et al.              Expires 13 December 2024                [Page 8]
+Ma, et al.              Expires 16 December 2024                [Page 8]
 
 Internet-Draft        System-defined Configuration             June 2024
 
@@ -501,7 +501,7 @@ Internet-Draft        System-defined Configuration             June 2024
 
 
 
-Ma, et al.              Expires 13 December 2024                [Page 9]
+Ma, et al.              Expires 16 December 2024                [Page 9]
 
 Internet-Draft        System-defined Configuration             June 2024
 
@@ -540,41 +540,35 @@ Internet-Draft        System-defined Configuration             June 2024
    The explicit declaration of system-defined nodes that are referenced
    elsewhere can be useful, for example, when the client does not
    support the "resolve-system" parameter (Section 5.3) but needs the
-   datastore to be referentially complete.  Clients needs to declare
-   system configuration which does not exist in the target datastore in
-   the following cases:
+   datastore to be referentially complete.  Clients MUST declare the
+   system configuration that are required to make the datastore appear
+   valid, which may include:
 
-   *  A system-provided leaf or leaf-list instance is referred to by the
-      "leafref" type and the "require-instance" property is "true".
+   *  any targets of leafrefs with "require-instance true".
 
-   *  A system-provided instance node is identified by the "instance-
-      identifier" type and the "require-instance" property is "true".
+   *  any targets of instance-identifiers with "require-instance true".
 
-   *  A system-provided instance node is referenced in the XPath
-      expression of the "when" or "must" statement.
+   *  any nodes referenced by any "when" expressions.
+
+   *  any nodes referenced by any "must" expressions.
+
+   *  any nodes needed to satisfy the "min-elements" statement with a
+      value greater than zero.
 
 
 
-
-
-Ma, et al.              Expires 13 December 2024               [Page 10]
+Ma, et al.              Expires 16 December 2024               [Page 10]
 
 Internet-Draft        System-defined Configuration             June 2024
 
 
-   *  A system-provided leaf instance with a "mandatory" statement with
-      the value "true".
+   When declaring a node having descendants, clients MUST also declare
+   all descendant nodes, including any leafs, leaf-lists, lists,
+   presence containers, non-presence containers that have any child
+   nodes.
 
-   *  System-provided list or leaf-list entries satisfy the "min-
-      elements" statement with a value greater than zero.
-
-   Clients MUST declare the system configuration that are required to
-   make the datastore appear valid, e.g., the list entry with at least
-   the key.  Clients MAY declare all the contents of the list entry
-   (i.e., all descendant nodes), though this is not necessarily needed.
-
-5.3.  Servers Auto-configuring Referenced System Configuration
-      ("resolve-system" parameter)
+5.3.  Servers Auto-configuring System Configuration ("resolve-system"
+      parameter)
 
    This document defines a new parameter "resolve-system" to the input
    for some of the NETCONF and RESTCONF operations.  Clients that are
@@ -584,55 +578,45 @@ Internet-Draft        System-defined Configuration             June 2024
 
    The "resolve-system" parameter is optional and has no value.  If it
    is present, and the server supports this capability, the server MUST
-   copy referenced system nodes into the target datastore (e.g.,
-   <candidate> and <running>) where it is missing from without the
-   client doing the copy/paste explicitly, to resolve any references not
-   resolved by the client.  Servers MUST copy referenced system
-   configuration which does not exist in the datastore in the following
-   cases:
+   copy the system configuration that are required to make the datastore
+   appear valid, which may include:
 
-   *  A system-provided leaf or leaf-list instance is referred to by the
-      "leafref" type and the "require-instance" property is "true".
+   *  any targets of leafrefs with "require-instance true".
 
-   *  A system-provided instance node is identified by the "instance-
-      identifier" type and the "require-instance" property is "true".
+   *  any targets of instance-identifiers with "require-instance true".
 
-   *  A system-provided instance node is referenced in the XPath
-      expression of the "when" or "must" statement.
+   *  any nodes referenced by any "when" expressions.
 
-   *  A system-provided leaf instance with a "mandatory" statement with
-      the value "true".
+   *  any nodes referenced by any "must" expressions.
 
-   *  System-provided list or leaf-list entries satisfy the "min-
-      elements" statement with a value greater than zero.
+   *  any nodes needed to satisfy the "min-elements" statement with a
+      value greater than zero.
 
-   If any child node of the copied configuration has its value being set
-   by the system that is not the schema default value, it MUST also be
-   copied into the target datastore (Section 6).  If any child node of
-   the copied configuration is a presence container being defined only
-
-
-
-Ma, et al.              Expires 13 December 2024               [Page 11]
-
-Internet-Draft        System-defined Configuration             June 2024
-
-
-   in <system>, the presence container with its all decedents MUST also
-   be copied into the target datastore.  The copy operation MUST NOT
-   overwrite any explicit configuration in <running>.  When a particular
-   node instance (e.g., a list entry) needs to be copied to satisfy
-   referential integrity constraints, servers not implementing NMDA
-   [RFC8342] MUST also copy an entire node including all descendants.
-   The server copies the referenced system-defined nodes only when
-   triggered by the "resolve-system" parameter.  Legacy clients don't
-   see any changes in the server behaviors.
+   When copying a node having descendants, the server MUST copy all
+   descendant nodes, including any leafs, leaf-lists, lists, presence
+   containers, non-presence containers that have any child nodes.  The
+   copy operation MUST NOT override any explicit configuration in the
+   target datastore.  The server copies the referenced system-defined
+   nodes only when triggered by the "resolve-system" parameter.  Legacy
+   clients don't see any changes in the server behaviors.
 
    There is no distinction between the configuration automatically
    configured by the server and the one explicitly declared by the
    client, e.g., a read back of the datastore (e.g., NETCONF <get>/<get-
    config>/<get-data> operation, or RESTCONF GET method) returns
    automatically configured nodes.
+
+
+
+
+
+
+
+
+Ma, et al.              Expires 16 December 2024               [Page 11]
+
+Internet-Draft        System-defined Configuration             June 2024
+
 
    Note that even though an auto-configured node is allowed to be
    deleted from the target datastore by the client, the system may
@@ -663,17 +647,6 @@ Internet-Draft        System-defined Configuration             June 2024
 
 5.3.2.  RESTCONF Support for "resolve-system" Parameter
 
-
-
-
-
-
-
-Ma, et al.              Expires 13 December 2024               [Page 12]
-
-Internet-Draft        System-defined Configuration             June 2024
-
-
 5.3.2.1.  Query Parameter
 
    The "resolve-system" parameter may be present in the request URI of
@@ -681,19 +654,25 @@ Internet-Draft        System-defined Configuration             June 2024
    only allowed with no values carried.  If this parameter has any
    unexpected value, then a "400 Bad Request" status-line is returned.
 
-  +----------------+---------+-----------------------------------------+
-  | Name           | Methods | Description                             |
-  +----------------+---------+-----------------------------------------+
-  |resolve-system  | POST,   | resolve any references not resolved by  |
-  |                | PUT     | the client and copy referenced          |
-  |                | PATCH   | system configuration into the target    |
-  |                |         | datastore where it is missing from      |
-  |                |         | without the client doing the copy/paste |
-  |                |         | explicitly. This parameter can be given |
-  |                |         | in any order.                           |
-  +----------------+---------+-----------------------------------------+
+   +----------------+---------+----------------------------------------+
+   | Name           | Methods | Description                            |
+   +----------------+---------+----------------------------------------+
+   |resolve-system  | POST,   | Request the server to copy any system  |
+   |                | PUT     | configuration that are required to make|
+   |                | PATCH   | the datastore valid, as well as any    |
+   |                |         | descendant nodes of the copied system  |
+   |                |         | configuration. This parameter can be   |
+   |                |         | given in any order.                    |
+   +----------------+---------+----------------------------------------+
 
-           Figure 2: RESTCONF "resolve-system" Query Parameter
+            Figure 2: RESTCONF "resolve-system" Query Parameter
+
+
+
+Ma, et al.              Expires 16 December 2024               [Page 12]
+
+Internet-Draft        System-defined Configuration             June 2024
+
 
 5.3.2.2.  Query Parameter URI
 
@@ -721,15 +700,6 @@ Internet-Draft        System-defined Configuration             June 2024
    target datastore.  The immutability of system configuration is
    defined in [I-D.ietf-netmod-immutable-flag].
 
-
-
-
-
-Ma, et al.              Expires 13 December 2024               [Page 13]
-
-Internet-Draft        System-defined Configuration             June 2024
-
-
 5.5.  Examples
 
    This section presents some sample data models and corresponding
@@ -755,33 +725,7 @@ Internet-Draft        System-defined Configuration             June 2024
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Ma, et al.              Expires 13 December 2024               [Page 14]
+Ma, et al.              Expires 16 December 2024               [Page 13]
 
 Internet-Draft        System-defined Configuration             June 2024
 
@@ -837,7 +781,7 @@ Internet-Draft        System-defined Configuration             June 2024
 
 
 
-Ma, et al.              Expires 13 December 2024               [Page 15]
+Ma, et al.              Expires 16 December 2024               [Page 14]
 
 Internet-Draft        System-defined Configuration             June 2024
 
@@ -875,7 +819,7 @@ Internet-Draft        System-defined Configuration             June 2024
            choice applications {
              leaf-list application {
                type leafref {
-               path "/app:applications/app:application/app:name";
+                 path "/app:applications/app:application/app:name";
                }
              }
            }
@@ -893,7 +837,7 @@ Internet-Draft        System-defined Configuration             June 2024
 
 
 
-Ma, et al.              Expires 13 December 2024               [Page 16]
+Ma, et al.              Expires 16 December 2024               [Page 15]
 
 Internet-Draft        System-defined Configuration             June 2024
 
@@ -949,7 +893,7 @@ Internet-Draft        System-defined Configuration             June 2024
 
 
 
-Ma, et al.              Expires 13 December 2024               [Page 17]
+Ma, et al.              Expires 16 December 2024               [Page 16]
 
 Internet-Draft        System-defined Configuration             June 2024
 
@@ -977,38 +921,41 @@ Internet-Draft        System-defined Configuration             June 2024
    If a client configures an ACL rule referencing system-provided
    applications which are not present in <running>, it is possible for
    the client to explicitly declare the referenced system configuration.
-   For instance, the client MAY explicitly configure the following
-   system-defined applications "ftp" and "tftp" only with the list key
-   "name" and mandatory "protocol":
+   For instance, the client explicitly configuring the entire
+   application entries named "ftp" and "tftp" are as follows:
 
    <applications xmlns="urn:example:application">
      <application>
        <name>ftp</name>
+       <app-id>001</app-id>
        <protocol>tcp</protocol>
+       <destination-port>21</destination-port>
+       <security-protection>
+         <risk-level>low</risk-level>
+       </security-protection>
      </application>
      <application>
        <name>tftp</name>
+       <app-id>002</app-id>
        <protocol>udp</protocol>
+       <destination-port>69</destination-port>
+       <security-protection>
+         <risk-level>low</risk-level>
+       </security-protection>
      </application>
    </applications>
 
 
-   And the configuration of ACL rules referencing application "ftp" and
-   "tftp":
 
 
 
-
-
-
-
-
-
-
-Ma, et al.              Expires 13 December 2024               [Page 18]
+Ma, et al.              Expires 16 December 2024               [Page 17]
 
 Internet-Draft        System-defined Configuration             June 2024
 
+
+   And the configuration of ACL rules referencing application "ftp" and
+   "tftp":
 
    <acl xmlns="urn:example:acl">
      <acl-rule>
@@ -1026,45 +973,7 @@ Internet-Draft        System-defined Configuration             June 2024
      </acl-rule>
    </acl>
 
-   The configuration of applications will appear in <operational> as
-   follows:
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Ma, et al.              Expires 13 December 2024               [Page 19]
-
-Internet-Draft        System-defined Configuration             June 2024
-
+   And <operational> might contain the following:
 
    <applications xmlns="urn:example:application"
                  xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
@@ -1088,19 +997,36 @@ Internet-Draft        System-defined Configuration             June 2024
      </application>
      <application>
        <name>ftp</name>
-       <app-id or:origin="or:system">001</app-id>
+       <app-id>001</app-id>
        <protocol>tcp</protocol>
-       <destination-port or:origin="or:system">21</destination-port>
-       <security-protection or:origin="or:system">
+       <destination-port>21</destination-port>
+       <security-protection>
          <risk-level>low</risk-level>
+
+
+
+Ma, et al.              Expires 16 December 2024               [Page 18]
+
+Internet-Draft        System-defined Configuration             June 2024
+
+
        </security-protection>
      </application>
      <application>
        <name>tftp</name>
-       <app-id or:origin="or:system">002</app-id>
+       <app-id>002</app-id>
        <protocol>udp</protocol>
-       <destination-port or:origin="or:system">69</destination-port>
-       <security-protection or:origin="or:system">
+       <destination-port>69</destination-port>
+       <security-protection>
+         <risk-level>low</risk-level>
+       </security-protection>
+     </application>
+     <application or:origin="or:system">
+       <name>smtp</name>
+       <app-id>003</app-id>
+       <protocol>tcp</protocol>
+       <destination-port>25</destination-port>
+       <security-protection>
          <risk-level>low</risk-level>
        </security-protection>
      </application>
@@ -1117,7 +1043,25 @@ Internet-Draft        System-defined Configuration             June 2024
 
 
 
-Ma, et al.              Expires 13 December 2024               [Page 20]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Ma, et al.              Expires 16 December 2024               [Page 19]
 
 Internet-Draft        System-defined Configuration             June 2024
 
@@ -1153,8 +1097,10 @@ Internet-Draft        System-defined Configuration             June 2024
      </edit-config>
    </rpc>
 
-   The following shows the configuration of applications in <running>
-   which is returned in the response to a follow-up retrieval operation:
+   The server receiving the "resolve-system" parameter copies the entire
+   application list entries named "ftp" and "tftp" per Section 5.3.  The
+   following shows the configuration of applications in <running> which
+   is returned in the response to a follow-up retrieval operation:
 
 
 
@@ -1171,9 +1117,7 @@ Internet-Draft        System-defined Configuration             June 2024
 
 
 
-
-
-Ma, et al.              Expires 13 December 2024               [Page 21]
+Ma, et al.              Expires 16 December 2024               [Page 20]
 
 Internet-Draft        System-defined Configuration             June 2024
 
@@ -1216,83 +1160,23 @@ Internet-Draft        System-defined Configuration             June 2024
      </application>
    </applications>
 
-   And <operational> might contain the following:
-
-
-
-
-
-
-
-
-
-
-
-
-Ma, et al.              Expires 13 December 2024               [Page 22]
-
-Internet-Draft        System-defined Configuration             June 2024
-
-
-   <applications xmlns="urn:example:application"
-                 xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
-                 or:origin="or:intended">
-     <application>
-       <name>my-app-1</name>
-       <app-id>101</app-id>
-       <protocol>tcp</protocol>
-       <destination-port>2345</destination-port>
-       <description>customized application</description>
-       <security-protection>
-         <risk-level>high</risk-level>
-       </security-protection>
-     </application>
-     <application>
-       <name>my-app-2</name>
-       <app-id>102</app-id>
-       <protocol>udp</protocol>
-       <destination-port>69</destination-port>
-       <description>customized application</description>
-     </application>
-     <application>
-       <name>ftp</name>
-       <app-id>001</app-id>
-       <protocol>tcp</protocol>
-       <destination-port>21</destination-port>
-       <security-protection>
-         <risk-level>low</risk-level>
-       </security-protection>
-     </application>
-     <application>
-       <name>tftp</name>
-       <app-id>002</app-id>
-       <protocol>udp</protocol>
-       <destination-port>69</destination-port>
-       <security-protection>
-         <risk-level>low</risk-level>
-       </security-protection>
-     </application>
-   </applications>
-
-
-   Since the configuration of application "smtp" is not referenced by
-   the client, some implementation may consider it not to be "in use",
-   hence it is likely to be omitted from <operational> but only present
-   in <system>.
-
-
-
-
-
-
-Ma, et al.              Expires 13 December 2024               [Page 23]
-
-Internet-Draft        System-defined Configuration             June 2024
-
+   Once the data is written into <running>, it makes no difference
+   whether it is explicitly declared by the client or automatically
+   copied by the server.  The configuration for applications in
+   <running> and <operational> would be identical to the ones in
+   Section 5.5.1.
 
 5.5.3.  Modifying a System-instantiated Leaf's Value
 
    This subsection uses the following fictional interface YANG module:
+
+
+
+
+Ma, et al.              Expires 16 December 2024               [Page 21]
+
+Internet-Draft        System-defined Configuration             June 2024
+
 
    module example-interface {
      yang-version 1.1;
@@ -1337,17 +1221,18 @@ Internet-Draft        System-defined Configuration             June 2024
      </interface>
    </interfaces>
 
+   A client modifies the value of MTU to 9216 and adds the following
+   configuration into <running> using a "merge" operation:
 
 
 
 
-Ma, et al.              Expires 13 December 2024               [Page 24]
+
+
+Ma, et al.              Expires 16 December 2024               [Page 22]
 
 Internet-Draft        System-defined Configuration             June 2024
 
-
-   A client modifies the value of MTU to 9216 and adds the following
-   configuration into <running> using a "merge" operation:
 
    <interfaces xmlns="urn:example:interface">
      <interface>
@@ -1386,22 +1271,6 @@ Internet-Draft        System-defined Configuration             June 2024
    The configuration of interface "lo0" is present in <operational> as
    follows:
 
-
-
-
-
-
-
-
-
-
-
-
-Ma, et al.              Expires 13 December 2024               [Page 25]
-
-Internet-Draft        System-defined Configuration             June 2024
-
-
    <interfaces xmlns="urn:example:interface"
                xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
                or:origin="or:intended">
@@ -1413,6 +1282,13 @@ Internet-Draft        System-defined Configuration             June 2024
        <ip-address or:origin="or:system">::1</ip-address>
      </interface>
    </interfaces>
+
+
+
+Ma, et al.              Expires 16 December 2024               [Page 23]
+
+Internet-Draft        System-defined Configuration             June 2024
+
 
 6.  Default Interactions
 
@@ -1444,20 +1320,6 @@ Internet-Draft        System-defined Configuration             June 2024
    The <factory-reset> RPC operation can reset <system> to its factory
    default contents.
 
-
-
-
-
-
-
-
-
-
-Ma, et al.              Expires 13 December 2024               [Page 26]
-
-Internet-Draft        System-defined Configuration             June 2024
-
-
 7.2.  The "candidate" Datastore
 
    If the device supports the :candidate or :private-candidate
@@ -1474,6 +1336,15 @@ Internet-Draft        System-defined Configuration             June 2024
    *  The client issues a <validate> operation.
 
    *  The client issues a <commit> operation.
+
+
+
+
+
+Ma, et al.              Expires 16 December 2024               [Page 24]
+
+Internet-Draft        System-defined Configuration             June 2024
+
 
    In particular, [I-D.ietf-netconf-privcand] defines the concept of
    conflict, the server's copy referenced system nodes triggered by
@@ -1500,20 +1371,6 @@ Internet-Draft        System-defined Configuration             June 2024
    "identity" statements defined in the "ietf-system-datastore" and
    "ietf-datastores" YANG modules:
 
-
-
-
-
-
-
-
-
-
-Ma, et al.              Expires 13 December 2024               [Page 27]
-
-Internet-Draft        System-defined Configuration             June 2024
-
-
    Identities:
        +--- datastore
        |  +--- conventional
@@ -1528,9 +1385,150 @@ Internet-Draft        System-defined Configuration             June 2024
    The diagram above uses syntax that is similar to but not defined in
    [RFC8340].
 
-8.2.  YANG Module
+8.2.  Example Usage
 
-   <CODE BEGINS> file "ietf-system-datastore@2024-06-11.yang"
+   This section gives an example of data retrieval from <system>.  The
+   fictional YANG module is used as follows:
+
+
+
+
+
+
+
+
+Ma, et al.              Expires 16 December 2024               [Page 25]
+
+Internet-Draft        System-defined Configuration             June 2024
+
+
+   module example-bgp {
+     yang-version 1.1;
+     namespace "urn:example:bgp";
+     prefix exbgp;
+
+     import ietf-inet-types {
+       prefix inet;
+     }
+
+     container bgp {
+       leaf local-as {
+         type uint32;
+       }
+       leaf peer-as {
+         type uint32;
+       }
+       list peer {
+         key "name";
+         leaf name {
+           type inet:ip-address;
+         }
+         leaf local-as {
+           type uint32;
+           description
+             "... Defaults to ../local-as.";
+         }
+         leaf peer-as {
+           type uint32;
+           description
+             "... Defaults to ../peer-as.";
+         }
+         leaf local-port {
+           type inet:port-number;
+         }
+         leaf remote-port {
+           type inet:port-number;
+           default "179";
+         }
+         leaf state {
+           config false;
+           type enumeration {
+             enum init;
+             enum established;
+             enum closing;
+           }
+         }
+       }
+     }
+
+
+
+Ma, et al.              Expires 16 December 2024               [Page 26]
+
+Internet-Draft        System-defined Configuration             June 2024
+
+
+   }
+
+   Suppose the following BGP peer configuration is added to <running> (
+   The message is presented in a protocol-independent manner.  JSON is
+   used to not imply a preferred encoding in this document):
+
+   {
+       "exbgp:bgp": {
+           "local-as": 64501,
+           "peer-as": 64502,
+           "peer": {
+               "ip-address": "2001:db8::2:3",
+               "local-as": 64501,
+               "peer-as": 64502
+           }
+       }
+   }
+
+   Since both the "local-port" and "remote-port" nodes are not provided
+   in <running>, and there is a default value specified for "remote-
+   port", the system will select a value for "local-port".  Note that
+   per Section 6, the configuration using the schema default value
+   described in the "description" statement will not be included in
+   <system>.
+
+   The following example shows the <get-data> RPC towards <system>:
+
+   <rpc  message-id="101"
+         xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+     <get-data xmlns="urn:ietf:params:xml:ns:yang:ietf-netconf-nmda"
+               xmlns:ds="urn:ietf:params:xml:ns:yang:ietf-datastores">
+       <datastore>ds:system</datastore>
+       <subtree-filter>
+         <bgp xmlns="urn:example:bgp"/>
+       </subtree-filter>
+     </get-data>
+   </rpc>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Ma, et al.              Expires 16 December 2024               [Page 27]
+
+Internet-Draft        System-defined Configuration             June 2024
+
+
+   <rpc-reply message-id="101"
+              xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+     <data xmlns="urn:ietf:params:xml:ns:yang:ietf-netconf-nmda">
+       <bgp xmlns="urn:example:bgp">
+         <peer>
+           <ip-address>2001:db8::2:3</ip-address>
+           <local-port>60794</local-port>
+         </peer>
+       </bgp>
+     </data>
+   </rpc-reply>
+
+8.3.  YANG Module
+
+   <CODE BEGINS> file "ietf-system-datastore@2024-06-14.yang"
 
    module ietf-system-datastore {
      yang-version 1.1;
@@ -1562,16 +1560,16 @@ Internet-Draft        System-defined Configuration             June 2024
         Copyright (c) 2024 IETF Trust and the persons identified
         as authors of the code. All rights reserved.
 
+        Redistribution and use in source and binary forms, with
+        or without modification, is permitted pursuant to, and
 
 
 
-Ma, et al.              Expires 13 December 2024               [Page 28]
+Ma, et al.              Expires 16 December 2024               [Page 28]
 
 Internet-Draft        System-defined Configuration             June 2024
 
 
-        Redistribution and use in source and binary forms, with
-        or without modification, is permitted pursuant to, and
         subject to the license terms contained in, the Revised
         BSD License set forth in Section 4.c of the IETF Trust's
         Legal Provisions Relating to IETF Documents
@@ -1579,16 +1577,9 @@ Internet-Draft        System-defined Configuration             June 2024
 
         This version of this YANG module is part of RFC XXXX
         (https://www.rfc-editor.org/info/rfcXXXX); see the RFC
-        itself for full legal notices.
+        itself for full legal notices.";
 
-        The key words 'MUST', 'MUST NOT', 'REQUIRED', 'SHALL',
-        'SHALL NOT', 'SHOULD', 'SHOULD NOT', 'RECOMMENDED',
-        'NOT RECOMMENDED', 'MAY', and 'OPTIONAL' in this document
-        are to be interpreted as described in BCP 14 (RFC 2119)
-        (RFC 8174) when, and only when, they appear in all
-        capitals, as shown here.";
-
-     revision 2024-06-11 {
+     revision 2024-06-14 {
        description
          "Initial version.";
        reference
@@ -1614,18 +1605,6 @@ Internet-Draft        System-defined Configuration             June 2024
    The following tree diagram [RFC8340] illustrates the "ietf-netconf-
    resolve-system" module:
 
-
-
-
-
-
-
-
-Ma, et al.              Expires 13 December 2024               [Page 29]
-
-Internet-Draft        System-defined Configuration             June 2024
-
-
    module: ietf-netconf-resolve-system
      augment /nc:edit-config/nc:input:
        +---w resolve-system?   empty
@@ -1638,12 +1617,26 @@ Internet-Draft        System-defined Configuration             June 2024
      augment /ncds:edit-data/ncds:input:
        +---w resolve-system?   empty
 
-9.2.  YANG Module
+
+
+
+
+Ma, et al.              Expires 16 December 2024               [Page 29]
+
+Internet-Draft        System-defined Configuration             June 2024
+
+
+9.2.  Example Usage
+
+   Please refer to Section 5.5.2 for example usage of the "resolve-
+   system" parameter.
+
+9.3.  YANG Module
 
    This module imports modules "ietf-netconf" and "ietf-netconf-nmda",
    defined in [RFC6241] and [RFC8526], respectively.
 
-   <CODE BEGINS> file "ietf-netconf-resolve-system@2024-06-11.yang"
+   <CODE BEGINS> file "ietf-netconf-resolve-system@2024-06-14.yang"
 
    module ietf-netconf-resolve-system {
      yang-version 1.1;
@@ -1674,20 +1667,20 @@ Internet-Draft        System-defined Configuration             June 2024
         Author: Qin Wu
                 <mailto:bill.wu@huawei.com>
         Author: Chong Feng
-
-
-
-Ma, et al.              Expires 13 December 2024               [Page 30]
-
-Internet-Draft        System-defined Configuration             June 2024
-
-
                 <mailto:fengchongllly@gmail.com>";
      description
        "This module defines an extension to the NETCONF protocol
         that allows the NETCONF client to control whether the server
         is allowed to copy referenced system configuration
         automatically without the client doing so explicitly.
+
+
+
+
+Ma, et al.              Expires 16 December 2024               [Page 30]
+
+Internet-Draft        System-defined Configuration             June 2024
+
 
          Copyright (c) 2024 IETF Trust and the persons identified
          as authors of the code. All rights reserved.
@@ -1710,7 +1703,7 @@ Internet-Draft        System-defined Configuration             June 2024
          (RFC 8174) when, and only when, they appear in all
          capitals, as shown here.";
 
-     revision 2024-06-11 {
+     revision 2024-06-14 {
        description
          "Initial version.";
        reference
@@ -1730,20 +1723,20 @@ Internet-Draft        System-defined Configuration             June 2024
        }
      }
 
-
-
-
-Ma, et al.              Expires 13 December 2024               [Page 31]
-
-Internet-Draft        System-defined Configuration             June 2024
-
-
      augment "/nc:edit-config/nc:input" {
        description
          "Adds the 'resolve-system' parameter to the input of the
           NETCONF <edit-config> operation.";
        uses resolve-system-grouping;
      }
+
+
+
+
+Ma, et al.              Expires 16 December 2024               [Page 31]
+
+Internet-Draft        System-defined Configuration             June 2024
+
 
      augment "/nc:copy-config/nc:input" {
        description
@@ -1780,20 +1773,6 @@ Internet-Draft        System-defined Configuration             June 2024
    This document registers two XML namespace URNs in the 'IETF XML
    registry', following the format defined in [RFC3688].
 
-
-
-
-
-
-
-
-
-
-Ma, et al.              Expires 13 December 2024               [Page 32]
-
-Internet-Draft        System-defined Configuration             June 2024
-
-
       URI: urn:ietf:params:xml:ns:yang:ietf-system-datastore
       Registrant Contact: The IESG.
       XML: N/A, the requested URIs are XML namespaces.
@@ -1807,17 +1786,25 @@ Internet-Draft        System-defined Configuration             June 2024
    This document registers two module names in the 'YANG Module Names'
    registry, defined in [RFC6020].
 
+
+
+
+Ma, et al.              Expires 16 December 2024               [Page 32]
+
+Internet-Draft        System-defined Configuration             June 2024
+
+
       name: ietf-system-datastore
       prefix: sysds
       namespace: urn:ietf:params:xml:ns:yang:ietf-system-datatstore
-      maintained by IANA: N
+      maintained by IANA? N
       RFC: XXXX // RFC Ed.: replace XXXX and remove this comment
 
 
       name: ietf-netconf-resolve-system
       prefix: ncrs
       namespace: urn:ietf:params:xml:ns:yang:ietf-netconf-resolve-system
-      maintained by IANA: N
+      maintained by IANA? N
       RFC: XXXX // RFC Ed.: replace XXXX and remove this comment
 
 10.3.  NETCONF Capability URN Registry
@@ -1839,23 +1826,12 @@ Internet-Draft        System-defined Configuration             June 2024
 
 11.  Security Considerations
 
-
-
-
-
-
-
-Ma, et al.              Expires 13 December 2024               [Page 33]
-
-Internet-Draft        System-defined Configuration             June 2024
-
-
 11.1.  Considerations for the "ietf-system-datastore" YANG Module
 
    This section uses the template described in Section 3.7 of
    [I-D.ietf-netmod-rfc8407bis].
 
-   The YANG module specified in this document defines a schema for data
+   The "ietf-system-datastore" YANG module defines a schema for data
    that is designed to be accessed via network management protocols such
    as NETCONF [RFC6241] or RESTCONF [RFC8040].  These network management
    protocols are required to use a secure transport layer and mutual
@@ -1863,6 +1839,16 @@ Internet-Draft        System-defined Configuration             June 2024
    option, Transport Layer Security (TLS) [RFC8446] with mutual X.509
    authentication, and HTTPS with HTTP authentication (Section 11 of
    [RFC9110]).
+
+
+
+
+
+
+Ma, et al.              Expires 16 December 2024               [Page 33]
+
+Internet-Draft        System-defined Configuration             June 2024
+
 
    The Network Configuration Access Control Model (NACM) [RFC8341]
    provides the means to restrict access for particular NETCONF or
@@ -1877,10 +1863,11 @@ Internet-Draft        System-defined Configuration             June 2024
 
 11.2.  Considerations for the "ietf-netconf-resolve-system" YANG Module
 
-   The YANG module defined in this document extends the base operations
-   of NETCONF protocol in [RFC6241] and [RFC8526].  The lowest NETCONF
-   layer is the secure transport layer, and the mandatory-to-implement
-   secure transport is Secure Shell (SSH) [RFC6242].
+   The "ietf-netconf-resolve-system" YANG module extends the base
+   operations of NETCONF protocol in [RFC6241] and [RFC8526].  The
+   lowest NETCONF layer is the secure transport layer, and the
+   mandatory-to-implement secure transport is Secure Shell (SSH)
+   [RFC6242].
 
    The Network Configuration Access Control Model (NACM) [RFC8341]
    provides the means to restrict access for particular NETCONF users to
@@ -1899,13 +1886,6 @@ Internet-Draft        System-defined Configuration             June 2024
 
 12.1.  Normative References
 
-
-
-Ma, et al.              Expires 13 December 2024               [Page 34]
-
-Internet-Draft        System-defined Configuration             June 2024
-
-
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
@@ -1915,6 +1895,16 @@ Internet-Draft        System-defined Configuration             June 2024
               and A. Bierman, Ed., "Network Configuration Protocol
               (NETCONF)", RFC 6241, DOI 10.17487/RFC6241, June 2011,
               <https://www.rfc-editor.org/info/rfc6241>.
+
+
+
+
+
+
+Ma, et al.              Expires 16 December 2024               [Page 34]
+
+Internet-Draft        System-defined Configuration             June 2024
+
 
    [RFC6470]  Bierman, A., "Network Configuration Protocol (NETCONF)
               Base Notifications", RFC 6470, DOI 10.17487/RFC6470,
@@ -1955,19 +1945,22 @@ Internet-Draft        System-defined Configuration             June 2024
 
 12.2.  Informative References
 
-
-
-Ma, et al.              Expires 13 December 2024               [Page 35]
-
-Internet-Draft        System-defined Configuration             June 2024
-
-
    [I-D.ietf-netconf-privcand]
               Cumming, J. and R. Wills, "NETCONF Private Candidates",
               Work in Progress, Internet-Draft, draft-ietf-netconf-
               privcand-03, 30 May 2024,
               <https://datatracker.ietf.org/doc/html/draft-ietf-netconf-
               privcand-03>.
+
+
+
+
+
+
+Ma, et al.              Expires 16 December 2024               [Page 35]
+
+Internet-Draft        System-defined Configuration             June 2024
+
 
    [I-D.ietf-netmod-immutable-flag]
               Ma, Q., Wu, Q., Lengyel, B., and H. Li, "YANG Metadata
@@ -2009,15 +2002,6 @@ Internet-Draft        System-defined Configuration             June 2024
               BCP 215, RFC 8340, DOI 10.17487/RFC8340, March 2018,
               <https://www.rfc-editor.org/info/rfc8340>.
 
-
-
-
-
-Ma, et al.              Expires 13 December 2024               [Page 36]
-
-Internet-Draft        System-defined Configuration             June 2024
-
-
    [RFC8407]  Bierman, A., "Guidelines for Authors and Reviewers of
               Documents Containing YANG Data Models", BCP 216, RFC 8407,
               DOI 10.17487/RFC8407, October 2018,
@@ -2026,6 +2010,13 @@ Internet-Draft        System-defined Configuration             June 2024
    [RFC8446]  Rescorla, E., "The Transport Layer Security (TLS) Protocol
               Version 1.3", RFC 8446, DOI 10.17487/RFC8446, August 2018,
               <https://www.rfc-editor.org/info/rfc8446>.
+
+
+
+Ma, et al.              Expires 16 December 2024               [Page 36]
+
+Internet-Draft        System-defined Configuration             June 2024
+
 
    [RFC8525]  Bierman, A., Bjorklund, M., Schoenwaelder, J., Watsen, K.,
               and R. Wilton, "YANG Library", RFC 8525,
@@ -2069,46 +2060,75 @@ Appendix A.  Key Use Cases
 
 
 
-Ma, et al.              Expires 13 December 2024               [Page 37]
+
+
+
+
+
+
+
+
+
+Ma, et al.              Expires 16 December 2024               [Page 37]
 
 Internet-Draft        System-defined Configuration             June 2024
 
 
-   container interfaces {
-     list interface {
-       key name;
-       leaf name {
-         type string;
-       }
-       leaf type {
-         type enumeration {
-           enum ethernet;
-           enum atm;
-           enum loopback;
+   module example-interface-management {
+     yang-version 1.1;
+     namespace "urn:example:interfacemgmt";
+     prefix exifm;
+
+     import ietf-inet-types {
+       prefix inet;
+     }
+
+     container interfaces {
+       list interface {
+         key "name";
+         leaf name {
+           type string;
          }
-       }
-       leaf enabled {
-         type boolean;
-         default "false";
-       }
-       leaf mtu {
-         type uint32;
-       }
-       leaf-list ip-address {
-         type inet:ip-address;
-       }
-       leaf speed {
-         when "../type = 'ethernet'";
-         type enumeration {
-           enum "10Mb";
-           enum "100Mb";
+         leaf type {
+           type enumeration {
+             enum ethernet;
+             enum atm;
+             enum loopback;
+           }
          }
-       }
-       leaf description {
-         type string;
+         leaf enabled {
+           type boolean;
+           default "false";
+         }
+         leaf mtu {
+           type uint32;
+         }
+         leaf-list ip-address {
+           type inet:ip-address;
+         }
+         leaf speed {
+           when "../type = 'ethernet'";
+           type enumeration {
+             enum 10Mb;
+             enum 100Mb;
+           }
+         }
+         leaf description {
+           type string;
+         }
        }
      }
    }
+
+
+
+
+
+
+Ma, et al.              Expires 16 December 2024               [Page 38]
+
+Internet-Draft        System-defined Configuration             June 2024
+
 
    For each use case, corresponding sample configuration in <running>,
    <system>, <intended> and <operational> are shown.  The XML snippets
@@ -2123,14 +2143,7 @@ A.1.  Device Powers On
 
    And the contents of <system> are:
 
-
-
-Ma, et al.              Expires 13 December 2024               [Page 38]
-
-Internet-Draft        System-defined Configuration             June 2024
-
-
-   <interfaces>
+   <interfaces xmlns="urn:example:interfacemgmt">
      <interface>
        <name>lo0</name>
        <type>loopback</type>
@@ -2147,7 +2160,8 @@ Internet-Draft        System-defined Configuration             June 2024
 
    And <operational> will show the system-provided loopback interface:
 
-   <interfaces xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
+   <interfaces xmlns="urn:example:interfacemgmt"
+               xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
                or:origin="or:system">
      <interface>
        <name>lo0</name>
@@ -2165,7 +2179,14 @@ A.2.  Client Commits Configuration
    not physically exist at this point, what is in <running> appears as
    follows:
 
-   <interfaces>
+
+
+Ma, et al.              Expires 16 December 2024               [Page 39]
+
+Internet-Draft        System-defined Configuration             June 2024
+
+
+   <interfaces xmlns="urn:example:interfacemgmt">
      <interface>
        <name>et-0/0/0</name>
        <type>ethernet</type>
@@ -2176,17 +2197,7 @@ A.2.  Client Commits Configuration
    And the contents of <system> keep unchanged since the interface is
    not physically present:
 
-
-
-
-
-
-Ma, et al.              Expires 13 December 2024               [Page 39]
-
-Internet-Draft        System-defined Configuration             June 2024
-
-
-   <interfaces>
+   <interfaces xmlns="urn:example:interfacemgmt">
      <interface>
        <name>lo0</name>
        <type>loopback</type>
@@ -2200,7 +2211,7 @@ Internet-Draft        System-defined Configuration             June 2024
    The contents of <intended> represent the merged data of <system> and
    <running>:
 
-   <interfaces>
+   <interfaces xmlns="urn:example:interfacemgmt">
      <interface>
        <name>lo0</name>
        <type>loopback</type>
@@ -2220,7 +2231,19 @@ Internet-Draft        System-defined Configuration             June 2024
    configuration is not present in <operational>, which appears as
    follows:
 
-   <interfaces xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
+
+
+
+
+
+
+Ma, et al.              Expires 16 December 2024               [Page 40]
+
+Internet-Draft        System-defined Configuration             June 2024
+
+
+   <interfaces xmlns="urn:example:interfacemgmt"
+               xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
                or:origin="or:intended">
      <interface or:origin="or:system">
        <name>lo0</name>
@@ -2232,23 +2255,13 @@ Internet-Draft        System-defined Configuration             June 2024
      </interface>
    </interfaces>
 
-
-
-
-
-
-Ma, et al.              Expires 13 December 2024               [Page 40]
-
-Internet-Draft        System-defined Configuration             June 2024
-
-
 A.3.  Operator Installs Card into a Chassis
 
    When the interface is installed by the operator, the system will
    detect it and generate the associated configuration in <system>.  The
    contents of <running> keep unchanged:
 
-   <interfaces>
+   <interfaces xmlns="urn:example:interfacemgmt">
      <interface>
        <name>et-0/0/0</name>
        <type>ethernet</type>
@@ -2258,7 +2271,7 @@ A.3.  Operator Installs Card into a Chassis
 
    And <system> might appear as follows:
 
-   <interfaces>
+   <interfaces xmlns="urn:example:interfacemgmt">
      <interface>
        <name>lo0</name>
        <type>loopback</type>
@@ -2280,25 +2293,12 @@ A.3.  Operator Installs Card into a Chassis
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-Ma, et al.              Expires 13 December 2024               [Page 41]
+Ma, et al.              Expires 16 December 2024               [Page 41]
 
 Internet-Draft        System-defined Configuration             June 2024
 
 
-   <interfaces>
+   <interfaces xmlns="urn:example:interfacemgmt">
      <interface>
        <name>lo0</name>
        <type>loopback</type>
@@ -2318,7 +2318,8 @@ Internet-Draft        System-defined Configuration             June 2024
 
    And the contents of <operational> appear as follows:
 
-   <interfaces xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
+   <interfaces xmlns="urn:example:interfacemgmt"
+               xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
                or:origin="or:intended">
      <interface or:origin="or:system">
        <name>lo0</name>
@@ -2348,17 +2349,17 @@ A.4.  Client further Commits Configuration
 
 
 
-
-Ma, et al.              Expires 13 December 2024               [Page 42]
+Ma, et al.              Expires 16 December 2024               [Page 42]
 
 Internet-Draft        System-defined Configuration             June 2024
 
 
-   <interfaces>
+   <interfaces xmlns="urn:example:interfacemgmt">
      <interface>
        <name>et-0/0/0</name>
        <type>ethernet</type>
-       <enabled>true</enabled>
+       <enabled>false</enabled>
+       <mtu>1500</mtu>
        <speed>10Mb</speed>
        <description>pre-provisioned interface</description>
      </interface>
@@ -2366,7 +2367,7 @@ Internet-Draft        System-defined Configuration             June 2024
 
    The contents of <system> keep unchanged:
 
-   <interfaces>
+   <interfaces xmlns="urn:example:interfacemgmt">
      <interface>
        <name>lo0</name>
        <type>loopback</type>
@@ -2384,7 +2385,7 @@ Internet-Draft        System-defined Configuration             June 2024
    </interfaces>
 
    And the contents of <intended> which represents a merged results of
-   <running> and <system> as follows:
+   <running> and <system> are as follows:
 
 
 
@@ -2404,13 +2405,12 @@ Internet-Draft        System-defined Configuration             June 2024
 
 
 
-
-Ma, et al.              Expires 13 December 2024               [Page 43]
+Ma, et al.              Expires 16 December 2024               [Page 43]
 
 Internet-Draft        System-defined Configuration             June 2024
 
 
-   <interfaces>
+   <interfaces xmlns="urn:example:interfacemgmt">
      <interface>
        <name>lo0</name>
        <type>loopback</type>
@@ -2431,7 +2431,8 @@ Internet-Draft        System-defined Configuration             June 2024
 
    And <operational> would appear as follows:
 
-   <interfaces xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
+   <interfaces xmlns="urn:example:interfacemgmt"
+               xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
                or:origin="or:intended">
      <interface or:origin="or:system">
        <name>lo0</name>
@@ -2460,8 +2461,7 @@ Appendix B.  Changes between Revisions
 
 
 
-
-Ma, et al.              Expires 13 December 2024               [Page 44]
+Ma, et al.              Expires 16 December 2024               [Page 44]
 
 Internet-Draft        System-defined Configuration             June 2024
 
@@ -2517,7 +2517,7 @@ Internet-Draft        System-defined Configuration             June 2024
 
 
 
-Ma, et al.              Expires 13 December 2024               [Page 45]
+Ma, et al.              Expires 16 December 2024               [Page 45]
 
 Internet-Draft        System-defined Configuration             June 2024
 
@@ -2573,7 +2573,7 @@ Contributors
 
 
 
-Ma, et al.              Expires 13 December 2024               [Page 46]
+Ma, et al.              Expires 16 December 2024               [Page 46]
 
 Internet-Draft        System-defined Configuration             June 2024
 
@@ -2629,4 +2629,4 @@ Authors' Addresses
 
 
 
-Ma, et al.              Expires 13 December 2024               [Page 47]
+Ma, et al.              Expires 16 December 2024               [Page 47]

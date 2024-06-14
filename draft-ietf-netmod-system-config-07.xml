@@ -42,7 +42,7 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="std" docName="draft-ietf-netmod-system-config-latest"
+<rfc category="std" docName="draft-ietf-netmod-system-config-07"
      ipr="trust200902" submissionType="IETF" updates="8342,6241,8526,8040">
   <front>
     <title abbrev="System-defined Configuration">System-defined
@@ -633,13 +633,103 @@ boxes denote named datastores</artwork>
           <t>In this subsection, the following fictional module is
           used:<figure>
               <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/example-application.yang)
+module example-application {
+  yang-version 1.1;
+  namespace "urn:example:application";
+  prefix "app";
+
+  import ietf-inet-types {
+    prefix "inet";
+  }
+  container applications {
+    list application {
+      key "name";
+      leaf name {
+        type string;
+      }
+      leaf app-id {
+        type string;
+      }
+      leaf protocol {
+        type enumeration {
+          enum tcp;
+          enum udp;
+        }
+        mandatory true;
+      }
+      leaf destination-port {
+        default "0";
+        type inet:port-number;
+      }
+      leaf description {
+        type string;
+      }
+      container security-protection {
+        presence "Indicates that security protection is enabled.";
+        leaf risk-level {
+          type enumeration {
+            enum high;
+            enum low;
+          }
+        }
+        //additional leafs for security-specific configuration...
+      }
+    }
+  }
+}
               ]]></artwork>
             </figure>A fictional ACL YANG module is used as follows, which
           defines a leafref for the leaf-list "application" data node to refer
           to an existing application name.<figure>
               <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/example-acl.yang)
+module example-acl {
+  yang-version 1.1;
+  namespace "urn:example:acl";
+  prefix "acl";
+
+  import example-application {
+    prefix "app";
+  }
+
+  import ietf-inet-types {
+    prefix "inet";
+  }
+
+  container acl {
+    list acl-rule {
+      key "name";
+      leaf name {
+        type string;
+      }
+      container matches {
+        choice l3 {
+          container ipv4 {
+            leaf src-address {
+              type inet:ipv4-prefix;
+            }
+            leaf dst-address {
+              type inet:ipv4-prefix;
+            }
+          }
+        }
+        choice applications {
+          leaf-list application {
+            type leafref {
+              path "/app:applications/app:application/app:name";
+            }
+          }
+        }
+      }
+      leaf packet-action {
+        type enumeration {
+          enum forward;
+          enum drop;
+          enum redirect;
+        }
+      }
+    }
+  }
+}
               ]]></artwork>
             </figure></t>
 
@@ -649,7 +739,35 @@ INSERT_TEXT_FROM_FILE(examples/example-acl.yang)
 
           <figure>
               <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/applications-system.xml)
+<applications xmlns="urn:example:application">  
+  <application> 
+    <name>ftp</name>  
+    <app-id>001</app-id>  
+    <protocol>tcp</protocol>  
+    <destination-port>21</destination-port>  
+    <security-protection> 
+      <risk-level>low</risk-level> 
+    </security-protection> 
+  </application>  
+  <application> 
+    <name>tftp</name>  
+    <app-id>002</app-id>  
+    <protocol>udp</protocol>  
+    <destination-port>69</destination-port>  
+    <security-protection> 
+      <risk-level>low</risk-level> 
+    </security-protection> 
+  </application>  
+  <application> 
+    <name>smtp</name>  
+    <app-id>003</app-id>  
+    <protocol>tcp</protocol>  
+    <destination-port>25</destination-port>  
+    <security-protection> 
+      <risk-level>low</risk-level> 
+    </security-protection> 
+  </application> 
+</applications>
               ]]></artwork>
           </figure>
 
@@ -657,7 +775,25 @@ INSERT_TEXT_FROM_FILE(examples/applications-system.xml)
           the configuration of applications is present in &lt;running&gt; as
           follows:<figure>
               <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/applications-running.xml)
+<applications xmlns="urn:example:application">  
+  <application> 
+    <name>my-app-1</name>  
+    <app-id>101</app-id>  
+    <protocol>tcp</protocol>  
+    <destination-port>2345</destination-port>  
+    <description>customized application</description>  
+    <security-protection> 
+      <risk-level>high</risk-level> 
+    </security-protection> 
+  </application>  
+  <application> 
+    <name>my-app-2</name>  
+    <app-id>102</app-id>  
+    <protocol>udp</protocol>  
+    <destination-port>69</destination-port>  
+    <description>customized application</description> 
+  </application> 
+</applications>
               ]]></artwork>
             </figure></t>
 
@@ -668,20 +804,100 @@ INSERT_TEXT_FROM_FILE(examples/applications-running.xml)
           entire application entries named "ftp" and "tftp" are as
           follows:<figure>
               <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/applications-declare.xml)
+<applications xmlns="urn:example:application">  
+  <application> 
+    <name>ftp</name>  
+    <app-id>001</app-id>  
+    <protocol>tcp</protocol>  
+    <destination-port>21</destination-port>  
+    <security-protection> 
+      <risk-level>low</risk-level> 
+    </security-protection> 
+  </application>  
+  <application> 
+    <name>tftp</name>  
+    <app-id>002</app-id>  
+    <protocol>udp</protocol>  
+    <destination-port>69</destination-port>  
+    <security-protection> 
+      <risk-level>low</risk-level> 
+    </security-protection> 
+  </application> 
+</applications>
              ]]></artwork>
             </figure></t>
 
           <t>And the configuration of ACL rules referencing application "ftp"
           and "tftp":<figure>
               <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/applications-referenced.xml)
+<acl xmlns="urn:example:acl">
+  <acl-rule>
+    <name>allow-access-to-ftp-tftp</name>
+    <matches>
+      <ipv4>
+        <src-address>198.51.100.0/24</src-address>
+        <dst-address>192.0.2.0/24</dst-address>
+      </ipv4>
+      <application>ftp</application>
+      <application>tftp</application>
+      <application>my-app-1</application>
+    </matches>
+    <packet-action>forward</packet-action>
+  </acl-rule>
+</acl>
               ]]></artwork>
             </figure></t>
 
           <t>And &lt;operational&gt; might contain the following:<figure>
               <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/applications-declare-operational.xml)
+<applications xmlns="urn:example:application" 
+              xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin" 
+              or:origin="or:intended">  
+  <application> 
+    <name>my-app-1</name>  
+    <app-id>101</app-id>  
+    <protocol>tcp</protocol>  
+    <destination-port>2345</destination-port>  
+    <description>customized application</description>  
+    <security-protection> 
+      <risk-level>high</risk-level> 
+    </security-protection> 
+  </application>  
+  <application> 
+    <name>my-app-2</name>  
+    <app-id>102</app-id>  
+    <protocol>udp</protocol>  
+    <destination-port>69</destination-port>  
+    <description>customized application</description> 
+  </application>  
+  <application> 
+    <name>ftp</name>  
+    <app-id>001</app-id>  
+    <protocol>tcp</protocol>  
+    <destination-port>21</destination-port>  
+    <security-protection> 
+      <risk-level>low</risk-level> 
+    </security-protection> 
+  </application>  
+  <application> 
+    <name>tftp</name>  
+    <app-id>002</app-id>  
+    <protocol>udp</protocol>  
+    <destination-port>69</destination-port>  
+    <security-protection> 
+      <risk-level>low</risk-level> 
+    </security-protection> 
+  </application>  
+  <application or:origin="or:system"> 
+    <name>smtp</name>  
+    <app-id>003</app-id>  
+    <protocol>tcp</protocol>  
+    <destination-port>25</destination-port>  
+    <security-protection> 
+      <risk-level>low</risk-level> 
+    </security-protection> 
+  </application> 
+</applications>
               ]]></artwork>
             </figure></t>
         </section>
@@ -694,7 +910,36 @@ INSERT_TEXT_FROM_FILE(examples/applications-declare-operational.xml)
           operation with the parameter "resolve-system" to the NETCONF server
           as follows:<figure>
               <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/applications-resolve-system.xml)
+=============== NOTE: '\' line wrapping per RFC 8792 ================
+
+<rpc  message-id="101"
+      xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" 
+      xmlns:ncrs="urn:ietf:params:xml:ns:yang:ietf-netconf-resolve-s\
+ystem">  
+  <edit-config> 
+    <target> 
+      <running/> 
+    </target>  
+    <config> 
+      <acl xmlns="urn:example:acl">  
+        <acl-rule> 
+          <name>allow-access-to-ftp-tftp</name>  
+          <matches> 
+            <ipv4> 
+              <src-address>198.51.100.0/24</src-address>  
+              <dst-address>192.0.2.0/24</dst-address> 
+            </ipv4>  
+            <application>ftp</application>  
+            <application>tftp</application>  
+            <application>my-app-1</application> 
+          </matches>  
+          <packet-action>forward</packet-action> 
+        </acl-rule> 
+      </acl> 
+    </config>  
+    <ncrs:resolve-system/> 
+  </edit-config> 
+</rpc>
               ]]></artwork>
             </figure></t>
 
@@ -704,7 +949,43 @@ INSERT_TEXT_FROM_FILE(examples/applications-resolve-system.xml)
           applications in &lt;running&gt; which is returned in the response to
           a follow-up retrieval operation:<figure>
               <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/applications-running-get-config.xml)
+<applications xmlns="urn:example:application">  
+  <application> 
+    <name>my-app-1</name>  
+    <app-id>101</app-id>  
+    <protocol>tcp</protocol>  
+    <destination-port>2345</destination-port>  
+    <description>customized application</description>  
+    <security-protection> 
+      <risk-level>high</risk-level> 
+    </security-protection> 
+  </application>  
+  <application> 
+    <name>my-app-2</name>  
+    <app-id>102</app-id>  
+    <protocol>udp</protocol>  
+    <destination-port>69</destination-port>  
+    <description>customized application</description> 
+  </application>  
+  <application> 
+    <name>ftp</name>  
+    <app-id>001</app-id>  
+    <protocol>tcp</protocol>  
+    <destination-port>21</destination-port>  
+    <security-protection> 
+      <risk-level>low</risk-level> 
+    </security-protection> 
+  </application>  
+  <application> 
+    <name>tftp</name>  
+    <app-id>002</app-id>  
+    <protocol>udp</protocol>  
+    <destination-port>69</destination-port>  
+    <security-protection> 
+      <risk-level>low</risk-level> 
+    </security-protection> 
+  </application> 
+</applications>
               ]]></artwork>
             </figure></t>
 
@@ -719,7 +1000,34 @@ INSERT_TEXT_FROM_FILE(examples/applications-running-get-config.xml)
           <t>This subsection uses the following fictional interface YANG
           module:<figure>
               <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/example-interface.yang)
+module example-interface {
+  yang-version 1.1;
+  namespace "urn:example:interface";
+  prefix "exif";
+
+  import ietf-inet-types {
+    prefix "inet";
+  }
+  
+  container interfaces {
+    list interface {
+      key name;
+      leaf name {
+        type string;
+      }
+      leaf description {
+        type string;
+      }
+      leaf mtu {
+        type uint32;
+      }
+      leaf-list ip-address {
+        type inet:ip-address;
+      }
+    }
+  }
+}
+
               ]]></artwork>
             </figure></t>
 
@@ -728,7 +1036,14 @@ INSERT_TEXT_FROM_FILE(examples/example-interface.yang)
           a default IPv6 address of "::1". The configuration of "lo0"
           interface is present in &lt;system&gt; as follows:<figure>
               <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/interface-system.xml)
+<interfaces xmlns="urn:example:interface">
+  <interface>
+    <name>lo0</name>
+    <mtu>65536</mtu>
+    <ip-address>127.0.0.1</ip-address>
+    <ip-address>::1</ip-address>
+  </interface>
+</interfaces>
               ]]></artwork>
             </figure></t>
 
@@ -737,14 +1052,28 @@ INSERT_TEXT_FROM_FILE(examples/interface-system.xml)
 
           <figure>
               <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/interface-running-overridden.xml)
+<interfaces xmlns="urn:example:interface">
+  <interface>
+    <name>lo0</name>
+    <mtu>9216</mtu>
+  </interface>
+</interfaces>
               ]]></artwork>
           </figure>
 
           <t>Then the configuration of interfaces is present in
           &lt;operational&gt; as follows:<figure>
               <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/interface-operational-overridden.xml)
+<interfaces xmlns="urn:example:interface" 
+            xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin" 
+            or:origin="or:intended">
+  <interface>
+    <name>lo0</name>
+    <mtu>9216</mtu>
+    <ip-address or:origin="or:system">127.0.0.1</ip-address>
+    <ip-address or:origin="or:system">::1</ip-address>
+  </interface>
+</interfaces>
               ]]></artwork>
             </figure></t>
         </section>
@@ -756,14 +1085,29 @@ INSERT_TEXT_FROM_FILE(examples/interface-operational-overridden.xml)
 
           <figure>
               <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/interface-running-addition.xml)
+<interfaces xmlns="urn:example:interface">  
+  <interface> 
+    <name>lo0</name>  
+    <description>loopback</description> 
+  </interface> 
+</interfaces>
               ]]></artwork>
           </figure>
 
           <t>The configuration of interface "lo0" is present in
           &lt;operational&gt; as follows:<figure>
               <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/interface-operational-addition.xml)
+<interfaces xmlns="urn:example:interface" 
+            xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin" 
+            or:origin="or:intended">
+  <interface>
+    <name>lo0</name>
+    <description>loopback</description>
+    <mtu>9216</mtu>
+    <ip-address or:origin="or:system">127.0.0.1</ip-address>
+    <ip-address or:origin="or:system">::1</ip-address>
+  </interface>
+</interfaces>
               ]]></artwork>
             </figure></t>
         </section>
@@ -858,7 +1202,55 @@ INSERT_TEXT_FROM_FILE(examples/interface-operational-addition.xml)
         <t>This section gives an example of data retrieval from
         &lt;system&gt;. The fictional YANG module is used as follows: <figure>
               <artwork><![CDATA[
-	    INSERT_TEXT_FROM_FILE(examples/example-bgp.yang)          
+module example-bgp {
+  yang-version 1.1;
+  namespace "urn:example:bgp";
+  prefix exbgp;
+
+  import ietf-inet-types {
+    prefix inet;
+  }
+
+  container bgp {
+    leaf local-as {
+      type uint32;
+    }
+    leaf peer-as {
+      type uint32;
+    }
+    list peer {
+      key "name";
+      leaf name {
+        type inet:ip-address;
+      }
+      leaf local-as {
+        type uint32;
+        description
+          "... Defaults to ../local-as.";
+      }
+      leaf peer-as {
+        type uint32;
+        description
+          "... Defaults to ../peer-as.";
+      }
+      leaf local-port {
+        type inet:port-number;
+      }
+      leaf remote-port {
+        type inet:port-number;
+        default "179";
+      }
+      leaf state {
+        config false;
+        type enumeration {
+          enum init;
+          enum established;
+          enum closing;
+        }
+      }
+    }
+  }
+}
                            ]]></artwork>
           </figure></t>
 
@@ -867,7 +1259,17 @@ INSERT_TEXT_FROM_FILE(examples/interface-operational-addition.xml)
         manner. JSON is used to not imply a preferred encoding in this
         document):<figure>
               <artwork><![CDATA[
-	    INSERT_TEXT_FROM_FILE(examples/bgp-running.json)          
+{
+    "exbgp:bgp": {
+        "local-as": 64501,
+        "peer-as": 64502,
+        "peer": {
+            "ip-address": "2001:db8::2:3",
+            "local-as": 64501,
+            "peer-as": 64502
+        }
+    }
+}
                            ]]></artwork>
           </figure></t>
 
@@ -881,11 +1283,30 @@ INSERT_TEXT_FROM_FILE(examples/interface-operational-addition.xml)
         <t>The following example shows the &lt;get-data&gt; RPC towards
         &lt;system&gt;:<figure>
               <artwork><![CDATA[
-	    INSERT_TEXT_FROM_FILE(examples/bgp-get-system.xml)          
+<rpc  message-id="101"
+      xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">  
+  <get-data xmlns="urn:ietf:params:xml:ns:yang:ietf-netconf-nmda" 
+            xmlns:ds="urn:ietf:params:xml:ns:yang:ietf-datastores">  
+    <datastore>ds:system</datastore>  
+    <subtree-filter> 
+      <bgp xmlns="urn:example:bgp"/> 
+    </subtree-filter> 
+  </get-data> 
+</rpc>
                            ]]></artwork>
           </figure><figure>
               <artwork><![CDATA[
-	    INSERT_TEXT_FROM_FILE(examples/bgp-get-system-reply.xml)          
+<rpc-reply message-id="101"
+           xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">  
+  <data xmlns="urn:ietf:params:xml:ns:yang:ietf-netconf-nmda">  
+    <bgp xmlns="urn:example:bgp">  
+      <peer> 
+        <ip-address>2001:db8::2:3</ip-address>  
+        <local-port>60794</local-port> 
+      </peer> 
+    </bgp> 
+  </data> 
+</rpc-reply>
                            ]]></artwork>
           </figure></t>
       </section>
@@ -893,10 +1314,64 @@ INSERT_TEXT_FROM_FILE(examples/interface-operational-addition.xml)
       <section title="YANG Module">
         <figure>
           <preamble>&lt;CODE BEGINS&gt; file
-          "ietf-system-datastore@YYYY-MM-DD.yang"</preamble>
+          "ietf-system-datastore@2024-06-14.yang"</preamble>
 
               <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
+module ietf-system-datastore {
+  yang-version 1.1;
+  namespace "urn:ietf:params:xml:ns:yang:ietf-system-datastore";
+  prefix sysds;
+
+  import ietf-datastores {
+    prefix ds;
+    reference
+      "RFC 8342: Network Management Datastore Architecture(NMDA)";
+  }
+
+  organization
+    "IETF NETMOD (Network Modeling) Working Group";
+  contact
+    "WG Web:   https://datatracker.ietf.org/wg/netmod/
+     WG List:  NETMOD WG list <mailto:netmod@ietf.org>
+     
+     Author: Qiufang Ma
+             <mailto:maqiufang1@huawei.com>
+     Author: Qin Wu
+             <mailto:bill.wu@huawei.com>
+     Author: Chong Feng
+             <mailto:fengchongllly@gmail.com>";
+  description
+    "This module defines a new YANG identity that uses the
+     ds:datastore identity defined in [RFC8342].
+
+     Copyright (c) 2024 IETF Trust and the persons identified
+     as authors of the code. All rights reserved.
+
+     Redistribution and use in source and binary forms, with
+     or without modification, is permitted pursuant to, and
+     subject to the license terms contained in, the Revised
+     BSD License set forth in Section 4.c of the IETF Trust's
+     Legal Provisions Relating to IETF Documents
+     (https://trustee.ietf.org/license-info).
+
+     This version of this YANG module is part of RFC XXXX
+     (https://www.rfc-editor.org/info/rfcXXXX); see the RFC
+     itself for full legal notices.";
+
+  revision 2024-06-14 {
+    description
+      "Initial version.";
+    reference
+      "RFC XXXX: System-defined Configuration";
+  }
+
+  identity system {
+    base ds:conventional;
+    description
+      "This read-only datastore contains the configuration
+       provided by the system itself.";
+  }
+}
 ]]></artwork>
 
           <postamble>&lt;CODE ENDS&gt;</postamble>
@@ -938,10 +1413,119 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
 
         <figure>
           <preamble>&lt;CODE BEGINS&gt; file
-          "ietf-netconf-resolve-system@YYYY-MM-DD.yang"</preamble>
+          "ietf-netconf-resolve-system@2024-06-14.yang"</preamble>
 
               <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
+module ietf-netconf-resolve-system {
+  yang-version 1.1;
+  namespace
+    "urn:ietf:params:xml:ns:yang:ietf-netconf-resolve-system";
+  prefix ncrs;
+
+  import ietf-netconf {
+    prefix nc;
+    reference
+      "RFC 6241: Network Configuration Protocol (NETCONF)";
+  }
+  import ietf-netconf-nmda {
+    prefix ncds;
+    reference
+      "RFC 8526: NETCONF Extensions to Support the Network
+       Management Datastore Architecture";
+  }
+
+  organization
+    "IETF NETMOD (Network Modeling) Working Group";
+  contact
+    "WG Web:   <https://datatracker.ietf.org/wg/netmod/>
+     WG List:  <mailto:netmod@ietf.org>
+
+     Author: Qiufang Ma
+             <mailto:maqiufang1@huawei.com>
+     Author: Qin Wu
+             <mailto:bill.wu@huawei.com>
+     Author: Chong Feng
+             <mailto:fengchongllly@gmail.com>";
+  description
+    "This module defines an extension to the NETCONF protocol
+     that allows the NETCONF client to control whether the server
+     is allowed to copy referenced system configuration
+     automatically without the client doing so explicitly.
+
+      Copyright (c) 2024 IETF Trust and the persons identified
+      as authors of the code. All rights reserved.
+
+      Redistribution and use in source and binary forms, with
+      or without modification, is permitted pursuant to, and
+      subject to the license terms contained in, the Revised
+      BSD License set forth in Section 4.c of the IETF Trust's
+      Legal Provisions Relating to IETF Documents
+      (https://trustee.ietf.org/license-info).
+
+      This version of this YANG module is part of RFC XXXX
+      (https://www.rfc-editor.org/info/rfcXXXX); see the RFC
+      itself for full legal notices.
+
+      The key words 'MUST', 'MUST NOT', 'REQUIRED', 'SHALL',
+      'SHALL NOT', 'SHOULD', 'SHOULD NOT', 'RECOMMENDED',
+      'NOT RECOMMENDED', 'MAY', and 'OPTIONAL' in this document
+      are to be interpreted as described in BCP 14 (RFC 2119)
+      (RFC 8174) when, and only when, they appear in all
+      capitals, as shown here.";
+
+  revision 2024-06-14 {
+    description
+      "Initial version.";
+    reference
+      "RFC XXXX: System-defined Configuration";
+  }
+
+  grouping resolve-system-grouping {
+    description
+      "Define the resolve-system parameter grouping.";
+    leaf resolve-system {
+      type empty;
+      description
+        "When present, the server MUST copy referenced system
+         configuration into the target configuration datastore
+         where it is missing from without the client doing the
+         copy/paste explicitly.";
+    }
+  }
+
+  augment "/nc:edit-config/nc:input" {
+    description
+      "Adds the 'resolve-system' parameter to the input of the
+       NETCONF <edit-config> operation.";
+    uses resolve-system-grouping;
+  }
+
+  augment "/nc:copy-config/nc:input" {
+    description
+      "Adds the 'resolve-system' parameter to the input of the
+       NETCONF <copy-config> operation.";
+    uses resolve-system-grouping;
+  }
+  augment "/nc:validate/nc:input" {
+    description
+      "Adds the 'resolve-system' parameter to the input of the
+       NETCONF <validate> operation.";
+    uses resolve-system-grouping;
+  }
+  augment "/nc:commit/nc:input" {
+    description
+      "Adds the 'resolve-system' parameter to the input of the
+       NETCONF <commit> operation.";
+    uses resolve-system-grouping;
+  }
+  augment "/ncds:edit-data/ncds:input" {
+    description
+      "Adds the 'resolve-system' parameter to the input of the
+       NETCONF <edit-data> operation.";
+    uses resolve-system-grouping;
+  }
+}
+
 ]]></artwork>
 
           <postamble>&lt;CODE ENDS&gt;</postamble>
@@ -1117,7 +1701,51 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
       &lt;running&gt;, &lt;intended&gt;, and &lt;operational&gt;). The
       following fictional interface data model is used:<figure>
               <artwork><![CDATA[
-	  INSERT_TEXT_FROM_FILE(examples/example-interface-management.yang)          
+module example-interface-management {
+  yang-version 1.1;
+  namespace "urn:example:interfacemgmt";
+  prefix exifm;
+
+  import ietf-inet-types {
+    prefix inet;
+  }
+
+  container interfaces {
+    list interface {
+      key "name";
+      leaf name {
+        type string;
+      }
+      leaf type {
+        type enumeration {
+          enum ethernet;
+          enum atm;
+          enum loopback;
+        }
+      }
+      leaf enabled {
+        type boolean;
+        default "false";
+      }
+      leaf mtu {
+        type uint32;
+      }
+      leaf-list ip-address {
+        type inet:ip-address;
+      }
+      leaf speed {
+        when "../type = 'ethernet'";
+        type enumeration {
+          enum 10Mb;
+          enum 100Mb;
+        }
+      }
+      leaf description {
+        type string;
+      }
+    }
+  }
+}
                            ]]></artwork>
         </figure>For each use case, corresponding sample configuration in
       &lt;running&gt;, &lt;system&gt;, &lt;intended&gt; and

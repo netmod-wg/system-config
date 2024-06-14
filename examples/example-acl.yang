@@ -31,7 +31,7 @@ module example-acl {
         choice applications {
           leaf-list application {
             type leafref {
-            path "/app:applications/app:application/app:name";
+              path "/app:applications/app:application/app:name";
             }
           }
         }
