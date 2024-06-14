@@ -89,7 +89,7 @@ Table of Contents
        5.3.1.  NETCONF Support for "resolve-system" Parameter  . . .  12
        5.3.2.  RESTCONF Support for "resolve-system" Parameter . . .  12
          5.3.2.1.  Query Parameter . . . . . . . . . . . . . . . . .  12
-         5.3.2.2.  Query Parameter URI . . . . . . . . . . . . . . .  13
+         5.3.2.2.  Query Parameter URI . . . . . . . . . . . . . . .  12
      5.4.  Modifying (Overriding) System Configuration . . . . . . .  13
      5.5.  Examples  . . . . . . . . . . . . . . . . . . . . . . . .  13
        5.5.1.  Declaring a System-defined Node in <running>
@@ -120,7 +120,7 @@ Internet-Draft        System-defined Configuration             June 2024
      9.3.  YANG Module . . . . . . . . . . . . . . . . . . . . . . .  30
    10. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  32
      10.1.  The "IETF XML" Registry  . . . . . . . . . . . . . . . .  32
-     10.2.  The "YANG Module Names" Registry . . . . . . . . . . . .  32
+     10.2.  The "YANG Module Names" Registry . . . . . . . . . . . .  33
      10.3.  NETCONF Capability URN Registry  . . . . . . . . . . . .  33
      10.4.  RESTCONF Capability URN Registry . . . . . . . . . . . .  33
    11. Security Considerations . . . . . . . . . . . . . . . . . . .  33
@@ -577,34 +577,34 @@ Internet-Draft        System-defined Configuration             June 2024
    configuration.
 
    The "resolve-system" parameter is optional and has no value.  If it
-   is present, and the server supports this capability, the server MUST
-   copy the system configuration that are required to make the datastore
-   appear valid, which may include:
-
-   *  any targets of leafrefs with "require-instance true".
-
-   *  any targets of instance-identifiers with "require-instance true".
-
-   *  any nodes referenced by any "when" expressions.
-
-   *  any nodes referenced by any "must" expressions.
-
-   *  any nodes needed to satisfy the "min-elements" statement with a
-      value greater than zero.
-
-   When copying a node having descendants, the server MUST copy all
-   descendant nodes, including any leafs, leaf-lists, lists, presence
-   containers, non-presence containers that have any child nodes.  The
-   copy operation MUST NOT override any explicit configuration in the
-   target datastore.  The server copies the referenced system-defined
-   nodes only when triggered by the "resolve-system" parameter.  Legacy
-   clients don't see any changes in the server behaviors.
+   is present, and the server supports this capability, similarly to
+   Section 5.2, the server MUST copy the entire referenced system
+   configuration, including all descendants into the target datastore
+   (e.g., <candidate> and <running>) without the client doing the copy/
+   paste explicitly, to resolve any references not resolved by the
+   client.  The copy operation MUST NOT override any explicit
+   configuration in the target datastore.  The server copies the
+   referenced system-defined nodes only when triggered by the "resolve-
+   system" parameter.  Legacy clients don't see any changes in the
+   server behaviors.
 
    There is no distinction between the configuration automatically
    configured by the server and the one explicitly declared by the
    client, e.g., a read back of the datastore (e.g., NETCONF <get>/<get-
    config>/<get-data> operation, or RESTCONF GET method) returns
    automatically configured nodes.
+
+   Note that even though an auto-configured node is allowed to be
+   deleted from the target datastore by the client, the system may
+   automatically recreate the deleted node to make configuration valid,
+   when a "resolve-system" parameter is carried.  It is also possible
+   that the operation request (e.g., <edit-config>) may not succeed due
+   to incomplete referential integrity.
+
+
+
+
+
 
 
 
@@ -617,13 +617,6 @@ Ma, et al.              Expires 16 December 2024               [Page 11]
 
 Internet-Draft        System-defined Configuration             June 2024
 
-
-   Note that even though an auto-configured node is allowed to be
-   deleted from the target datastore by the client, the system may
-   automatically recreate the deleted node to make configuration valid,
-   when a "resolve-system" parameter is carried.  It is also possible
-   that the operation request (e.g., <edit-config>) may not succeed due
-   to incomplete referential integrity.
 
    Support for the "resolve-system" parameter is OPTIONAL.  Servers not
    supporting NMDA [RFC8342] MAY also implement this parameter without
@@ -667,19 +660,19 @@ Internet-Draft        System-defined Configuration             June 2024
 
             Figure 2: RESTCONF "resolve-system" Query Parameter
 
-
-
-Ma, et al.              Expires 16 December 2024               [Page 12]
-
-Internet-Draft        System-defined Configuration             June 2024
-
-
 5.3.2.2.  Query Parameter URI
 
    To enable a RESTCONF client to discover if the "resolve-system" query
    parameter is supported by the server, the following capability URI is
    defined, which is advertised by the server if supported, using the
    "ietf-restconf-monitoring" module defined in [RFC8040]:
+
+
+
+Ma, et al.              Expires 16 December 2024               [Page 12]
+
+Internet-Draft        System-defined Configuration             June 2024
+
 
    urn:ietf:params:restconf:capability:resolve-system:1.0
 
@@ -711,6 +704,13 @@ Internet-Draft        System-defined Configuration             June 2024
 5.5.1.  Declaring a System-defined Node in <running> Explicitly
 
    In this subsection, the following fictional module is used:
+
+
+
+
+
+
+
 
 
 
@@ -1716,20 +1716,20 @@ Internet-Draft        System-defined Configuration             June 2024
        leaf resolve-system {
          type empty;
          description
-           "When present, the server MUST copy referenced system
-            configuration into the target configuration datastore
-            where it is missing from without the client doing the
-            copy/paste explicitly.";
+           "When present, and the server supports this capability,
+            the server MUST copy the entire referenced system
+            configuration, including all descendants into the target
+            datastore (e.g., <candidate> and <running>) without the
+            client doing the copy/paste explicitly, to resolve any
+            references not resolved by the client. The copy operation
+            MUST NOT override any explicit configuration in the target
+            datastore.";
        }
      }
 
      augment "/nc:edit-config/nc:input" {
        description
          "Adds the 'resolve-system' parameter to the input of the
-          NETCONF <edit-config> operation.";
-       uses resolve-system-grouping;
-     }
-
 
 
 
@@ -1737,6 +1737,10 @@ Ma, et al.              Expires 16 December 2024               [Page 31]
 
 Internet-Draft        System-defined Configuration             June 2024
 
+
+          NETCONF <edit-config> operation.";
+       uses resolve-system-grouping;
+     }
 
      augment "/nc:copy-config/nc:input" {
        description
@@ -1781,10 +1785,6 @@ Internet-Draft        System-defined Configuration             June 2024
       Registrant Contact: The IESG.
       XML: N/A, the requested URIs are XML namespaces.
 
-10.2.  The "YANG Module Names" Registry
-
-   This document registers two module names in the 'YANG Module Names'
-   registry, defined in [RFC6020].
 
 
 
@@ -1793,6 +1793,11 @@ Ma, et al.              Expires 16 December 2024               [Page 32]
 
 Internet-Draft        System-defined Configuration             June 2024
 
+
+10.2.  The "YANG Module Names" Registry
+
+   This document registers two module names in the 'YANG Module Names'
+   registry, defined in [RFC6020].
 
       name: ietf-system-datastore
       prefix: sysds
@@ -1831,14 +1836,9 @@ Internet-Draft        System-defined Configuration             June 2024
    This section uses the template described in Section 3.7 of
    [I-D.ietf-netmod-rfc8407bis].
 
-   The "ietf-system-datastore" YANG module defines a schema for data
-   that is designed to be accessed via network management protocols such
-   as NETCONF [RFC6241] or RESTCONF [RFC8040].  These network management
-   protocols are required to use a secure transport layer and mutual
-   authentication, e.g., SSH [RFC6242] without the "none" authentication
-   option, Transport Layer Security (TLS) [RFC8446] with mutual X.509
-   authentication, and HTTPS with HTTP authentication (Section 11 of
-   [RFC9110]).
+
+
+
 
 
 
@@ -1849,6 +1849,15 @@ Ma, et al.              Expires 16 December 2024               [Page 33]
 
 Internet-Draft        System-defined Configuration             June 2024
 
+
+   The "ietf-system-datastore" YANG module defines a schema for data
+   that is designed to be accessed via network management protocols such
+   as NETCONF [RFC6241] or RESTCONF [RFC8040].  These network management
+   protocols are required to use a secure transport layer and mutual
+   authentication, e.g., SSH [RFC6242] without the "none" authentication
+   option, Transport Layer Security (TLS) [RFC8446] with mutual X.509
+   authentication, and HTTPS with HTTP authentication (Section 11 of
+   [RFC9110]).
 
    The Network Configuration Access Control Model (NACM) [RFC8341]
    provides the means to restrict access for particular NETCONF or
@@ -1886,15 +1895,6 @@ Internet-Draft        System-defined Configuration             June 2024
 
 12.1.  Normative References
 
-   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
-              Requirement Levels", BCP 14, RFC 2119,
-              DOI 10.17487/RFC2119, March 1997,
-              <https://www.rfc-editor.org/info/rfc2119>.
-
-   [RFC6241]  Enns, R., Ed., Bjorklund, M., Ed., Schoenwaelder, J., Ed.,
-              and A. Bierman, Ed., "Network Configuration Protocol
-              (NETCONF)", RFC 6241, DOI 10.17487/RFC6241, June 2011,
-              <https://www.rfc-editor.org/info/rfc6241>.
 
 
 
@@ -1905,6 +1905,16 @@ Ma, et al.              Expires 16 December 2024               [Page 34]
 
 Internet-Draft        System-defined Configuration             June 2024
 
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
+              <https://www.rfc-editor.org/info/rfc2119>.
+
+   [RFC6241]  Enns, R., Ed., Bjorklund, M., Ed., Schoenwaelder, J., Ed.,
+              and A. Bierman, Ed., "Network Configuration Protocol
+              (NETCONF)", RFC 6241, DOI 10.17487/RFC6241, June 2011,
+              <https://www.rfc-editor.org/info/rfc6241>.
 
    [RFC6470]  Bierman, A., "Network Configuration Protocol (NETCONF)
               Base Notifications", RFC 6470, DOI 10.17487/RFC6470,
@@ -1945,22 +1955,19 @@ Internet-Draft        System-defined Configuration             June 2024
 
 12.2.  Informative References
 
-   [I-D.ietf-netconf-privcand]
-              Cumming, J. and R. Wills, "NETCONF Private Candidates",
-              Work in Progress, Internet-Draft, draft-ietf-netconf-
-              privcand-03, 30 May 2024,
-              <https://datatracker.ietf.org/doc/html/draft-ietf-netconf-
-              privcand-03>.
-
-
-
-
 
 
 Ma, et al.              Expires 16 December 2024               [Page 35]
 
 Internet-Draft        System-defined Configuration             June 2024
 
+
+   [I-D.ietf-netconf-privcand]
+              Cumming, J. and R. Wills, "NETCONF Private Candidates",
+              Work in Progress, Internet-Draft, draft-ietf-netconf-
+              privcand-03, 30 May 2024,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-netconf-
+              privcand-03>.
 
    [I-D.ietf-netmod-immutable-flag]
               Ma, Q., Wu, Q., Lengyel, B., and H. Li, "YANG Metadata
@@ -2002,6 +2009,15 @@ Internet-Draft        System-defined Configuration             June 2024
               BCP 215, RFC 8340, DOI 10.17487/RFC8340, March 2018,
               <https://www.rfc-editor.org/info/rfc8340>.
 
+
+
+
+
+Ma, et al.              Expires 16 December 2024               [Page 36]
+
+Internet-Draft        System-defined Configuration             June 2024
+
+
    [RFC8407]  Bierman, A., "Guidelines for Authors and Reviewers of
               Documents Containing YANG Data Models", BCP 216, RFC 8407,
               DOI 10.17487/RFC8407, October 2018,
@@ -2010,13 +2026,6 @@ Internet-Draft        System-defined Configuration             June 2024
    [RFC8446]  Rescorla, E., "The Transport Layer Security (TLS) Protocol
               Version 1.3", RFC 8446, DOI 10.17487/RFC8446, August 2018,
               <https://www.rfc-editor.org/info/rfc8446>.
-
-
-
-Ma, et al.              Expires 16 December 2024               [Page 36]
-
-Internet-Draft        System-defined Configuration             June 2024
-
 
    [RFC8525]  Bierman, A., Bjorklund, M., Schoenwaelder, J., Watsen, K.,
               and R. Wilton, "YANG Library", RFC 8525,
@@ -2038,15 +2047,6 @@ Appendix A.  Key Use Cases
    interacts with other datastores (e.g., <candidate>, <running>,
    <intended>, and <operational>).  The following fictional interface
    data model is used:
-
-
-
-
-
-
-
-
-
 
 
 

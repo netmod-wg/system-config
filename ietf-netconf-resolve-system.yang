@@ -68,10 +68,14 @@ module ietf-netconf-resolve-system {
     leaf resolve-system {
       type empty;
       description
-        "When present, the server MUST copy referenced system
-         configuration into the target configuration datastore
-         where it is missing from without the client doing the
-         copy/paste explicitly.";
+        "When present, and the server supports this capability, 
+         the server MUST copy the entire referenced system 
+         configuration, including all descendants into the target 
+         datastore (e.g., <candidate> and <running>) without the 
+         client doing the copy/paste explicitly, to resolve any 
+         references not resolved by the client. The copy operation 
+         MUST NOT override any explicit configuration in the target 
+         datastore.";
     }
   }
 
@@ -107,4 +111,3 @@ module ietf-netconf-resolve-system {
     uses resolve-system-grouping;
   }
 }
-

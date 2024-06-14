@@ -1943,42 +1943,28 @@ boxes denote named datastores</pre>
         avoid the requirement to provide a referentially complete
         configuration.<a href="#section-5.3-1" class="pilcrow">¶</a></p>
 <p id="section-5.3-2">The "resolve-system" parameter is optional and has no value. If it
-        is present, and the server supports this capability, the server MUST
-        copy the system configuration that are required to make the datastore
-        appear valid, which may include:<a href="#section-5.3-2" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-5.3-3.1">any targets of leafrefs with "require-instance true".<a href="#section-5.3-3.1" class="pilcrow">¶</a>
-</li>
-          <li class="normal" id="section-5.3-3.2">any targets of instance-identifiers with "require-instance
-            true".<a href="#section-5.3-3.2" class="pilcrow">¶</a>
-</li>
-          <li class="normal" id="section-5.3-3.3">any nodes referenced by any "when" expressions.<a href="#section-5.3-3.3" class="pilcrow">¶</a>
-</li>
-          <li class="normal" id="section-5.3-3.4">any nodes referenced by any "must" expressions.<a href="#section-5.3-3.4" class="pilcrow">¶</a>
-</li>
-          <li class="normal" id="section-5.3-3.5">any nodes needed to satisfy the "min-elements" statement with a
-            value greater than zero.<a href="#section-5.3-3.5" class="pilcrow">¶</a>
-</li>
-        </ul>
-<p id="section-5.3-4">When copying a node having descendants, the server MUST copy
-        all descendant nodes, including any leafs, leaf-lists, lists, presence
-        containers, non-presence containers that have any child nodes. The
-        copy operation MUST NOT override any explicit configuration in the
-        target datastore. The server copies the referenced system-defined
-        nodes only when triggered by the "resolve-system" parameter. Legacy
-        clients don't see any changes in the server behaviors.<a href="#section-5.3-4" class="pilcrow">¶</a></p>
-<p id="section-5.3-5">There is no distinction between the configuration automatically
+        is present, and the server supports this capability, similarly to
+        <a href="#declare" class="xref">Section 5.2</a>, the server MUST copy the entire referenced
+        system configuration, including all descendants into the target
+        datastore (e.g., &lt;candidate&gt; and &lt;running&gt;) without the
+        client doing the copy/paste explicitly, to resolve any references not
+        resolved by the client. The copy operation MUST NOT override any
+        explicit configuration in the target datastore. The server copies the
+        referenced system-defined nodes only when triggered by the
+        "resolve-system" parameter. Legacy clients don't see any changes in
+        the server behaviors.<a href="#section-5.3-2" class="pilcrow">¶</a></p>
+<p id="section-5.3-3">There is no distinction between the configuration automatically
         configured by the server and the one explicitly declared by the
         client, e.g., a read back of the datastore (e.g., NETCONF
         &lt;get&gt;/&lt;get-config&gt;/&lt;get-data&gt; operation, or RESTCONF
-        GET method) returns automatically configured nodes.<a href="#section-5.3-5" class="pilcrow">¶</a></p>
-<p id="section-5.3-6">Note that even though an auto-configured node is allowed to be
+        GET method) returns automatically configured nodes.<a href="#section-5.3-3" class="pilcrow">¶</a></p>
+<p id="section-5.3-4">Note that even though an auto-configured node is allowed to be
         deleted from the target datastore by the client, the system may
         automatically recreate the deleted node to make configuration valid,
         when a "resolve-system" parameter is carried. It is also possible that
         the operation request (e.g., &lt;edit-config&gt;) may not succeed due
-        to incomplete referential integrity.<a href="#section-5.3-6" class="pilcrow">¶</a></p>
-<p id="section-5.3-7">Support for the "resolve-system" parameter is OPTIONAL. Servers not
+        to incomplete referential integrity.<a href="#section-5.3-4" class="pilcrow">¶</a></p>
+<p id="section-5.3-5">Support for the "resolve-system" parameter is OPTIONAL. Servers not
         supporting NMDA <span>[<a href="#RFC8342" class="xref">RFC8342</a>]</span> MAY also implement this
         parameter without implementing the system configuration datastore,
         which would only eliminate the ability to retrieve the system
@@ -1988,7 +1974,7 @@ boxes denote named datastores</pre>
         parameter is used. If a server does not implement &lt;system&gt;, it
         is up to the implementation to determine how the "resolve-system"
         mechanism fills in the missing configuration items in the target
-        datastore, e.g., &lt;candidate&gt; or &lt;running&gt;.<a href="#section-5.3-7" class="pilcrow">¶</a></p>
+        datastore, e.g., &lt;candidate&gt; or &lt;running&gt;.<a href="#section-5.3-5" class="pilcrow">¶</a></p>
 <div id="NETCONF-resolve">
 <section id="section-5.3.1">
           <h4 id="name-netconf-support-for-resolve">
@@ -2972,10 +2958,14 @@ module ietf-netconf-resolve-system {
     leaf resolve-system {
       type empty;
       description
-        "When present, the server MUST copy referenced system
-         configuration into the target configuration datastore
-         where it is missing from without the client doing the
-         copy/paste explicitly.";
+        "When present, and the server supports this capability,
+         the server MUST copy the entire referenced system
+         configuration, including all descendants into the target
+         datastore (e.g., &lt;candidate&gt; and &lt;running&gt;) without the
+         client doing the copy/paste explicitly, to resolve any
+         references not resolved by the client. The copy operation
+         MUST NOT override any explicit configuration in the target
+         datastore.";
     }
   }
 
@@ -3011,7 +3001,6 @@ module ietf-netconf-resolve-system {
     uses resolve-system-grouping;
   }
 }
-
 </pre><a href="#section-9.3-3" class="pilcrow">¶</a>
 </div>
 <p id="section-9.3-4" class="keepWithPrevious">&lt;CODE ENDS&gt;<a href="#section-9.3-4" class="pilcrow">¶</a></p>

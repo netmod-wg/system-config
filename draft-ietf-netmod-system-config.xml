@@ -508,27 +508,16 @@ boxes denote named datastores</artwork>
         configuration.</t>
 
         <t>The "resolve-system" parameter is optional and has no value. If it
-        is present, and the server supports this capability, the server MUST
-        copy the system configuration that are required to make the datastore
-        appear valid, which may include:<list style="symbols">
-            <t>any targets of leafrefs with "require-instance true".</t>
-
-            <t>any targets of instance-identifiers with "require-instance
-            true".</t>
-
-            <t>any nodes referenced by any "when" expressions.</t>
-
-            <t>any nodes referenced by any "must" expressions.</t>
-
-            <t>any nodes needed to satisfy the "min-elements" statement with a
-            value greater than zero.</t>
-          </list>When copying a node having descendants, the server MUST copy
-        all descendant nodes, including any leafs, leaf-lists, lists, presence
-        containers, non-presence containers that have any child nodes. The
-        copy operation MUST NOT override any explicit configuration in the
-        target datastore. The server copies the referenced system-defined
-        nodes only when triggered by the "resolve-system" parameter. Legacy
-        clients don't see any changes in the server behaviors.</t>
+        is present, and the server supports this capability, similarly to
+        <xref target="declare"/>, the server MUST copy the entire referenced
+        system configuration, including all descendants into the target
+        datastore (e.g., &lt;candidate&gt; and &lt;running&gt;) without the
+        client doing the copy/paste explicitly, to resolve any references not
+        resolved by the client. The copy operation MUST NOT override any
+        explicit configuration in the target datastore. The server copies the
+        referenced system-defined nodes only when triggered by the
+        "resolve-system" parameter. Legacy clients don't see any changes in
+        the server behaviors.</t>
 
         <t>There is no distinction between the configuration automatically
         configured by the server and the one explicitly declared by the
