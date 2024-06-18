@@ -105,9 +105,9 @@
     <keyword>system config</keyword>
 
     <abstract>
-      <t>This document defines how a management client and management server handle
-      YANG-modeled configuration data that is instantiated by the server
-      itself. The system-defined configuration can be referenced (e.g.,
+      <t>This document defines how a management client and management server
+      handle YANG-modeled configuration data that is instantiated by the
+      server itself. The system-defined configuration can be referenced (e.g.,
       leafref) by configuration explicitly created by a client.</t>
 
       <t>The Network Management Datastore Architecture (NMDA) defined in RFC
@@ -144,9 +144,9 @@
       nodes. Some descendant nodes may not be modifiable (e.g., the interface
       "type" set by the system).</t>
 
-      <t>This document updates the NMDA defined in <xref target="RFC8342"/> with a read-only conventional
-      configuration datastore called "system" to expose system-defined
-      configuration.</t>
+      <t>This document updates the NMDA defined in <xref target="RFC8342"/>
+      with a read-only conventional configuration datastore called "system" to
+      expose system-defined configuration.</t>
 
       <t>As an alternative to clients explicitly copying referenced
       system-defined configuration so that the datastore is valid, a
@@ -172,8 +172,8 @@
           <t>It is defined to satisfy the "min-elements" constraints.</t>
         </list></t>
 
-      <t>Conformance to this document requires that NMDA servers implement
-      the "ietf-system-datastore" YANG module (<xref
+      <t>Conformance to this document requires that NMDA servers implement the
+      "ietf-system-datastore" YANG module (<xref
       target="system-datastore"/>).</t>
 
       <section anchor="terminology" title="Terminology">
@@ -341,8 +341,8 @@
         notifications (e.g., on-change notification) <xref
         target="RFC8639"/><xref target="RFC8641"/>.</t>
 
-        <t>In general, any update of &lt;system&gt; should not cause
-        the automatic update of &lt;running&gt; to not surprise clients with
+        <t>In general, any update of &lt;system&gt; should not cause the
+        automatic update of &lt;running&gt; to not surprise clients with
         unexpected changes. In particular, the behavior of system data
         migration during software upgrade is outside the scope of this
         document. That said, here are some examples of how a server might
@@ -1489,12 +1489,11 @@ INSERT_TEXT_FROM_FILE(examples/example-interface-management.yang)
           <t>Editorial changes</t>
         </list></t>
     </section>
-
     <section anchor="Acknowledgements" numbered="no" title="Acknowledgements">
       <t>The authors would like to thank for following for discussions and
       providing input to this document: Balazs Lengyel, Robert Wilton, Juergen
-      Schoenwaelder, Andy Bierman, Martin Bjorklund, Mohamed Boucadair,
-      Alexander Clemm, and Timothy Carey.</t>
+      Schoenwaelder, Andy Bierman, Martin Bjorklund, Mohamed Boucadair, Michal
+      Va&scaron;ko, Alexander Clemm, and Timothy Carey.</t>
     </section>
 
     <section numbered="no" title="Contributors">
