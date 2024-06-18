@@ -1,7 +1,5 @@
-<interfaces xmlns="urn:example:interfacemgmt"
-            xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
-            or:origin="or:intended">
-  <interface or:origin="or:system">
+<interfaces xmlns="urn:example:interfacemgmt">
+  <interface>
     <name>lo0</name>
     <type>loopback</type>
     <enabled>true</enabled>
@@ -13,7 +11,7 @@
     <name>et-0/0/0</name>
     <type>ethernet</type>
     <enabled>true</enabled>
-    <mtu or:origin="or:system">1500</mtu>
+    <mtu>1500</mtu>
     <speed>10Mb</speed>
     <description>pre-provisioned interface</description>
   </interface>

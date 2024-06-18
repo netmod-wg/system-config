@@ -9,23 +9,23 @@ module example-bgp {
 
   container bgp {
     leaf local-as {
-      type uint32;
+      type inet:as-number;
     }
     leaf peer-as {
-      type uint32;
+      type inet:as-number;
     }
     list peer {
-      key "name";
-      leaf name {
+      key "address";
+      leaf address {
         type inet:ip-address;
       }
       leaf local-as {
-        type uint32;
+        type inet:as-number;
         description
           "... Defaults to ../local-as.";
       }
       leaf peer-as {
-        type uint32;
+        type inet:as-number;
         description
           "... Defaults to ../peer-as.";
       }

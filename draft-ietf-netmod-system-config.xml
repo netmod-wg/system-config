@@ -207,7 +207,7 @@
             &lt;intended&gt;. These datastores share a common datastore
             schema, and protocol operations allow copying data between these
             datastores. The term "conventional" is chosen as a generic
-            umbrella term for these datastores. <vspace blankLines="1"/></t>
+            umbrella term for these datastores.</t>
           </list></t>
       </section>
 
@@ -340,8 +340,7 @@
         system-controlled resources change (see <xref target="conditional"/>).
         The updates of system configuration may be obtained through YANG
         notifications (e.g., on-change notification) <xref
-        target="RFC6470"/><xref target="RFC8639"/><xref
-        target="RFC8641"/>.</t>
+        target="RFC8639"/><xref target="RFC8641"/>.</t>
 
         <t>Generally speaking, any update of &lt;system&gt; should not cause
         the automatic update of &lt;running&gt; to not surprise clients with
@@ -392,10 +391,8 @@
         applied, configuration transformations MUST be performed before
         &lt;running&gt; is merged with &lt;system&gt;.</t>
 
-        <t>Unless explicitly overridden by the client, what is in
-        &lt;system&gt; would always be present in &lt;intended&gt;. Whenever
-        configuration in &lt;system&gt; changes, the server MUST also
-        immediately update and validate &lt;intended&gt;.</t>
+        <t>Whenever configuration in &lt;system&gt; changes, the server MUST
+        also immediately update and validate &lt;intended&gt;.</t>
 
         <t>As a result, Figure 2 in <xref section="5" sectionFormat="of"
         target="RFC8342"/> is updated with the below conceptual model of
@@ -440,13 +437,15 @@ rw = read-write; ro = read-only
 boxes denote named datastores</artwork>
           </figure></t>
 
-        <t>Configuration in &lt;system&gt; is non-deletable to clients, even
-        though a client may delete a copied system node from &lt;running&gt;.
-        If system initializes a value for a particular leaf which is
-        overridden by the client with a different value in &lt;running&gt;,
-        the client may delete it in &lt;running&gt;, in which case
-        system-initialized value defined in &lt;system&gt; may still be in use
-        and appear in &lt;operational&gt;.</t>
+        <t>Configuration in &lt;system&gt; is non-deletable to clients (e.g.,
+        a system-defined list entry can never be removed), even though a
+        client may override or delete a copied system node from
+        &lt;running&gt;. If system initializes a value for a particular leaf
+        which is overridden by the client with a different value in
+        &lt;running&gt; (<xref target="modifying"/>), the client may delete it
+        in &lt;running&gt;, in which case system-initialized value defined in
+        &lt;system&gt; may still be in use and appear in
+        &lt;operational&gt;.</t>
 
         <section anchor="origin" title="Origin Metadata Annotation">
           <t>This document does not define any new origin identity when
@@ -508,13 +507,13 @@ boxes denote named datastores</artwork>
         configuration.</t>
 
         <t>The "resolve-system" parameter is optional and has no value. If it
-        is present, and the server supports this capability, similar to
-        <xref target="declare"/>, the server MUST copy the entire referenced
-        system configuration, including all descendants into the target
-        datastore (e.g., &lt;candidate&gt; and &lt;running&gt;) without the
-        client doing the copy/paste explicitly, to resolve any references not
-        resolved by the client. The copy operation MUST NOT override any
-        explicit configuration in the target datastore. The server copies the
+        is present, and the server supports this capability, similar to <xref
+        target="declare"/>, the server MUST copy the entire referenced system
+        configuration, including all descendants into the target datastore
+        (e.g., &lt;candidate&gt; and &lt;running&gt;) without the client doing
+        the copy/paste explicitly, to resolve any references not resolved by
+        the client. The copy operation MUST NOT override any explicit
+        configuration in the target datastore. The server copies the
         referenced system-defined nodes only when triggered by the
         "resolve-system" parameter. Legacy clients don't see any changes in
         the server behaviors.</t>
@@ -774,11 +773,10 @@ INSERT_TEXT_FROM_FILE(examples/interface-operational-addition.xml)
 
     <section title="Relation to Other Datastores">
       <section title="The &quot;factory-default&quot; Datastore">
-        <t>&lt;system&gt; defines the configuration that is non-deletable to
-        clients. Any deletable system-provided configuration that is populated
-        as part of &lt;running&gt; by the system at boot up, without being
-        part of the contents of a &lt;startup&gt; datastore, must be defined
-        in &lt;factory-default&gt; <xref target="RFC8808"/>, which is used to
+        <t>Any deletable system-provided configuration that is populated as
+        part of &lt;running&gt; by the system at boot up, without being part
+        of the contents of a &lt;startup&gt; datastore, must be defined in
+        &lt;factory-default&gt; <xref target="RFC8808"/>, which is used to
         initialize &lt;running&gt; when the device is first-time powered on or
         reset to its factory default condition. Deletable system configuration
         must not be defined in &lt;system&gt;.</t>
@@ -845,9 +843,10 @@ INSERT_TEXT_FROM_FILE(examples/interface-operational-addition.xml)
 
       <section title="Example Usage">
         <t>This section gives an example of data retrieval from
-        &lt;system&gt;. The fictional YANG module is used as follows: <figure>
+        &lt;system&gt;. The fictional YANG module which imports type defined
+        in <xref target="RFC6991"/> is used as follows: <figure>
               <artwork><![CDATA[
-	    INSERT_TEXT_FROM_FILE(examples/example-bgp.yang)          
+INSERT_TEXT_FROM_FILE(examples/example-bgp.yang)          
                            ]]></artwork>
           </figure></t>
 
@@ -856,7 +855,7 @@ INSERT_TEXT_FROM_FILE(examples/interface-operational-addition.xml)
         manner. JSON is used to not imply a preferred encoding in this
         document):<figure>
               <artwork><![CDATA[
-	    INSERT_TEXT_FROM_FILE(examples/bgp-running.json)          
+INSERT_TEXT_FROM_FILE(examples/bgp-running.json)          
                            ]]></artwork>
           </figure></t>
 
@@ -870,11 +869,11 @@ INSERT_TEXT_FROM_FILE(examples/interface-operational-addition.xml)
         <t>The following example shows the &lt;get-data&gt; RPC towards
         &lt;system&gt;:<figure>
               <artwork><![CDATA[
-	    INSERT_TEXT_FROM_FILE(examples/bgp-get-system.xml)          
+INSERT_TEXT_FROM_FILE(examples/bgp-get-system.xml)          
                            ]]></artwork>
           </figure><figure>
               <artwork><![CDATA[
-	    INSERT_TEXT_FROM_FILE(examples/bgp-get-system-reply.xml)          
+INSERT_TEXT_FROM_FILE(examples/bgp-get-system-reply.xml)          
                            ]]></artwork>
           </figure></t>
       </section>
@@ -1021,25 +1020,35 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
       </section>
 
       <section title="Considerations for the &quot;ietf-netconf-resolve-system&quot; YANG Module">
-        <t>The "ietf-netconf-resolve-system" YANG module extends the base
-        operations of NETCONF protocol in <xref target="RFC6241"/> and <xref
-        target="RFC8526"/>. The lowest NETCONF layer is the secure transport
-        layer, and the mandatory-to-implement secure transport is Secure Shell
-        (SSH) <xref target="RFC6242"/>.</t>
+        <t>This section uses the template described in <xref section="3.7"
+        sectionFormat="of" target="I-D.ietf-netmod-rfc8407bis"/>.</t>
+
+        <t>The "ietf-netconf-resolve-system" YANG module defines a schema for
+        data that is designed to be accessed via network management protocols
+        such as NETCONF <xref target="RFC6241"/> or RESTCONF <xref
+        target="RFC8040"/>. These network management protocols are required to
+        use a secure transport layer and mutual authentication, e.g., SSH
+        <xref target="RFC6242"/> without the "none" authentication option,
+        Transport Layer Security (TLS) <xref target="RFC8446"/> with mutual
+        X.509 authentication, and HTTPS with HTTP authentication (<xref
+        section="11" sectionFormat="of" target="RFC9110"/>).</t>
 
         <t>The Network Configuration Access Control Model (NACM) <xref
         target="RFC8341"/> provides the means to restrict access for
-        particular NETCONF users to a preconfigured subset of all available
-        NETCONF protocol operations and content.</t>
+        particular NETCONF or RESTCONF users to a preconfigured subset of all
+        available NETCONF or RESTCONF protocol operations and content.</t>
 
-        <t>The security considerations for the NETCONF protocol operations
-        (see <xref section="9" sectionFormat="of" target="RFC6241"/> and <xref
-        section="6" sectionFormat="of" target="RFC8526"/>) apply to the
-        extended RPC operations defined in this document. There is not any
-        beyond the potential performance impacts of implementing the
-        "resolve-system" parameter defined in the YANG module, which may mean
-        employing some form of rate limiting or adapting the rate threshold
-        for limiting might be a good idea to avoid DoS attacks.</t>
+        <t>The "ietf-netconf-resolve-system" YANG module extends the base
+        operations of NETCONF protocol in <xref target="RFC6241"/> and <xref
+        target="RFC8526"/>. The security considerations for the NETCONF
+        protocol operations (see <xref section="9" sectionFormat="of"
+        target="RFC6241"/> and <xref section="6" sectionFormat="of"
+        target="RFC8526"/>) apply to the extended RPC operations defined in
+        this document. There is not any beyond the potential performance
+        impacts of implementing the "resolve-system" parameter defined in the
+        YANG module, which may mean employing some form of rate limiting or
+        adapting the rate threshold for limiting might be a good idea to avoid
+        DoS attacks.</t>
       </section>
     </section>
   </middle>
@@ -1049,8 +1058,6 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
       <?rfc include="reference.RFC.2119.xml"?>
 
       <?rfc include="reference.RFC.6241.xml"?>
-
-      <?rfc include="reference.RFC.6470.xml"?>
 
       <?rfc include="reference.RFC.7950.xml"?>
 
@@ -1073,6 +1080,8 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
       <?rfc include="reference.RFC.6020.xml"?>
 
       <?rfc include="reference.RFC.6242.xml"?>
+
+      <?rfc include="reference.RFC.6991.xml"?>
 
       <?rfc include="reference.RFC.7952.xml"?>
 
@@ -1106,7 +1115,7 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
       &lt;running&gt;, &lt;intended&gt;, and &lt;operational&gt;). The
       following fictional interface data model is used:<figure>
               <artwork><![CDATA[
-	  INSERT_TEXT_FROM_FILE(examples/example-interface-management.yang)          
+INSERT_TEXT_FROM_FILE(examples/example-interface-management.yang)          
                            ]]></artwork>
         </figure>For each use case, corresponding sample configuration in
       &lt;running&gt;, &lt;system&gt;, &lt;intended&gt; and

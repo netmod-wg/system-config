@@ -3,7 +3,7 @@
   <data xmlns="urn:ietf:params:xml:ns:yang:ietf-netconf-nmda">  
     <bgp xmlns="urn:example:bgp">  
       <peer> 
-        <ip-address>2001:db8::2:3</ip-address>  
+        <address>2001:db8::2:3</address>  
         <local-port>60794</local-port> 
       </peer> 
     </bgp> 

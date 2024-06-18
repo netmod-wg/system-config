@@ -1,6 +1,16 @@
 <interfaces xmlns="urn:example:interfacemgmt">
   <interface>
-    <name>eth0</name>
+    <name>lo0</name>
+    <type>loopback</type>
+    <enabled>true</enabled>
+    <ip-address>127.0.0.1</ip-address>
+    <ip-address>::1</ip-address>
+    <description>predefined interface</description>
+  </interface>
+  <interface>
+    <name>et-0/0/0</name>
+    <type>ethernet</type>
     <mtu>1500</mtu>
+    <speed>100Mb</speed>
   </interface>
 </interfaces>
