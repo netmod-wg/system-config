@@ -1,7 +1,7 @@
 module example-application {
   yang-version 1.1;
   namespace "urn:example:application";
-  prefix "app";
+  prefix "ex-app";
 
   import ietf-inet-types {
     prefix "inet";
