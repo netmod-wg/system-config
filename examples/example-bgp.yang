@@ -1,10 +1,10 @@
 module example-bgp {
   yang-version 1.1;
   namespace "urn:example:bgp";
-  prefix ex-bgp;
+  prefix "ex-bgp";
 
   import ietf-inet-types {
-    prefix inet;
+    prefix "inet";
   }
 
   container bgp {

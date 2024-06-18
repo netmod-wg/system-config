@@ -1,5 +1,0 @@
-<interfaces xmlns="urn:example:interfacemgmt">
-  <interface>
-    <name>eth0</name>
-  </interface>
-</interfaces>
