@@ -1,10 +1,10 @@
 module example-acl {
   yang-version 1.1;
   namespace "urn:example:acl";
-  prefix "acl";
+  prefix "ex-acl";
 
   import example-application {
-    prefix "app";
+    prefix "ex-app";
   }
 
   import ietf-inet-types {
@@ -31,7 +31,8 @@ module example-acl {
         choice applications {
           leaf-list application {
             type leafref {
-              path "/app:applications/app:application/app:name";
+              path "/ex-app:applications/ex-app:application"
+                 + "/ex-app:name";
             }
           }
         }
