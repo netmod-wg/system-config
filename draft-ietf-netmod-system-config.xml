@@ -156,20 +156,22 @@
       values, and configure descendant nodes of system-defined
       configuration.</t>
 
-      <t>If a system-defined node is referenced, it refers to one of the
-      following cases throughout this document:<list style="symbols">
-          <t>It is present in a leafref "path" statement and referred as the
-          leafref value.</t>
+      <t>If a system node is referenced, it refers to the following cases
+      throughout this document:<list style="symbols">
+          <t>present as the target of leafref with "require-instance
+          true".</t>
 
-          <t>It is used as an "instance-identifier" type value.</t>
+          <t>present as the target of instance-identifier with
+          "require-instance true".</t>
 
-          <t>It is present in an XPath expression of "when" constraints.</t>
+          <t>present in an XPath expression of "when" constraints.</t>
 
-          <t>It is present in an XPath expression of "must" constraints.</t>
+          <t>present in an XPath expression of "must" constraints. </t>
 
-          <t>It is defined to satisfy the "mandatory true" constraints.</t>
+          <t>needed to satisfy the "min-elements" statement constraints with a
+          value greater than zero.</t>
 
-          <t>It is defined to satisfy the "min-elements" constraints.</t>
+          <t>needed to satisfy the "mandatory true" constraints.</t>
         </list></t>
 
       <t>Conformance to this document requires that NMDA servers implement the
@@ -219,12 +221,12 @@
       </section>
 
       <section title="Updates to RFC 8342">
-        <t>This document updates <xref format="none" target="RFC8342">RFC
-        8342</xref> to define a configuration datastore called "system" to
-        hold system configuration (<xref target="system-ds-def"/>), it also
-        redefines the term "conventional configuration datastore" from <xref
-        target="RFC8342"/> to add "system" to the list of conventional
-        configuration datastores.</t>
+        <t>This document updates <xref section="5" sectionFormat="of"
+        target="RFC8342"/> and defines a configuration datastore called
+        "system" to hold system configuration (<xref
+        target="system-ds-def"/>), it also redefines the term "conventional
+        configuration datastore" from <xref target="RFC8342"/> to add "system"
+        to the list of conventional configuration datastores.</t>
 
         <t>Configuration in &lt;running&gt; is merged with &lt;system&gt; to
         create the contents of &lt;intended&gt; after the configuration
@@ -232,8 +234,9 @@
         of inactive configuration defined in <xref target="RFC8342"/>) have
         been performed (<xref target="conceptual-model"/>).</t>
 
-        <t>The definition of "intended" origin metadata annotation identity is
-        also updated (<xref target="origin"/>).</t>
+        <t>The definition of "intended" origin metadata annotation identity in
+        <xref section="5.3.4" sectionFormat="of" target="RFC8342"/> is also
+        updated (<xref target="origin"/>).</t>
       </section>
 
       <section title="Updates to RFC 6241 and RFC 8526">
@@ -253,8 +256,9 @@
         <t>This document extends Sections <xref section="4.8"
         sectionFormat="bare" target="RFC8040"/> and <xref section="9.1.1"
         sectionFormat="bare" target="RFC8040"/> in <xref target="RFC8040"/> to
-        add a new query parameter "resolve-system" and corresponding query
-        parameter capability URI (<xref target="RESTCONF-resolve"/>).</t>
+        add an additional query parameter "resolve-system" and corresponding
+        query parameter capability URI (<xref
+        target="RESTCONF-resolve"/>).</t>
       </section>
     </section>
 
@@ -267,23 +271,23 @@
       respectively.</t>
 
       <section anchor="immediate" title="Immediately-Present">
-        <t>Immediately-present refers to system configuration which is
-        generated in &lt;system&gt; when the device is powered on,
+        <t>Immediately-present system configuration refers to configuration
+        which is generated in &lt;system&gt; when the device is powered on,
         irrespective of physical resource present or not, a special
         functionality enabled or not. An example of immediately-present system
         configuration is an always-existing loopback interface.</t>
       </section>
 
       <section anchor="conditional" title="Conditionally-Present">
-        <t>Conditionally-present refers to system configuration which is
-        generated in &lt;system&gt; based on specific conditions being met in
-        a system. For example, if a physical resource is present (e.g., an
-        interface card is inserted), the system automatically detects it and
-        loads associated configuration; when the physical resource is not
-        present (an interface card is removed), the system configuration will
-        be automatically cleared. Another example is when a special
-        functionality is enabled, e.g., when a license or feature is enabled,
-        specific configuration may be created by the system.</t>
+        <t>Conditionally-present system configuration refers to configuration
+        which is generated in &lt;system&gt; based on specific conditions
+        being met in a system. For example, if a physical resource is present
+        (e.g., an interface card is inserted), the system automatically
+        detects it and loads associated configuration; when the physical
+        resource is not present (an interface card is removed), the system
+        configuration will be automatically cleared. Another example is when a
+        special functionality is enabled, e.g., when a license or feature is
+        enabled, specific configuration may be created by the system.</t>
       </section>
     </section>
 
@@ -297,12 +301,12 @@
       &lt;intended&gt;.</t>
 
       <t><list style="symbols">
-          <t>Name: "system"</t>
+          <t>Name: "system".</t>
 
-          <t>YANG modules: all</t>
+          <t>YANG modules: all.</t>
 
           <t>YANG nodes: all "config true" data nodes up to the root of the
-          tree, generated by the system</t>
+          tree, generated by the system.</t>
 
           <t>Management operations: The datastore can be read using network
           management protocols such as NETCONF and RESTCONF, but its contents
@@ -311,8 +315,8 @@
 
           <t>Origin: This document does not define any new origin identity.
           The "system" origin Metadata Annotation <xref target="RFC7952"/> is
-          used to indicate the origin of a data item in system (<xref
-          target="origin"/>).</t>
+          used to indicate the origin of a data item provided by the system
+          (<xref target="origin"/>).</t>
 
           <t>Protocols: YANG-driven management protocols, such as NETCONF and
           RESTCONF.</t>
@@ -352,7 +356,7 @@
             &lt;running&gt;.</t>
 
             <t>Servers reject the operation to change system configuration
-            (e.g., software upgrade fails) and needs the client to update the
+            (e.g., software upgrade fails) and need the client to update the
             configuration in &lt;running&gt; as a prerequisite. Servers are
             recommended to include some hints in error responses to help
             clients understand how &lt;running&gt; should be updated.</t>
@@ -452,12 +456,13 @@ boxes denote named datastores</artwork>
           &lt;operational&gt;.</t>
 
           <t>The "intended" identity of origin value defined in <xref
-          target="RFC8342"/> to represent the origin of configuration provided
-          by &lt;intended&gt;, this document updates its definition as origin
-          source of configuration explicitly provided by &lt;running&gt;, and
-          allows a subset of configuration in &lt;intended&gt; that flows from
-          &lt;system&gt; yet is not configured or overridden explicitly in
-          &lt;running&gt; to use "system" as its origin value.</t>
+          target="RFC8342"/> represents the origin of configuration provided
+          by &lt;intended&gt;, this document updates its definition as the
+          origin source of configuration explicitly provided by
+          &lt;running&gt;, and allows a subset of configuration in
+          &lt;intended&gt; that flows from &lt;system&gt; yet is not
+          configured or overridden explicitly in &lt;running&gt; to use
+          "system" as its origin value.</t>
 
           <t>Configuration copied from &lt;system&gt; into &lt;running&gt; has
           its origin value reported as "intended" when it flows into
@@ -477,24 +482,11 @@ boxes denote named datastores</artwork>
         referenced elsewhere can be useful, for example, when the client does
         not support the "resolve-system" parameter (<xref
         target="resolve-system"/>) but needs the datastore to be referentially
-        complete. Clients MUST declare the system configuration that are
-        required to make the datastore appear valid, which may include:<list
-            style="symbols">
-            <t>any targets of leafrefs with "require-instance true".</t>
-
-            <t>any targets of instance-identifiers with "require-instance
-            true".</t>
-
-            <t>any nodes referenced by any "when" expressions.</t>
-
-            <t>any nodes referenced by any "must" expressions.</t>
-
-            <t>any nodes needed to satisfy the "min-elements" statement with a
-            value greater than zero.</t>
-          </list>When declaring a node having descendants, clients MUST also
-        declare all descendant nodes, including any leafs, leaf-lists, lists,
-        presence containers, non-presence containers that have any child
-        nodes.</t>
+        complete. Clients MUST declare the entire referenced system
+        configuration to make the datastore appear valid, i.e., if a
+        referenced system node has any descendants in &lt;system&gt;, clients
+        MUST also declare all descendant nodes, including any leafs,
+        leaf-lists, lists, containers with any child nodes.</t>
       </section>
 
       <section anchor="resolve-system"
@@ -599,12 +591,17 @@ boxes denote named datastores</artwork>
 
         <t>For instance, descendant nodes in a system-defined list entry may
         be modifiable or not, even if some system configuration has been
-        copied into &lt;running&gt; earlier. If a system node is
-        non-modifiable, then writing a different value for that node MUST
-        return an error during a &lt;edit-config&gt;, &lt;validate&gt; or
-        &lt;commit&gt; operation, depending on the target datastore. The
-        immutability of system configuration is defined in <xref
+        copied into &lt;running&gt;. If a system node is non-modifiable,
+        writing a different value for that node MUST return an error during a
+        &lt;edit-config&gt;, &lt;validate&gt; or &lt;commit&gt; operation,
+        depending on the target datastore. The immutability of system
+        configuration is defined in <xref
         target="I-D.ietf-netmod-immutable-flag"/>.</t>
+
+        <t>A server may also allow a client to add nodes to a list entry in
+        &lt;system&gt; by writing those additional nodes in &lt;running&gt;.
+        Those additional data nodes may not exist in &lt;system&gt; (i.e., an
+        addition rather than an override). </t>
       </section>
 
       <section title="Examples">
@@ -702,6 +699,7 @@ INSERT_TEXT_FROM_FILE(examples/applications-running-get-config.xml)
           identical to the ones in <xref target="declare-example"/>.</t>
         </section>
 
+        <section anchor="modify-example"
         <section title="Modifying a System-instantiated Leaf's Value">
           <t>This subsection uses the following fictional interface YANG
           module:<figure>
@@ -736,7 +734,8 @@ INSERT_TEXT_FROM_FILE(examples/interface-operational-overridden.xml)
             </figure></t>
         </section>
 
-        <section title="Configuring Descendant Nodes of a System-defined Node">
+        <section anchor="config-desc-example"
+                 title="Configuring Descendant Nodes of a System-defined Node">
           <t>In the above example, imagine the client further configures the
           description node of a "lo0" interface in &lt;running&gt; using a
           "merge" operation as follows:</t>
@@ -1406,89 +1405,6 @@ INSERT_TEXT_FROM_FILE(examples/example-interface-management.yang)
       </section>
     </section>
 
-    <section title="Changes between Revisions">
-      <t>v05 - v06<list style="symbols">
-          <t>remove inactive-until-referenced system config</t>
-
-          <t>add a new section (sec.6) to clarify the interplay between system
-          config and defaults</t>
-
-          <t>add a new section (sec.7) to clarify relation to other
-          datastores, which includes &lt;factory-default&gt; and
-          &lt;candidate&gt;/&lt;priv-candidate&gt;</t>
-
-          <t>leave the merge behavior of &lt;system&gt; and &lt;running&gt;
-          unspecified</t>
-
-          <t>augment &lt;validate&gt; and &lt;commit&gt; PRC operation to
-          support "resolve-system" parameter</t>
-
-          <t>editorial updates</t>
-        </list></t>
-
-      <t>v04 - v05<list style="symbols">
-          <t>Explicitly state that system configuration copied from
-          &lt;system&gt; into &lt;running&gt; have its origin value being
-          reported as "intended" and update the examples accordingly to
-          reflect it</t>
-
-          <t>Update the definition of "intended" origin identity in 8342 to
-          allow a subset of configuration in &lt;intended&gt; to use "system"
-          as origin value</t>
-
-          <t>State server behaviors of migrating updated system data into
-          &lt;running&gt; is beyond the scope of this document, and give a
-          couple of implementation examples</t>
-
-          <t>Remove the related statement which mandates referenced system
-          configuration must be copied into &lt;running&gt;</t>
-
-          <t>Refine usage examples (e.g., fix validation errors, remove
-          redundancy)</t>
-        </list></t>
-
-      <t>v03 - v04<list style="symbols">
-          <t>Add some implementation consideration for "resolve-system"
-          parameter</t>
-
-          <t>Define a NETCONF capability identifier for "resolve-system"
-          parameter so that the client can discover if it is supported by the
-          server.</t>
-
-          <t>state servers may upgrade copied system configuration in
-          &lt;running&gt; as well during device upgrade or licensing
-          change.</t>
-        </list></t>
-
-      <t>v02 - v03<list style="symbols">
-          <t>remove the merge mechanism related comments, as discussed in
-          https://github.com/netconf-wg/netconf-next/issues/19</t>
-
-          <t>Editorial changes</t>
-        </list></t>
-
-      <t>v01 - v02<list style="symbols">
-          <t>Define referenced system configuration</t>
-
-          <t>better clarify "resolve-system" parameter</t>
-
-          <t>update Figure 2 in NMDA RFC</t>
-
-          <t>Editorial changes</t>
-        </list></t>
-
-      <t>v00 - v01<list style="symbols">
-          <t>Clarify why client's explicit copy is not preferred but cannot be
-          avoided if resolve-system parameter is not defined</t>
-
-          <t>Clarify active system configuration</t>
-
-          <t>Update the timing when the server's auto copy should be enforced
-          if a resolve-system parameter is used</t>
-
-          <t>Editorial changes</t>
-        </list></t>
-    </section>
     <section anchor="Acknowledgements" numbered="no" title="Acknowledgements">
       <t>The authors would like to thank for following for discussions and
       providing input to this document: Balazs Lengyel, Robert Wilton, Juergen
