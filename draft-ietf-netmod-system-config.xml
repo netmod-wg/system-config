@@ -699,7 +699,6 @@ INSERT_TEXT_FROM_FILE(examples/applications-running-get-config.xml)
           identical to the ones in <xref target="declare-example"/>.</t>
         </section>
 
-        <section anchor="modify-example"
         <section title="Modifying a System-instantiated Leaf's Value">
           <t>This subsection uses the following fictional interface YANG
           module:<figure>
@@ -734,8 +733,7 @@ INSERT_TEXT_FROM_FILE(examples/interface-operational-overridden.xml)
             </figure></t>
         </section>
 
-        <section anchor="config-desc-example"
-                 title="Configuring Descendant Nodes of a System-defined Node">
+        <section title="Configuring Descendant Nodes of a System-defined Node">
           <t>In the above example, imagine the client further configures the
           description node of a "lo0" interface in &lt;running&gt; using a
           "merge" operation as follows:</t>
