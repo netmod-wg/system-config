@@ -156,22 +156,20 @@
       values, and configure descendant nodes of system-defined
       configuration.</t>
 
-      <t>If a system node is referenced, it refers to the following cases
-      throughout this document:<list style="symbols">
-          <t>present as the target of leafref with "require-instance
-          true".</t>
+      <t>If a system-defined node is referenced, it refers to one of the
+      following cases throughout this document:<list style="symbols">
+          <t>It is present in a leafref "path" statement and referred as the
+          leafref value.</t>
 
-          <t>present as the target of instance-identifier with
-          "require-instance true".</t>
+          <t>It is used as an "instance-identifier" type value.</t>
 
-          <t>present in an XPath expression of "when" constraints.</t>
+          <t>It is present in an XPath expression of "when" constraints.</t>
 
-          <t>present in an XPath expression of "must" constraints. </t>
+          <t>It is present in an XPath expression of "must" constraints.</t>
 
-          <t>needed to satisfy the "min-elements" statement constraints with a
-          value greater than zero.</t>
+          <t>It is defined to satisfy the "mandatory true" constraints.</t>
 
-          <t>needed to satisfy the "mandatory true" constraints.</t>
+          <t>It is defined to satisfy the "min-elements" constraints.</t>
         </list></t>
 
       <t>Conformance to this document requires that NMDA servers implement the
@@ -221,12 +219,12 @@
       </section>
 
       <section title="Updates to RFC 8342">
-        <t>This document updates <xref section="5" sectionFormat="of"
-        target="RFC8342"/> and defines a configuration datastore called
-        "system" to hold system configuration (<xref
-        target="system-ds-def"/>), it also redefines the term "conventional
-        configuration datastore" from <xref target="RFC8342"/> to add "system"
-        to the list of conventional configuration datastores.</t>
+        <t>This document updates <xref format="none" target="RFC8342">RFC
+        8342</xref> to define a configuration datastore called "system" to
+        hold system configuration (<xref target="system-ds-def"/>), it also
+        redefines the term "conventional configuration datastore" from <xref
+        target="RFC8342"/> to add "system" to the list of conventional
+        configuration datastores.</t>
 
         <t>Configuration in &lt;running&gt; is merged with &lt;system&gt; to
         create the contents of &lt;intended&gt; after the configuration
@@ -482,11 +480,27 @@ boxes denote named datastores</artwork>
         referenced elsewhere can be useful, for example, when the client does
         not support the "resolve-system" parameter (<xref
         target="resolve-system"/>) but needs the datastore to be referentially
-        complete. Clients MUST declare the entire referenced system
-        configuration to make the datastore appear valid, i.e., if a
-        referenced system node has any descendants in &lt;system&gt;, clients
+        complete. Clients MUST declare the system configuration that are
+        required to make the datastore appear valid, which may include:<list
+            style="symbols">
+            <t>any targets of leafrefs with "require-instance true".</t>
+
+            <t>any targets of instance-identifiers with "require-instance
+            true".</t>
+
+            <t>any nodes referenced by any "when" expressions.</t>
+
+            <t>any nodes referenced by any "must" expressions.</t>
+
+            <t>any nodes needed to satisfy the "min-elements" statement with a
+            value greater than zero.</t>
+
+            <t>any nodes needed to satisfy the "mandatory true"
+            constraints.</t>
+          </list>When declaring a referenced node having descendants, clients
         MUST also declare all descendant nodes, including any leafs,
-        leaf-lists, lists, containers with any child nodes.</t>
+        leaf-lists, lists, presence containers, non-presence containers that
+        have any child nodes.</t>
       </section>
 
       <section anchor="resolve-system"
@@ -601,7 +615,7 @@ boxes denote named datastores</artwork>
         <t>A server may also allow a client to add nodes to a list entry in
         &lt;system&gt; by writing those additional nodes in &lt;running&gt;.
         Those additional data nodes may not exist in &lt;system&gt; (i.e., an
-        addition rather than an override). </t>
+        addition rather than an override).</t>
       </section>
 
       <section title="Examples">
@@ -1215,9 +1229,9 @@ INSERT_TEXT_FROM_FILE(examples/example-interface-management.yang)
 &lt;/interfaces&gt;</artwork>
         </figure>
 
-        <t>Since the interface named "eth-0/0/0" does not exist, the
-        associated configuration is not present in &lt;operational&gt;, which
-        appears as follows:</t>
+        <t>Since the interface named "et-0/0/0" does not exist, the associated
+        configuration is not present in &lt;operational&gt;, which appears as
+        follows:</t>
 
         <figure>
           <artwork>&lt;interfaces xmlns="urn:example:interfacemgmt"
@@ -1321,7 +1335,7 @@ INSERT_TEXT_FROM_FILE(examples/example-interface-management.yang)
       </section>
 
       <section title="Client further Commits Configuration">
-        <t>If the client further sets the speed of interface "eth-0/0/0" to a
+        <t>If the client further sets the speed of interface "et-0/0/0" to a
         lower rate in &lt;running&gt; using a "merge" operation with the
         referenced node "type" being explicitly declared and enables this
         interface:<figure>
