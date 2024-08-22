@@ -132,11 +132,6 @@
       standard mechanism to retrieve what system configuration is available on
       a server.</t>
 
-      <t>System-defined nodes may be referenced (e.g., leafref) by
-      configuration explicitly created by a client, this document describes
-      the approach to bring the datastore to a valid state and satisfy
-      referential integrity constraints.</t>
-
       <t>Some servers allow the descendant nodes of system-defined
       configuration to be configured or modified. For example, the system
       configuration may contain an almost empty physical interface, while the
@@ -149,7 +144,7 @@
       expose system-defined configuration. The solution enables configuration
       explicitly created by the clients to reference nodes defined in
       &lt;system&gt;, override system-provided values, and configure
-      descendant nodes of system-defined configuration. </t>
+      descendant nodes of system-defined configuration.</t>
 
       <t>Conformance to this document requires that NMDA servers implement the
       "ietf-system-datastore" YANG module (<xref
