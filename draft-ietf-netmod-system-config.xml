@@ -114,7 +114,7 @@
       8342 is updated with a read-only conventional configuration datastore
       called "system" to expose system-defined configuration.</t>
 
-      <t>This document updates RFC 6241, RFC 8040, RFC 8342, and RFC 8526.</t>
+      <t>This document updates RFC 8342.</t>
     </abstract>
   </front>
 
@@ -147,14 +147,6 @@
       <t>This document updates the NMDA defined in <xref target="RFC8342"/>
       with a read-only conventional configuration datastore called "system" to
       expose system-defined configuration.</t>
-
-      <t>As an alternative to clients explicitly copying referenced
-      system-defined configuration so that the datastore is valid, a
-      "resolve-system" parameter is defined to allow the server to copy
-      referenced system nodes automatically. This solution enables clients to
-      reference nodes defined in &lt;system&gt;, override system-provided
-      values, and configure descendant nodes of system-defined
-      configuration.</t>
 
       <t>If a system-defined node is referenced, it refers to one of the
       following cases throughout this document:<list style="symbols">
@@ -235,28 +227,6 @@
         <t>The definition of "intended" origin metadata annotation identity in
         <xref section="5.3.4" sectionFormat="of" target="RFC8342"/> is also
         updated (<xref target="origin"/>).</t>
-      </section>
-
-      <section title="Updates to RFC 6241 and RFC 8526">
-        <t>This document updates <xref format="none" target="RFC6241">RFC
-        6241</xref> to augment the NETCONF &lt;edit-config&gt;,
-        &lt;copy-config&gt;, &lt;validate&gt;, and &lt;commit&gt; operations
-        with an additional input parameter named "resolve-system", as
-        specified in <xref target="resolve-system"/>.</t>
-
-        <t>This document also updates <xref format="none" target="RFC8526">RFC
-        8526</xref> to augment the NETCONF &lt;edit-data&gt; operation with
-        the "resolve-system" parameter, as specified in <xref
-        target="resolve-system"/>.</t>
-      </section>
-
-      <section title="Updates to RFC 8040">
-        <t>This document extends Sections <xref section="4.8"
-        sectionFormat="bare" target="RFC8040"/> and <xref section="9.1.1"
-        sectionFormat="bare" target="RFC8040"/> in <xref target="RFC8040"/> to
-        add an additional query parameter "resolve-system" and corresponding
-        query parameter capability URI (<xref
-        target="RESTCONF-resolve"/>).</t>
       </section>
     </section>
 
@@ -379,8 +349,7 @@
         <t>Clients MAY reference nodes defined in &lt;system&gt;, override
         system-provided values, and configure descendant nodes of
         system-defined configuration in &lt;running&gt;, as detailed in <xref
-        target="declare"/>, <xref target="resolve-system"/>, and <xref
-        target="modifying"/>.</t>
+        target="declare"/>, and <xref target="modifying"/>.</t>
 
         <t>To ensure the validity of &lt;intended&gt;, configuration in
         &lt;running&gt; is merged with &lt;system&gt; to become
@@ -477,12 +446,10 @@ boxes denote named datastores</artwork>
         the same node and value in &lt;system&gt;.</t>
 
         <t>The explicit declaration of system-defined nodes that are
-        referenced elsewhere can be useful, for example, when the client does
-        not support the "resolve-system" parameter (<xref
-        target="resolve-system"/>) but needs the datastore to be referentially
-        complete. Clients MUST declare the system configuration that are
-        required to make the datastore appear valid, which may include:<list
-            style="symbols">
+        referenced elsewhere can be useful, for example, when the client needs
+        the datastore to be referentially complete. Clients MUST declare the
+        system configuration that are required to make the datastore appear
+        valid, which may include:<list style="symbols">
             <t>any targets of leafrefs with "require-instance true".</t>
 
             <t>any targets of instance-identifiers with "require-instance
@@ -501,96 +468,6 @@ boxes denote named datastores</artwork>
         MUST also declare all descendant nodes, including any leafs,
         leaf-lists, lists, presence containers, non-presence containers that
         have any child nodes.</t>
-      </section>
-
-      <section anchor="resolve-system"
-               title="Servers Auto-configuring System Configuration (&quot;resolve-system&quot; parameter)">
-        <t>This document defines a new parameter "resolve-system" to the input
-        for some of the NETCONF and RESTCONF operations. Clients that are
-        aware of the "resolve-system" parameter MAY use this parameter to
-        avoid the requirement to provide a referentially complete
-        configuration.</t>
-
-        <t>The "resolve-system" parameter is optional and has no value. If it
-        is present, and the server supports this capability, similar to <xref
-        target="declare"/>, the server MUST copy the entire referenced system
-        configuration, including all descendants into the target datastore
-        (e.g., &lt;candidate&gt; and &lt;running&gt;) without the client doing
-        the copy/paste explicitly, to resolve any references not resolved by
-        the client. The copy operation MUST NOT override any explicit
-        configuration in the target datastore. The server copies the
-        referenced system-defined nodes only when triggered by the
-        "resolve-system" parameter. Legacy clients don't see any changes in
-        the server behaviors.</t>
-
-        <t>There is no distinction between the configuration automatically
-        configured by the server and the one explicitly declared by the
-        client, e.g., a read back of the datastore (e.g., NETCONF
-        &lt;get&gt;/&lt;get-config&gt;/&lt;get-data&gt; operation, or RESTCONF
-        GET method) returns automatically configured nodes.</t>
-
-        <t>Note that even though an auto-configured node is allowed to be
-        deleted from the target datastore by the client, the system may
-        automatically recreate the deleted node to make configuration valid,
-        when a "resolve-system" parameter is carried. It is also possible that
-        the operation request (e.g., &lt;edit-config&gt;) may not succeed due
-        to incomplete referential integrity.</t>
-
-        <t>Support for the "resolve-system" parameter is OPTIONAL. Servers not
-        supporting NMDA <xref target="RFC8342"/> MAY also implement this
-        parameter without implementing the system configuration datastore,
-        which would only eliminate the ability to retrieve the system
-        configuration via protocol operations. If a server implements
-        &lt;system&gt;, referenced system configuration is copied from
-        &lt;system&gt; into the target datastore when the "resolve-system"
-        parameter is used. If a server does not implement &lt;system&gt;, it
-        is up to the implementation to determine how the "resolve-system"
-        mechanism fills in the missing configuration items in the target
-        datastore, e.g., &lt;candidate&gt; or &lt;running&gt;.</t>
-
-        <section anchor="NETCONF-resolve"
-                 title="NETCONF Support for &quot;resolve-system&quot; Parameter">
-          <t>This document defines a NETCONF protocol capability to indicate
-          support for this parameter. NETCONF server that supports
-          "resolve-system" parameter MUST advertise the following capability
-          identifier:<figure>
-              <artwork>urn:ietf:params:netconf:capability:resolve-system:1.0</artwork>
-            </figure></t>
-        </section>
-
-        <section anchor="RESTCONF-resolve"
-                 title="RESTCONF Support for &quot;resolve-system&quot; Parameter">
-          <section title="Query Parameter">
-            <t>The "resolve-system" parameter may be present in the request
-            URI of some RESTCONF operations as shown in <xref
-            target="RESTCONF-fig"/>. This parameter is only allowed with no
-            values carried. If this parameter has any unexpected value, then a
-            "400 Bad Request" status-line is returned.<figure
-                anchor="RESTCONF-fig"
-                title="RESTCONF &quot;resolve-system&quot; Query Parameter">
-                <artwork>+----------------+---------+----------------------------------------+
-| Name           | Methods | Description                            |
-+----------------+---------+----------------------------------------+
-|resolve-system  | POST,   | Request the server to copy any system  |
-|                | PUT     | configuration that are required to make|
-|                | PATCH   | the datastore valid, as well as any    |
-|                |         | descendant nodes of the copied system  |
-|                |         | configuration. This parameter can be   |
-|                |         | given in any order.                    |
-+----------------+---------+----------------------------------------+</artwork>
-              </figure></t>
-          </section>
-
-          <section title="Query Parameter URI">
-            <t>To enable a RESTCONF client to discover if the "resolve-system"
-            query parameter is supported by the server, the following
-            capability URI is defined, which is advertised by the server if
-            supported, using the "ietf-restconf-monitoring" module defined in
-            <xref target="RFC8040"/>:<figure>
-                <artwork>urn:ietf:params:restconf:capability:resolve-system:1.0</artwork>
-              </figure></t>
-          </section>
-        </section>
       </section>
 
       <section anchor="modifying"
@@ -684,35 +561,6 @@ INSERT_TEXT_FROM_FILE(examples/applications-declare-operational.xml)
             </figure></t>
         </section>
 
-        <section anchor="automatical"
-                 title="Server Configuring of &lt;running&gt; Automatically">
-          <t>In the above example, a client configures an ACL rule referencing
-          system-provided applications which are not present in
-          &lt;running&gt;, the client may also issue an &lt;edit-config&gt;
-          operation with the parameter "resolve-system" to the NETCONF server
-          as follows:<figure>
-              <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/applications-resolve-system.xml)
-              ]]></artwork>
-            </figure></t>
-
-          <t>The server receiving the "resolve-system" parameter copies the
-          entire application list entries named "ftp" and "tftp" per <xref
-          target="resolve-system"/>. The following shows the configuration of
-          applications in &lt;running&gt; which is returned in the response to
-          a follow-up retrieval operation:<figure>
-              <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/applications-running-get-config.xml)
-              ]]></artwork>
-            </figure></t>
-
-          <t>Once the data is written into &lt;running&gt;, it makes no
-          difference whether it is explicitly declared by the client or
-          automatically copied by the server. The configuration for
-          applications in &lt;running&gt; and &lt;operational&gt; would be
-          identical to the ones in <xref target="declare-example"/>.</t>
-        </section>
-
         <section title="Modifying a System-instantiated Leaf's Value">
           <t>This subsection uses the following fictional interface YANG
           module:<figure>
@@ -778,10 +626,10 @@ INSERT_TEXT_FROM_FILE(examples/interface-operational-addition.xml)
       not the schema default value, and the node is not explicitly set by the
       client, it MUST be copied into the target datastore when its closest
       ancestor node needs to be copied to satisfy referential integrity
-      constraints, when triggered by the "resolve-system" parameter.</t>
+      constraints.</t>
     </section>
 
-    <section title="Relation to Other Datastores">
+    <section title="Relation to Other Datastore">
       <section title="The &quot;factory-default&quot; Datastore">
         <t>Any deletable system-provided configuration that is populated as
         part of &lt;running&gt; by the system at boot up, without being part
@@ -793,31 +641,6 @@ INSERT_TEXT_FROM_FILE(examples/interface-operational-addition.xml)
 
         <t>The &lt;factory-reset&gt; RPC operation can reset &lt;system&gt; to
         its factory default contents.</t>
-      </section>
-
-      <section title="The &quot;candidate&quot; Datastore">
-        <t>If the device supports the :candidate or :private-candidate <xref
-        target="I-D.ietf-netconf-privcand"/> capability, a client may edit the
-        candidate or private-candidate datastore without expecting it to be
-        valid until a &lt;commit&gt; or &lt;validate&gt; operation takes
-        place. The client may use the "resolve-system" parameter in one of the
-        following situations: <list style="symbols">
-            <t>The client makes an edit (e.g., NETCONF
-            &lt;edit-config&gt;/&lt;edit-data&gt;, or RESTCONF edit operation)
-            to the candidate/private-candidate datastore. This is possible,
-            though may not be required.</t>
-
-            <t>The client issues a &lt;validate&gt; operation.</t>
-
-            <t>The client issues a &lt;commit&gt; operation.</t>
-          </list></t>
-
-        <t>In particular, <xref target="I-D.ietf-netconf-privcand"/> defines
-        the concept of conflict, the server's copy referenced system nodes
-        triggered by "resolve-system" parameter might conflict with the
-        contents of &lt;running&gt;, the conflict resolution is no different
-        than the resolution of conflict caused by configuration explicitly
-        provided by the client.</t>
       </section>
     </section>
 
@@ -902,51 +725,6 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
       </section>
     </section>
 
-    <section title="The &quot;ietf-netconf-resolve-system&quot; Module">
-      <t>This YANG module is optional to implement.</t>
-
-      <section title="Data Model Overview">
-        <t>The following tree diagram <xref target="RFC8340"/> illustrates the
-        "ietf-netconf-resolve-system" module:</t>
-
-        <figure>
-          <artwork>module: ietf-netconf-resolve-system
-  augment /nc:edit-config/nc:input:
-    +---w resolve-system?   empty
-  augment /nc:copy-config/nc:input:
-    +---w resolve-system?   empty
-  augment /nc:validate/nc:input:
-    +---w resolve-system?   empty
-  augment /nc:commit/nc:input:
-    +---w resolve-system?   empty
-  augment /ncds:edit-data/ncds:input:
-    +---w resolve-system?   empty</artwork>
-        </figure>
-      </section>
-
-      <section title="Example Usage">
-        <t>Please refer to <xref target="automatical"/> for example usage of
-        the "resolve-system" parameter.</t>
-      </section>
-
-      <section title="YANG Module">
-        <t>This module imports modules "ietf-netconf" and "ietf-netconf-nmda",
-        defined in <xref target="RFC6241"/> and <xref target="RFC8526"/>,
-        respectively.</t>
-
-        <figure>
-          <preamble>&lt;CODE BEGINS&gt; file
-          "ietf-netconf-resolve-system@YYYY-MM-DD.yang"</preamble>
-
-              <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
-]]></artwork>
-
-          <postamble>&lt;CODE ENDS&gt;</postamble>
-        </figure>
-      </section>
-    </section>
-
     <section anchor="IANA" title="IANA Considerations">
       <section title="The &quot;IETF XML&quot; Registry">
         <t>This document registers two XML namespace URNs in the 'IETF XML
@@ -955,10 +733,6 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
 
         <figure>
           <artwork>   URI: urn:ietf:params:xml:ns:yang:ietf-system-datastore
-   Registrant Contact: The IESG.
-   XML: N/A, the requested URIs are XML namespaces.
-
-   URI: urn:ietf:params:xml:ns:yang:ietf-netconf-resolve-system
    Registrant Contact: The IESG.
    XML: N/A, the requested URIs are XML namespaces.</artwork>
         </figure>
@@ -973,93 +747,35 @@ INSERT_TEXT_FROM_FILE(yang/ietf-netconf-resolve-system@YYYY-MM-DD.yang)
       prefix: sysds
       namespace: urn:ietf:params:xml:ns:yang:ietf-system-datatstore
       maintained by IANA? N
-      RFC: XXXX // RFC Ed.: replace XXXX and remove this comment
-
-
-      name: ietf-netconf-resolve-system
-      prefix: ncrs
-      namespace: urn:ietf:params:xml:ns:yang:ietf-netconf-resolve-system
-      maintained by IANA? N
       RFC: XXXX // RFC Ed.: replace XXXX and remove this comment</artwork>
         </figure>
-      </section>
-
-      <section title="NETCONF Capability URN Registry">
-        <t>This document registers the following capability identifier URN in
-        the 'Network Configuration Protocol (NETCONF) Capability URNs'
-        registry:<figure>
-            <artwork>urn:ietf:params:netconf:capability:resolve-system:1.0</artwork>
-          </figure></t>
-      </section>
-
-      <section title="RESTCONF Capability URN Registry">
-        <t>This document registers a capability in the 'RESTCONF Capability
-        URNs' registry <xref target="RFC8040"/>:<figure>
-            <artwork>Index            Capability Identifier
------------------------------------------------------------------------
-:resolve-system  urn:ietf:params:restconf:capability:resolve-system:1.0</artwork>
-          </figure></t>
       </section>
     </section>
 
     <section anchor="scecurity" title="Security Considerations">
-      <section title="Considerations for the &quot;ietf-system-datastore&quot; YANG Module">
-        <t>This section uses the template described in <xref section="3.7"
-        sectionFormat="of" target="I-D.ietf-netmod-rfc8407bis"/>.</t>
+      <t>This section uses the template described in <xref section="3.7"
+      sectionFormat="of" target="I-D.ietf-netmod-rfc8407bis"/>.</t>
 
-        <t>The "ietf-system-datastore" YANG module defines a schema for data
-        that is designed to be accessed via network management protocols such
-        as NETCONF <xref target="RFC6241"/> or RESTCONF <xref
-        target="RFC8040"/>. These network management protocols are required to
-        use a secure transport layer and mutual authentication, e.g., SSH
-        <xref target="RFC6242"/> without the "none" authentication option,
-        Transport Layer Security (TLS) <xref target="RFC8446"/> with mutual
-        X.509 authentication, and HTTPS with HTTP authentication (<xref
-        section="11" sectionFormat="of" target="RFC9110"/>).</t>
+      <t>The "ietf-system-datastore" YANG module defines a schema for data
+      that is designed to be accessed via network management protocols such as
+      NETCONF <xref target="RFC6241"/> or RESTCONF <xref target="RFC8040"/>.
+      These network management protocols are required to use a secure
+      transport layer and mutual authentication, e.g., SSH <xref
+      target="RFC6242"/> without the "none" authentication option, Transport
+      Layer Security (TLS) <xref target="RFC8446"/> with mutual X.509
+      authentication, and HTTPS with HTTP authentication (<xref section="11"
+      sectionFormat="of" target="RFC9110"/>).</t>
 
-        <t>The Network Configuration Access Control Model (NACM) <xref
-        target="RFC8341"/> provides the means to restrict access for
-        particular NETCONF or RESTCONF users to a preconfigured subset of all
-        available NETCONF or RESTCONF protocol operations and content.</t>
+      <t>The Network Configuration Access Control Model (NACM) <xref
+      target="RFC8341"/> provides the means to restrict access for particular
+      NETCONF or RESTCONF users to a preconfigured subset of all available
+      NETCONF or RESTCONF protocol operations and content.</t>
 
-        <t>The YANG module only defines a identity that uses the
-        "ds:conventional" identity as its base. The module by itself does not
-        expose any data nodes that are writable, date nodes that contain
-        read-only state, or RPCs. As such, there are no additional security
-        issues related to the YANG module that need to be considered.</t>
-      </section>
-
-      <section title="Considerations for the &quot;ietf-netconf-resolve-system&quot; YANG Module">
-        <t>This section uses the template described in <xref section="3.7"
-        sectionFormat="of" target="I-D.ietf-netmod-rfc8407bis"/>.</t>
-
-        <t>The "ietf-netconf-resolve-system" YANG module defines a schema for
-        data that is designed to be accessed via network management protocols
-        such as NETCONF <xref target="RFC6241"/> or RESTCONF <xref
-        target="RFC8040"/>. These network management protocols are required to
-        use a secure transport layer and mutual authentication, e.g., SSH
-        <xref target="RFC6242"/> without the "none" authentication option,
-        Transport Layer Security (TLS) <xref target="RFC8446"/> with mutual
-        X.509 authentication, and HTTPS with HTTP authentication (<xref
-        section="11" sectionFormat="of" target="RFC9110"/>).</t>
-
-        <t>The Network Configuration Access Control Model (NACM) <xref
-        target="RFC8341"/> provides the means to restrict access for
-        particular NETCONF or RESTCONF users to a preconfigured subset of all
-        available NETCONF or RESTCONF protocol operations and content.</t>
-
-        <t>The "ietf-netconf-resolve-system" YANG module extends the base
-        operations of NETCONF protocol in <xref target="RFC6241"/> and <xref
-        target="RFC8526"/>. The security considerations for the NETCONF
-        protocol operations (see <xref section="9" sectionFormat="of"
-        target="RFC6241"/> and <xref section="6" sectionFormat="of"
-        target="RFC8526"/>) apply to the extended RPC operations defined in
-        this document. There is not any beyond the potential performance
-        impacts of implementing the "resolve-system" parameter defined in the
-        YANG module, which may mean employing some form of rate limiting or
-        adapting the rate threshold for limiting might be a good idea to avoid
-        DoS attacks.</t>
-      </section>
+      <t>The YANG module only defines a identity that uses the
+      "ds:conventional" identity as its base. The module by itself does not
+      expose any data nodes that are writable, date nodes that contain
+      read-only state, or RPCs. As such, there are no additional security
+      issues related to the YANG module that need to be considered.</t>
     </section>
   </middle>
 
