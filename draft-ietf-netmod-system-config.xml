@@ -105,14 +105,14 @@
     <keyword>system config</keyword>
 
     <abstract>
-      <t>This document defines how a management client and management server
+      <t>The Network Management Datastore Architecture (NMDA) in RFC 8342
+      defines several configuration datastores holding configuration. The
+      contents of these configuration datastores are controlled by clients.
+      This document introduces the concept of system configuration datastore
+      holding configuration controlled by the system on which a server is
+      running. It also defines how a management client and management server
       handle YANG-modeled configuration data that is instantiated by the
-      server itself. The system-defined configuration can be referenced (e.g.,
-      leafref) by configuration explicitly created by a client.</t>
-
-      <t>The Network Management Datastore Architecture (NMDA) defined in RFC
-      8342 is updated with a read-only conventional configuration datastore
-      called "system" to expose system-defined configuration.</t>
+      system.</t>
 
       <t>This document updates RFC 6241, RFC 8040, RFC 8342, and RFC 8526.</t>
     </abstract>
@@ -125,17 +125,17 @@
       that is supplied by the device itself and appears in &lt;operational&gt;
       when it is in use (Figure 2 in <xref target="RFC8342"/>).</t>
 
-      <t>However, there is a desire to enable a server to better structure and
-      expose the system configuration. NETCONF/RESTCONF clients can benefit
-      from a standard mechanism to retrieve what system configuration is
-      available on a server.</t>
+      <t>However, there is a desire to enable a server to better expose the
+      system configuration, regardless of whether it is in use, e.g., some
+      implementations defines the system configuration which must be
+      referenced to be active. NETCONF/RESTCONF clients can benefit from a
+      standard mechanism to retrieve what system configuration is available on
+      a server.</t>
 
-      <t>Some servers allow clients to reference a system-defined node which
-      is not present in the datastore. The absence of the system configuration
-      in the datastore can render the datastore invalid from the perspective
-      of a client or offline tools (e.g., missing leafref targets). This
-      document describes several approaches to bring the datastore to a valid
-      state and satisfy referential integrity constraints.</t>
+      <t>System-defined nodes may be referenced (e.g., leafref) by
+      configuration explicitly created by a client, this document describes
+      the approach to bring the datastore to a valid state and satisfy
+      referential integrity constraints.</t>
 
       <t>Some servers allow the descendant nodes of system-defined
       configuration to be configured or modified. For example, the system
@@ -146,31 +146,10 @@
 
       <t>This document updates the NMDA defined in <xref target="RFC8342"/>
       with a read-only conventional configuration datastore called "system" to
-      expose system-defined configuration.</t>
-
-      <t>As an alternative to clients explicitly copying referenced
-      system-defined configuration so that the datastore is valid, a
-      "resolve-system" parameter is defined to allow the server to copy
-      referenced system nodes automatically. This solution enables clients to
-      reference nodes defined in &lt;system&gt;, override system-provided
-      values, and configure descendant nodes of system-defined
-      configuration.</t>
-
-      <t>If a system-defined node is referenced, it refers to one of the
-      following cases throughout this document:<list style="symbols">
-          <t>It is present in a leafref "path" statement and referred as the
-          leafref value.</t>
-
-          <t>It is used as an "instance-identifier" type value.</t>
-
-          <t>It is present in an XPath expression of "when" constraints.</t>
-
-          <t>It is present in an XPath expression of "must" constraints.</t>
-
-          <t>It is defined to satisfy the "mandatory true" constraints.</t>
-
-          <t>It is defined to satisfy the "min-elements" constraints.</t>
-        </list></t>
+      expose system-defined configuration. The solution enables configuration
+      explicitly created by the clients to reference nodes defined in
+      &lt;system&gt;, override system-provided values, and configure
+      descendant nodes of system-defined configuration. </t>
 
       <t>Conformance to this document requires that NMDA servers implement the
       "ietf-system-datastore" YANG module (<xref
@@ -184,29 +163,56 @@
 
         <t>The following terms are defined in this document:<list
             style="hanging">
-            <t hangText="System configuration: ">Configuration that is
+            <t hangText="system configuration: ">Configuration that is
             provided by the system itself. System configuration is present in
             the system configuration datastore (regardless of whether it is
             applied or referenced). It is a different and separate concept
             from factory default configuration defined in <xref
             target="RFC8808"/> (which represents a preset initial
             configuration that is used to initialize the configuration of a
-            server).<vspace blankLines="1"/></t>
+            server). System configuration may also be referred to as
+            "system-defined configuration" or "system-provided configuration"
+            throughout this document.<vspace blankLines="1"/></t>
 
-            <t hangText="System configuration datastore: ">A configuration
+            <t hangText="system configuration datastore: ">A configuration
             datastore holding configuration provided by the system itself.
             This datastore is referred to as "&lt;system&gt;".</t>
           </list>This document redefines the term "conventional configuration
         datastore" in <xref section="3" sectionFormat="of" target="RFC8342"/>
         to add "system" to the list of conventional configuration
         datastores:<list style="hanging">
-            <t hangText="Conventional configuration datastore: ">One of the
+            <t hangText="conventional configuration datastore: ">One of the
             following set of configuration datastores: &lt;running&gt;,
             &lt;startup&gt;, &lt;candidate&gt;, &lt;system&gt;, and
             &lt;intended&gt;. These datastores share a common datastore
             schema, and protocol operations allow copying data between these
             datastores. The term "conventional" is chosen as a generic
             umbrella term for these datastores.</t>
+
+            <t hangText="system node: ">An instance in the data tree that is
+            provided by the system itself. System node may also be called
+            "system-defined node" or "system-provided node" throughout this
+            document.</t>
+
+            <t hangText="referenced node: ">A referenced node is one of:<list
+                style="symbols">
+                <t>Targets of leafref values defined via the "path"
+                statement.</t>
+
+                <t>Targets of "instance-identifier" type values.</t>
+
+                <t>Nodes present in an XPath expression of "when"
+                constraints.</t>
+
+                <t>Nodes present in an XPath expression of "must"
+                constraints.</t>
+
+                <t>Nodes defined to satisfy the "mandatory true"
+                constraints.</t>
+
+                <t>Nodes defined to satisfy the "min-elements"
+                constraints.</t>
+              </list></t>
           </list></t>
       </section>
 
@@ -228,9 +234,9 @@
 
         <t>Configuration in &lt;running&gt; is merged with &lt;system&gt; to
         create the contents of &lt;intended&gt; after the configuration
-        transformations to &lt;running&gt; (e.g., template expansion, removal
-        of inactive configuration defined in <xref target="RFC8342"/>) have
-        been performed (<xref target="conceptual-model"/>).</t>
+        transformations (e.g., template expansion, removal of inactive
+        configuration defined in <xref target="RFC8342"/>) have been performed
+        (<xref target="conceptual-model"/>).</t>
 
         <t>The definition of "intended" origin metadata annotation identity in
         <xref section="5.3.4" sectionFormat="of" target="RFC8342"/> is also
