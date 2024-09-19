@@ -43,7 +43,7 @@
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
 <rfc category="std" docName="draft-ietf-netmod-system-config-latest"
-     ipr="trust200902" submissionType="IETF" updates="8342,6241,8526,8040">
+     ipr="trust200902" submissionType="IETF" updates="8342">
   <front>
     <title abbrev="System-defined Configuration">System-defined
     Configuration</title>
@@ -110,9 +110,7 @@
       contents of these configuration datastores are controlled by clients.
       This document introduces the concept of system configuration datastore
       holding configuration controlled by the system on which a server is
-      running. It also defines how a management client and management server
-      handle YANG-modeled configuration data that is instantiated by the
-      system.</t>
+      running.</t>
 
       <t>This document updates RFC 8342.</t>
     </abstract>
@@ -126,8 +124,8 @@
       when it is in use (Figure 2 in <xref target="RFC8342"/>).</t>
 
       <t>However, there is a desire to enable a server to better expose the
-      system configuration, regardless of whether it is in use, e.g., some
-      implementations defines the system configuration which must be
+      system configuration, regardless of whether it is in use. For example,
+      some implementations defines the system configuration which must be
       referenced to be active. NETCONF/RESTCONF clients can benefit from a
       standard mechanism to retrieve what system configuration is available on
       a server.</t>
@@ -146,7 +144,8 @@
       &lt;system&gt;, override system-provided values, and configure
       descendant nodes of system-defined configuration.</t>
 
-      <t>Conformance to this document requires that NMDA servers implement the
+      <t>The solution defined in this document requires the use of NMDA.
+      Conformance to this document requires NMDA servers implement the
       "ietf-system-datastore" YANG module (<xref
       target="system-datastore"/>).</t>
 
@@ -167,7 +166,17 @@
             configuration that is used to initialize the configuration of a
             server). System configuration may also be referred to as
             "system-defined configuration" or "system-provided configuration"
-            throughout this document.<vspace blankLines="1"/></t>
+            throughout this document.</t>
+
+            <t hangText="immediately-present system configuration: ">System
+            configuration that is generated immediately when the device is
+            powered on, irrespective of physical resource present or not, a
+            special functionality enabled or not, see also <xref
+            target="immediate"/>.</t>
+
+            <t hangText="conditionally-present system configuration: ">System
+            configuration that is generated based on specific conditions being
+            met in a system, see also <xref target="conditional"/>.</t>
 
             <t hangText="system configuration datastore: ">A configuration
             datastore holding configuration provided by the system itself.
@@ -240,31 +249,27 @@
     </section>
 
     <section anchor="categories" title="Kinds of System Configuration">
-      <t>This document defines two types of system configuration:
-      configuration that is generated in &lt;system&gt; immediately when the
-      device boots and configuration that is generated in &lt;system&gt; only
-      when specific conditions being met on a device, they are described in
-      <xref target="immediate"/> and <xref target="conditional"/>,
-      respectively.</t>
+      <t>This document defines two types of system configuration, which are
+      described in <xref target="immediate"/> and <xref
+      target="conditional"/>, respectively.</t>
 
-      <section anchor="immediate" title="Immediately-Present">
-        <t>Immediately-present system configuration refers to configuration
-        which is generated in &lt;system&gt; when the device is powered on,
-        irrespective of physical resource present or not, a special
-        functionality enabled or not. An example of immediately-present system
-        configuration is an always-existing loopback interface.</t>
+      <section anchor="immediate" title="Immediately-present">
+        <t>Immediately-present system configuration is generated in
+        &lt;system&gt; unconditionally when the device is powered on. An
+        example of immediately-present system configuration is an
+        always-existing loopback interface.</t>
       </section>
 
-      <section anchor="conditional" title="Conditionally-Present">
-        <t>Conditionally-present system configuration refers to configuration
-        which is generated in &lt;system&gt; based on specific conditions
-        being met in a system. For example, if a physical resource is present
-        (e.g., an interface card is inserted), the system automatically
-        detects it and loads associated configuration; when the physical
-        resource is not present (an interface card is removed), the system
-        configuration will be automatically cleared. Another example is when a
-        special functionality is enabled, e.g., when a license or feature is
-        enabled, specific configuration may be created by the system.</t>
+      <section anchor="conditional" title="Conditionally-present">
+        <t>Conditionally-present system configuration is generated in
+        &lt;system&gt; if specific conditions are met. For example, if a
+        physical resource is present (e.g., an interface card is inserted),
+        the system automatically detects it and loads associated
+        configuration; when the physical resource is not present (an interface
+        card is removed), the system configuration will be automatically
+        cleared. Another example is when a special functionality is enabled,
+        e.g., when a license or feature is enabled, specific configuration may
+        be created by the system.</t>
       </section>
     </section>
 
@@ -306,79 +311,33 @@
       reboots.</t>
     </section>
 
-    <section title="Static Characteristics of &lt;system&gt;">
-      <section title="Read-only to Clients">
-        <t>The system datastore is read-only (i.e., edits towards
-        &lt;system&gt; directly MUST be denied), though the client may be
-        allowed to override the value of a system-initialized node (see <xref
-        target="modifying"/>).</t>
-      </section>
+    <section anchor="conceptual-model" title="Conceptual Model of Datastores">
+      <t>Clients may provide configuration nodes that reference nodes defined
+      in &lt;system&gt;, override system-provided values, and configure
+      descendant nodes of system-defined configuration in &lt;running&gt;, as
+      detailed in <xref target="declare"/>, and <xref
+      target="modifying"/>.</t>
 
-      <section title="May Change via Software Upgrades or Resource Changes">
-        <t>The contents of &lt;system&gt; MAY change dynamically under various
-        conditions, such as license change, software upgrade, and
-        system-controlled resources change (see <xref target="conditional"/>).
-        The updates of system configuration may be obtained through YANG
-        notifications (e.g., on-change notification) <xref
-        target="RFC8639"/><xref target="RFC8641"/>.</t>
+      <t>To ensure the validity of &lt;intended&gt;, configuration in
+      &lt;running&gt; is merged with &lt;system&gt; to become
+      &lt;intended&gt;, in which process, configuration appearing in
+      &lt;running&gt; takes precedence over the same node in &lt;system&gt;.
+      Since it is unspecified how to merge configuration before
+      transformations, if &lt;system&gt; or &lt;running&gt; includes
+      configuration that requires further transformation (e.g., template
+      expansion, removal of inactive configuration defined in <xref
+      target="RFC8342"/>) before it can be applied, configuration
+      transformations MUST be performed before &lt;running&gt; is merged with
+      &lt;system&gt;.</t>
 
-        <t>In general, any update of &lt;system&gt; should not cause the
-        automatic update of &lt;running&gt; to not surprise clients with
-        unexpected changes. In particular, the behavior of system data
-        migration during software upgrade is outside the scope of this
-        document. That said, here are some examples of how a server might
-        handle this scenario ensuring &lt;running&gt; remains accurate:<list
-            style="symbols">
-            <t>Servers migrate system configuration update in
-            &lt;running&gt;.</t>
+      <t>Whenever configuration in &lt;system&gt; changes, the server MUST
+      also immediately update and validate &lt;intended&gt;.</t>
 
-            <t>Servers reject the operation to change system configuration
-            (e.g., software upgrade fails) and need the client to update the
-            configuration in &lt;running&gt; as a prerequisite. Servers are
-            recommended to include some hints in error responses to help
-            clients understand how &lt;running&gt; should be updated.</t>
-          </list></t>
-      </section>
-
-      <section title="No Impact to &lt;operational&gt;">
-        <t>This work intends to have no impact to &lt;operational&gt; and does
-        not define any new origin identity beyond <xref section="5.3.4"
-        sectionFormat="of" target="RFC8342"/>. The existence of &lt;system&gt;
-        enables a subset of those system-generated nodes to be defined like
-        configuration, i.e., made visible to clients in order for being
-        referenced or configurable prior to present in &lt;operational&gt;.
-        "config false" nodes are out of scope, hence existing "config false"
-        nodes are not impacted by this work.</t>
-      </section>
-    </section>
-
-    <section title="Dynamic Behaviors">
-      <section anchor="conceptual-model"
-               title="Conceptual Model of Datastores">
-        <t>Clients MAY reference nodes defined in &lt;system&gt;, override
-        system-provided values, and configure descendant nodes of
-        system-defined configuration in &lt;running&gt;, as detailed in <xref
-        target="declare"/>, and <xref target="modifying"/>.</t>
-
-        <t>To ensure the validity of &lt;intended&gt;, configuration in
-        &lt;running&gt; is merged with &lt;system&gt; to become
-        &lt;intended&gt;, in which process, configuration appearing in
-        &lt;running&gt; takes precedence over the same node in &lt;system&gt;.
-        If &lt;running&gt; includes configuration that requires further
-        transformation (e.g., template expansion, removal of inactive
-        configuration defined in <xref target="RFC8342"/>) before it can be
-        applied, configuration transformations MUST be performed before
-        &lt;running&gt; is merged with &lt;system&gt;.</t>
-
-        <t>Whenever configuration in &lt;system&gt; changes, the server MUST
-        also immediately update and validate &lt;intended&gt;.</t>
-
-        <t>As a result, Figure 2 in <xref section="5" sectionFormat="of"
-        target="RFC8342"/> is updated with the below conceptual model of
-        datastores which incorporates the system configuration
-        datastore.<figure align="center"
-            title="Architectural Model of Datastores">
-            <artwork>               +-------------+                 +-----------+
+      <t>As a result, Figure 2 in <xref section="5" sectionFormat="of"
+      target="RFC8342"/> is updated with the below conceptual model of
+      datastores which incorporates the system configuration datastore.<figure
+          align="center" title="Architectural Model of Datastores">
+          <artwork>               +-------------+                 +-----------+
                | &lt;candidate&gt; |                 | &lt;startup&gt; |
                |  (ct, rw)   |&lt;---+      +----&gt;| (ct, rw)  |
                +-------------+    |      |     +-----------+
@@ -387,12 +346,12 @@
 | &lt;system&gt;  |         +-------&gt;| &lt;running&gt; |&lt;--------+
 | (ct, ro)  |                  | (ct, rw)  |
 +-----------+                  +-----------+
+     |                              |
+     |                              |
      |                              | // configuration transformations,
-     |                              | // e.g., removal of nodes marked
-     |           // merge           | // as "inactive", expansion of
-     +--------------+---------------+ // templates
-                    |
-                    |
+     +--------------+---------------+ // e.g., removal of nodes marked
+                    |                 // as "inactive", expansion of
+                    |                 // templates
                     v
               +------------+
               | &lt;intended&gt; |  // subject to validation
@@ -414,69 +373,67 @@
 ct = config true; cf = config false
 rw = read-write; ro = read-only
 boxes denote named datastores</artwork>
-          </figure></t>
+        </figure></t>
 
-        <t>Configuration in &lt;system&gt; is non-deletable to clients (e.g.,
-        a system-defined list entry can never be removed), even though a
-        client may override or delete a copied system node from
-        &lt;running&gt;. If system initializes a value for a particular leaf
-        which is overridden by the client with a different value in
-        &lt;running&gt; (<xref target="modifying"/>), the client may delete it
-        in &lt;running&gt;, in which case system-initialized value defined in
-        &lt;system&gt; may still be in use and appear in
+      <t>Configuration in &lt;system&gt; is non-deletable to clients (e.g., a
+      system-defined list entry can never be removed), even though a node
+      defined in &lt;system&gt; may be overridden in &lt;running&gt;.
+      Deletable system configuration must not be defined in &lt;system&gt;
+      (see also <xref target="factory"/>). If system initializes a value for a
+      particular leaf which is overridden by the client with a different value
+      in &lt;running&gt; (<xref target="modifying"/>), the node in
+      &lt;running&gt; may be removed later, in which case system-initialized
+      value defined in &lt;system&gt; may still be in use and appear in
+      &lt;operational&gt;.</t>
+
+      <section anchor="origin" title="Origin Metadata Annotation">
+        <t>This document does not define any new origin identity when
+        &lt;system&gt; interacts with &lt;intended&gt; and flows into
         &lt;operational&gt;.</t>
 
-        <section anchor="origin" title="Origin Metadata Annotation">
-          <t>This document does not define any new origin identity when
-          &lt;system&gt; interacts with &lt;intended&gt; and flows into
-          &lt;operational&gt;.</t>
+        <t>The "intended" identity of origin value defined in <xref
+        target="RFC8342"/> represents the origin of configuration provided by
+        &lt;intended&gt;, this document updates its definition as the origin
+        source of configuration explicitly provided by &lt;running&gt;, and
+        allows a subset of configuration in &lt;intended&gt; that flows from
+        &lt;system&gt; yet is not configured or overridden explicitly in
+        &lt;running&gt; to use "system" as its origin value.</t>
+      </section>
+    </section>
 
-          <t>The "intended" identity of origin value defined in <xref
-          target="RFC8342"/> represents the origin of configuration provided
-          by &lt;intended&gt;, this document updates its definition as the
-          origin source of configuration explicitly provided by
-          &lt;running&gt;, and allows a subset of configuration in
-          &lt;intended&gt; that flows from &lt;system&gt; yet is not
-          configured or overridden explicitly in &lt;running&gt; to use
-          "system" as its origin value.</t>
-
-          <t>Configuration copied from &lt;system&gt; into &lt;running&gt; has
-          its origin value reported as "intended" when it flows into
-          &lt;operational&gt;.</t>
-        </section>
+    <section title="Static Characteristics">
+      <section title="Read-only to Clients">
+        <t>The system datastore is read-only (i.e., edits towards
+        &lt;system&gt; directly MUST be denied), though the client may be
+        allowed to override the value of a system-initialized node (see <xref
+        target="modifying"/>).</t>
       </section>
 
-      <section anchor="declare"
-               title="Explicit Declaration of System Configuration">
-        <t>It is possible for a client to explicitly declare system
-        configuration nodes with the same values as in &lt;system&gt;, by
-        configuring a node (list/leaf-list entry, leaf, etc.) in the target
-        datastore (e.g., &lt;candidate&gt; and &lt;running&gt;) that matches
-        the same node and value in &lt;system&gt;.</t>
+      <section title="No Impact to &lt;operational&gt;">
+        <t>This work intends to have no impact to &lt;operational&gt; and does
+        not define any new origin identity beyond <xref section="5.3.4"
+        sectionFormat="of" target="RFC8342"/>. The existence of &lt;system&gt;
+        enables a subset of those system-generated nodes to be defined like
+        configuration, i.e., made visible to clients in order for being
+        referenced or configurable prior to present in &lt;operational&gt;.
+        "config false" nodes are out of scope, hence existing "config false"
+        nodes are not impacted by this work.</t>
+      </section>
+    </section>
 
-        <t>The explicit declaration of system-defined nodes that are
-        referenced elsewhere can be useful, for example, when the client needs
-        the datastore to be referentially complete. Clients MUST declare the
-        system configuration that are required to make the datastore appear
-        valid, which may include:<list style="symbols">
-            <t>any targets of leafrefs with "require-instance true".</t>
+    <section title="Dynamic Behaviors">
+      <section title="May Change via Software Upgrades or Resource Changes">
+        <t>The contents of &lt;system&gt; MAY change dynamically under various
+        conditions, such as license change, software upgrade, and
+        system-controlled resources change (see <xref target="conditional"/>).
+        The updates of system configuration may be obtained through YANG
+        notifications (e.g., on-change notification) <xref
+        target="RFC8639"/><xref target="RFC8641"/>.</t>
+      </section>
 
-            <t>any targets of instance-identifiers with "require-instance
-            true".</t>
-
-            <t>any nodes referenced by any "when" expressions.</t>
-
-            <t>any nodes referenced by any "must" expressions.</t>
-
-            <t>any nodes needed to satisfy the "min-elements" statement with a
-            value greater than zero.</t>
-
-            <t>any nodes needed to satisfy the "mandatory true"
-            constraints.</t>
-          </list>When declaring a referenced node having descendants, clients
-        MUST also declare all descendant nodes, including any leafs,
-        leaf-lists, lists, presence containers, non-presence containers that
-        have any child nodes.</t>
+      <section anchor="declare" title="Referencing System Configuration">
+        <t>Clients can create configuration data in &lt;running&gt; that
+        references nodes in &lt;system&gt;. </t>
       </section>
 
       <section anchor="modifying"
@@ -497,156 +454,25 @@ boxes denote named datastores</artwork>
         depending on the target datastore. The immutability of system
         configuration is defined in <xref
         target="I-D.ietf-netmod-immutable-flag"/>.</t>
+      </section>
 
+      <section title="Configuring Descendant nodes of System Configuration">
         <t>A server may also allow a client to add nodes to a list entry in
         &lt;system&gt; by writing those additional nodes in &lt;running&gt;.
         Those additional data nodes may not exist in &lt;system&gt; (i.e., an
         addition rather than an override).</t>
       </section>
-
-      <section title="Examples">
-        <t>This section presents some sample data models and corresponding
-        contents of various datastores with different dynamic behaviors
-        described above. The XML snippets are used only for illustration
-        purposes.</t>
-
-        <t/>
-
-        <section anchor="declare-example"
-                 title="Declaring a System-defined Node in &lt;running&gt; Explicitly">
-          <t>In this subsection, the following fictional module is
-          used:<figure>
-              <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/example-application.yang)
-              ]]></artwork>
-            </figure>A fictional ACL YANG module is used as follows, which
-          defines a leafref for the leaf-list "application" data node to refer
-          to an existing application name.<figure>
-              <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/example-acl.yang)
-              ]]></artwork>
-            </figure></t>
-
-          <t>The server may predefine some applications as a convenience for
-          clients. The system-instantiated application entries may be present
-          in &lt;system&gt; as follows:</t>
-
-          <figure>
-              <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/applications-system.xml)
-              ]]></artwork>
-          </figure>
-
-          <t>The client may also define its customized applications. Suppose
-          the configuration of applications is present in &lt;running&gt; as
-          follows:<figure>
-              <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/applications-running.xml)
-              ]]></artwork>
-            </figure></t>
-
-          <t>If a client configures an ACL rule referencing system-provided
-          applications which are not present in &lt;running&gt;, it is
-          possible for the client to explicitly declare the referenced system
-          configuration. For instance, the client explicitly configuring the
-          entire application entries named "ftp" and "tftp" are as
-          follows:<figure>
-              <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/applications-declare.xml)
-             ]]></artwork>
-            </figure></t>
-
-          <t>And the configuration of ACL rules referencing application "ftp"
-          and "tftp":<figure>
-              <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/applications-referenced.xml)
-              ]]></artwork>
-            </figure></t>
-
-          <t>And &lt;operational&gt; might contain the following:<figure>
-              <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/applications-declare-operational.xml)
-              ]]></artwork>
-            </figure></t>
-        </section>
-
-        <section title="Modifying a System-instantiated Leaf's Value">
-          <t>This subsection uses the following fictional interface YANG
-          module:<figure>
-              <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/example-interface.yang)
-              ]]></artwork>
-            </figure></t>
-
-          <t>Suppose the system provides a loopback interface (named "lo0")
-          with a MTU value "65536", a default IPv4 address of "127.0.0.1", and
-          a default IPv6 address of "::1". The configuration of "lo0"
-          interface is present in &lt;system&gt; as follows:<figure>
-              <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/interface-system.xml)
-              ]]></artwork>
-            </figure></t>
-
-          <t>A client modifies the value of MTU to 9216 and adds the following
-          configuration into &lt;running&gt; using a "merge" operation:</t>
-
-          <figure>
-              <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/interface-running-overridden.xml)
-              ]]></artwork>
-          </figure>
-
-          <t>Then the configuration of interfaces is present in
-          &lt;operational&gt; as follows:<figure>
-              <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/interface-operational-overridden.xml)
-              ]]></artwork>
-            </figure></t>
-        </section>
-
-        <section title="Configuring Descendant Nodes of a System-defined Node">
-          <t>In the above example, imagine the client further configures the
-          description node of a "lo0" interface in &lt;running&gt; using a
-          "merge" operation as follows:</t>
-
-          <figure>
-              <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/interface-running-addition.xml)
-              ]]></artwork>
-          </figure>
-
-          <t>The configuration of interface "lo0" is present in
-          &lt;operational&gt; as follows:<figure>
-              <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/interface-operational-addition.xml)
-              ]]></artwork>
-            </figure></t>
-        </section>
-      </section>
-    </section>
-
-    <section anchor="defaults" title="Default Interactions">
-      <t>&lt;system&gt; should not contain the configuration using the schema
-      default value, either specified in the "default" statement or described
-      in the "description" statement.</t>
-
-      <t>Any value provided by the system that is not the schema default value
-      MUST be contained in &lt;system&gt;. If system provides a value that is
-      not the schema default value, and the node is not explicitly set by the
-      client, it MUST be copied into the target datastore when its closest
-      ancestor node needs to be copied to satisfy referential integrity
-      constraints.</t>
     </section>
 
     <section title="Relation to Other Datastore">
-      <section title="The &quot;factory-default&quot; Datastore">
+      <section anchor="factory"
+               title="The &quot;factory-default&quot; Datastore">
         <t>Any deletable system-provided configuration that is populated as
         part of &lt;running&gt; by the system at boot up, without being part
         of the contents of a &lt;startup&gt; datastore, must be defined in
         &lt;factory-default&gt; <xref target="RFC8808"/>, which is used to
         initialize &lt;running&gt; when the device is first-time powered on or
-        reset to its factory default condition. Deletable system configuration
-        must not be defined in &lt;system&gt;.</t>
+        reset to its factory default condition.</t>
 
         <t>The &lt;factory-reset&gt; RPC operation can reset &lt;system&gt; to
         its factory default contents.</t>
@@ -681,43 +507,6 @@ INSERT_TEXT_FROM_FILE(examples/interface-operational-addition.xml)
     |  +--- operational</artwork>
           </figure>The diagram above uses syntax that is similar to but not
         defined in <xref target="RFC8340"/>.</t>
-      </section>
-
-      <section title="Example Usage">
-        <t>This section gives an example of data retrieval from
-        &lt;system&gt;. The fictional YANG module which imports type defined
-        in <xref target="RFC6991"/> is used as follows: <figure>
-              <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/example-bgp.yang)          
-                           ]]></artwork>
-          </figure></t>
-
-        <t>Suppose the following BGP peer configuration is added to
-        &lt;running&gt; ( The message is presented in a protocol-independent
-        manner. JSON is used to not imply a preferred encoding in this
-        document):<figure>
-              <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/bgp-running.json)          
-                           ]]></artwork>
-          </figure></t>
-
-        <t>Since both the "local-port" and "remote-port" nodes are not
-        provided in &lt;running&gt;, and there is a default value specified
-        for "remote-port", the system will select a value for "local-port".
-        Note that per <xref target="defaults"/>, the configuration using the
-        schema default value described in the "description" statement will not
-        be included in &lt;system&gt;.</t>
-
-        <t>The following example shows the &lt;get-data&gt; RPC towards
-        &lt;system&gt;:<figure>
-              <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/bgp-get-system.xml)          
-                           ]]></artwork>
-          </figure><figure>
-              <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/bgp-get-system-reply.xml)          
-                           ]]></artwork>
-          </figure></t>
       </section>
 
       <section title="YANG Module">
@@ -843,6 +632,161 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
       <xi:include href="https://datatracker.ietf.org/doc/bibxml3/reference.I-D.ietf-netmod-rfc8407bis.xml"
                   xmlns:xi="http://www.w3.org/2001/XInclude"/>
     </references>
+
+    <section title="Examples">
+      <t>This section presents some sample data models and corresponding
+      contents of various datastores with different dynamic behaviors
+      described above. The XML snippets are used only for illustration
+      purposes.</t>
+
+      <t/>
+
+      <section anchor="declare-example"
+               title="Declaring a System-defined Node in &lt;running&gt; Explicitly">
+        <t>In this subsection, the following fictional module is used:<figure>
+              <artwork><![CDATA[
+INSERT_TEXT_FROM_FILE(examples/example-application.yang)
+              ]]></artwork>
+            </figure>A fictional ACL YANG module is used as follows, which
+          defines a leafref for the leaf-list "application" data node to refer
+          to an existing application name.<figure>
+              <artwork><![CDATA[
+INSERT_TEXT_FROM_FILE(examples/example-acl.yang)
+              ]]></artwork>
+            </figure></t>
+
+          <t>The server may predefine some applications as a convenience for
+          clients. The system-instantiated application entries may be present
+          in &lt;system&gt; as follows:</t>
+
+          <figure>
+              <artwork><![CDATA[
+INSERT_TEXT_FROM_FILE(examples/applications-system.xml)
+              ]]></artwork>
+          </figure>
+
+          <t>The client may also define its customized applications. Suppose
+          the configuration of applications is present in &lt;running&gt; as
+          follows:<figure>
+              <artwork><![CDATA[
+INSERT_TEXT_FROM_FILE(examples/applications-running.xml)
+              ]]></artwork>
+            </figure></t>
+
+        <t>If a client configures an ACL rule referencing system-provided
+        applications which are not present in &lt;running&gt;, it is possible
+        for the client to explicitly declare the referenced system
+        configuration. For instance, the client explicitly configuring the
+        entire application entries named "ftp" and "tftp" are as
+        follows:<figure>
+              <artwork><![CDATA[
+INSERT_TEXT_FROM_FILE(examples/applications-declare.xml)
+             ]]></artwork>
+          </figure></t>
+
+        <t>And the configuration of ACL rules referencing application "ftp"
+        and "tftp":<figure>
+              <artwork><![CDATA[
+INSERT_TEXT_FROM_FILE(examples/applications-referenced.xml)
+              ]]></artwork>
+            </figure></t>
+
+          <t>And &lt;operational&gt; might contain the following:<figure>
+              <artwork><![CDATA[
+INSERT_TEXT_FROM_FILE(examples/applications-declare-operational.xml)
+              ]]></artwork>
+            </figure></t>
+      </section>
+
+      <section title="Modifying a System-instantiated Leaf's Value">
+        <t>This subsection uses the following fictional interface YANG
+        module:<figure>
+              <artwork><![CDATA[
+INSERT_TEXT_FROM_FILE(examples/example-interface.yang)
+              ]]></artwork>
+            </figure></t>
+
+        <t>Suppose the system provides a loopback interface (named "lo0") with
+        a MTU value "65536", a default IPv4 address of "127.0.0.1", and a
+        default IPv6 address of "::1". The configuration of "lo0" interface is
+        present in &lt;system&gt; as follows:<figure>
+              <artwork><![CDATA[
+INSERT_TEXT_FROM_FILE(examples/interface-system.xml)
+              ]]></artwork>
+            </figure></t>
+
+        <t>A client modifies the value of MTU to 9216 and adds the following
+        configuration into &lt;running&gt; using a "merge" operation:</t>
+
+        <figure>
+              <artwork><![CDATA[
+INSERT_TEXT_FROM_FILE(examples/interface-running-overridden.xml)
+              ]]></artwork>
+          </figure>
+
+          <t>Then the configuration of interfaces is present in
+          &lt;operational&gt; as follows:<figure>
+              <artwork><![CDATA[
+INSERT_TEXT_FROM_FILE(examples/interface-operational-overridden.xml)
+              ]]></artwork>
+            </figure></t>
+      </section>
+
+      <section title="Configuring Descendant Nodes of a System-defined Node">
+        <t>In the above example, imagine the client further configures the
+        description node of a "lo0" interface in &lt;running&gt; using a
+        "merge" operation as follows:</t>
+
+        <figure>
+              <artwork><![CDATA[
+INSERT_TEXT_FROM_FILE(examples/interface-running-addition.xml)
+              ]]></artwork>
+          </figure>
+
+          <t>The configuration of interface "lo0" is present in
+          &lt;operational&gt; as follows:<figure>
+              <artwork><![CDATA[
+INSERT_TEXT_FROM_FILE(examples/interface-operational-addition.xml)
+              ]]></artwork>
+            </figure></t>
+      </section>
+    </section>
+
+    <section title="Example Usage">
+      <t>This section gives an example of data retrieval from &lt;system&gt;.
+      The fictional YANG module which imports type defined in <xref
+      target="RFC6991"/> is used as follows: <figure>
+              <artwork><![CDATA[
+INSERT_TEXT_FROM_FILE(examples/example-bgp.yang)          
+                           ]]></artwork>
+        </figure></t>
+
+      <t>Suppose the following BGP peer configuration is added to
+      &lt;running&gt; ( The message is presented in a protocol-independent
+      manner. JSON is used to not imply a preferred encoding in this
+      document):<figure>
+              <artwork><![CDATA[
+INSERT_TEXT_FROM_FILE(examples/bgp-running.json)          
+                           ]]></artwork>
+          </figure></t>
+
+      <t>Since both the "local-port" and "remote-port" nodes are not provided
+      in &lt;running&gt;, and there is a default value specified for
+      "remote-port", the system will select a value for "local-port". Note
+      that the configuration using the schema default value described in the
+      "description" statement will not be included in &lt;system&gt;.</t>
+
+      <t>The following example shows the &lt;get-data&gt; RPC towards
+      &lt;system&gt;:<figure>
+              <artwork><![CDATA[
+INSERT_TEXT_FROM_FILE(examples/bgp-get-system.xml)          
+                           ]]></artwork>
+          </figure><figure>
+              <artwork><![CDATA[
+INSERT_TEXT_FROM_FILE(examples/bgp-get-system-reply.xml)          
+                           ]]></artwork>
+          </figure></t>
+      </section>
 
     <section title="Key Use Cases">
       <t>This section provides three use cases related to how &lt;system&gt;
@@ -1160,15 +1104,15 @@ Jan Lindblad
 Cisco Systems
 Email: jlindbla@cisco.com
 
+Jason Sterne
+Nokia
+Email: jason.sterne@nokia.com</artwork>
+
 Chongfeng Xie
 China Telecom
 Beijing
 China
 Email: xiechf@chinatelecom.cn
-
-Jason Sterne
-Nokia
-Email: jason.sterne@nokia.com</artwork>
       </figure>
     </section>
   </back>
