@@ -433,7 +433,7 @@ boxes denote named datastores</artwork>
 
       <section anchor="declare" title="Referencing System Configuration">
         <t>Clients can create configuration data in &lt;running&gt; that
-        references nodes in &lt;system&gt;. </t>
+        references nodes in &lt;system&gt;.</t>
       </section>
 
       <section anchor="modifying"
@@ -633,7 +633,7 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
                   xmlns:xi="http://www.w3.org/2001/XInclude"/>
     </references>
 
-    <section title="Examples">
+    <section title="Example of Dynamic Behaviors">
       <t>This section presents some sample data models and corresponding
       contents of various datastores with different dynamic behaviors
       described above. The XML snippets are used only for illustration
