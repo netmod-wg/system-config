@@ -168,16 +168,6 @@
             "system-defined configuration" or "system-provided configuration"
             throughout this document.</t>
 
-            <t hangText="immediately-present system configuration: ">System
-            configuration that is generated immediately when the device is
-            powered on, irrespective of physical resource present or not, a
-            special functionality enabled or not, see also <xref
-            target="immediate"/>.</t>
-
-            <t hangText="conditionally-present system configuration: ">System
-            configuration that is generated based on specific conditions being
-            met in a system, see also <xref target="conditional"/>.</t>
-
             <t hangText="system configuration datastore: ">A configuration
             datastore holding configuration provided by the system itself.
             This datastore is referred to as "&lt;system&gt;".</t>
@@ -254,22 +244,23 @@
       target="conditional"/>, respectively.</t>
 
       <section anchor="immediate" title="Immediately-present">
-        <t>Immediately-present system configuration is generated in
-        &lt;system&gt; unconditionally when the device is powered on. An
-        example of immediately-present system configuration is an
-        always-existing loopback interface.</t>
+        <t>Immediately-present refers to system configuration which is
+        generated in &lt;system&gt; when the device is powered on,
+        irrespective of physical resource present or not, a special
+        functionality enabled or not. An example of immediately-present system
+        configuration is an always-existing loopback interface.</t>
       </section>
 
       <section anchor="conditional" title="Conditionally-present">
-        <t>Conditionally-present system configuration is generated in
-        &lt;system&gt; if specific conditions are met. For example, if a
-        physical resource is present (e.g., an interface card is inserted),
-        the system automatically detects it and loads associated
-        configuration; when the physical resource is not present (an interface
-        card is removed), the system configuration will be automatically
-        cleared. Another example is when a special functionality is enabled,
-        e.g., when a license or feature is enabled, specific configuration may
-        be created by the system.</t>
+        <t>Conditionally-present refers to system configuration which is
+        generated in &lt;system&gt; based on specific conditions being met in
+        a system. For example, if a physical resource is present (e.g., an
+        interface card is inserted), the system automatically detects it and
+        loads associated configuration; when the physical resource is not
+        present (an interface card is removed), the system configuration will
+        be automatically cleared. Another example is when a special
+        functionality is enabled, e.g., when a license or feature is enabled,
+        specific configuration may be created by the system.</t>
       </section>
     </section>
 
@@ -421,7 +412,7 @@ boxes denote named datastores</artwork>
       </section>
     </section>
 
-    <section title="Dynamic Behaviors">
+    <section anchor="dynamic" title="Dynamic Behaviors">
       <section title="May Change via Software Upgrades or Resource Changes">
         <t>The contents of &lt;system&gt; MAY change dynamically under various
         conditions, such as license change, software upgrade, and
@@ -636,62 +627,54 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
     <section title="Example of Dynamic Behaviors">
       <t>This section presents some sample data models and corresponding
       contents of various datastores with different dynamic behaviors
-      described above. The XML snippets are used only for illustration
-      purposes.</t>
+      described in <xref target="dynamic"/>. The XML snippets are used only
+      for illustration purposes.</t>
 
       <t/>
 
       <section anchor="declare-example"
-               title="Declaring a System-defined Node in &lt;running&gt; Explicitly">
+               title="Referencing System-defined Nodes">
         <t>In this subsection, the following fictional module is used:<figure>
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/example-application.yang)
               ]]></artwork>
-            </figure>A fictional ACL YANG module is used as follows, which
-          defines a leafref for the leaf-list "application" data node to refer
+          </figure>A fictional ACL YANG module is used as follows, which
+        defines a leafref for the leaf-list "application" data node to refer
           to an existing application name.<figure>
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/example-acl.yang)
               ]]></artwork>
             </figure></t>
 
-          <t>The server may predefine some applications as a convenience for
-          clients. The system-instantiated application entries may be present
-          in &lt;system&gt; as follows:</t>
+        <t>The server may predefine some applications as a convenience for
+        clients, these applications are immediately-present system
+        configuration. When the device is powered on, the system-instantiated
+        application entries may be present in &lt;system&gt; as follows:</t>
 
-          <figure>
+        <figure>
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/applications-system.xml)
               ]]></artwork>
           </figure>
 
-          <t>The client may also define its customized applications. Suppose
-          the configuration of applications is present in &lt;running&gt; as
-          follows:<figure>
+        <t>The client may also define its customized applications. Suppose the
+        configuration of applications is present in &lt;running&gt; as
+        follows:<figure>
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/applications-running.xml)
               ]]></artwork>
             </figure></t>
 
-        <t>If a client configures an ACL rule referencing system-provided
-        applications which are not present in &lt;running&gt;, it is possible
-        for the client to explicitly declare the referenced system
-        configuration. For instance, the client explicitly configuring the
-        entire application entries named "ftp" and "tftp" are as
-        follows:<figure>
-              <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/applications-declare.xml)
-             ]]></artwork>
+        <t>If a client configures an ACL rule referencing some system-provided
+        or customized applications, the configuration of ACL rule may be shown
+        as follows:<figure>
+             <artwork><![CDATA[
+INSERT_TEXT_FROM_FILE(examples/applications-referenced.xml)
+               ]]></artwork>
           </figure></t>
 
-        <t>And the configuration of ACL rules referencing application "ftp"
-        and "tftp":<figure>
-              <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/applications-referenced.xml)
-              ]]></artwork>
-            </figure></t>
-
-          <t>And &lt;operational&gt; might contain the following:<figure>
+        <t>And &lt;operational&gt; might contain the configuration of
+        applications as follows:<figure>
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/applications-declare-operational.xml)
               ]]></artwork>
@@ -704,16 +687,17 @@ INSERT_TEXT_FROM_FILE(examples/applications-declare-operational.xml)
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/example-interface.yang)
               ]]></artwork>
-            </figure></t>
+          </figure></t>
 
-        <t>Suppose the system provides a loopback interface (named "lo0") with
-        a MTU value "65536", a default IPv4 address of "127.0.0.1", and a
-        default IPv6 address of "::1". The configuration of "lo0" interface is
-        present in &lt;system&gt; as follows:<figure>
+        <t>Suppose the system provides an immediately-present loopback
+        interface (named "lo0") with a MTU value "65536", a default IPv4
+        address of "127.0.0.1", and a default IPv6 address of "::1". The
+        configuration of "lo0" interface is present in &lt;system&gt; as
+        follows:<figure>
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/interface-system.xml)
               ]]></artwork>
-            </figure></t>
+          </figure></t>
 
         <t>A client modifies the value of MTU to 9216 and adds the following
         configuration into &lt;running&gt; using a "merge" operation:</t>
@@ -724,8 +708,8 @@ INSERT_TEXT_FROM_FILE(examples/interface-running-overridden.xml)
               ]]></artwork>
           </figure>
 
-          <t>Then the configuration of interfaces is present in
-          &lt;operational&gt; as follows:<figure>
+        <t>Then the configuration of interfaces is present in
+        &lt;operational&gt; as follows:<figure>
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/interface-operational-overridden.xml)
               ]]></artwork>
@@ -752,42 +736,6 @@ INSERT_TEXT_FROM_FILE(examples/interface-operational-addition.xml)
       </section>
     </section>
 
-    <section title="Example Usage">
-      <t>This section gives an example of data retrieval from &lt;system&gt;.
-      The fictional YANG module which imports type defined in <xref
-      target="RFC6991"/> is used as follows: <figure>
-              <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/example-bgp.yang)          
-                           ]]></artwork>
-        </figure></t>
-
-      <t>Suppose the following BGP peer configuration is added to
-      &lt;running&gt; ( The message is presented in a protocol-independent
-      manner. JSON is used to not imply a preferred encoding in this
-      document):<figure>
-              <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/bgp-running.json)          
-                           ]]></artwork>
-          </figure></t>
-
-      <t>Since both the "local-port" and "remote-port" nodes are not provided
-      in &lt;running&gt;, and there is a default value specified for
-      "remote-port", the system will select a value for "local-port". Note
-      that the configuration using the schema default value described in the
-      "description" statement will not be included in &lt;system&gt;.</t>
-
-      <t>The following example shows the &lt;get-data&gt; RPC towards
-      &lt;system&gt;:<figure>
-              <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/bgp-get-system.xml)          
-                           ]]></artwork>
-          </figure><figure>
-              <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(examples/bgp-get-system-reply.xml)          
-                           ]]></artwork>
-          </figure></t>
-      </section>
-
     <section title="Key Use Cases">
       <t>This section provides three use cases related to how &lt;system&gt;
       interacts with other datastores (e.g., &lt;candidate&gt;,
@@ -802,10 +750,10 @@ INSERT_TEXT_FROM_FILE(examples/example-interface-management.yang)
       illustration purposes.</t>
 
       <section title="Device Powers On">
-        <t>When the device is powered on, suppose the system provides a
-        loopback interface (named "lo0") which is not explicitly configured in
-        &lt;running&gt;. Thus, no configuration for interfaces appears in
-        &lt;running&gt;;</t>
+        <t>When the device is powered on, suppose the system provides an
+        immediately-present loopback interface (named "lo0") which is not
+        explicitly configured in &lt;running&gt;. Thus, no configuration for
+        interfaces appears in &lt;running&gt;;</t>
 
         <t>And the contents of &lt;system&gt; are:</t>
 
@@ -920,8 +868,9 @@ INSERT_TEXT_FROM_FILE(examples/example-interface-management.yang)
 
       <section title="Operator Installs Card into a Chassis">
         <t>When the interface is installed by the operator, the system will
-        detect it and generate the associated configuration in &lt;system&gt;.
-        The contents of &lt;running&gt; keep unchanged:</t>
+        detect it and generate the associated conditionally-present interface
+        configuration in &lt;system&gt;. The contents of &lt;running&gt; keep
+        unchanged:</t>
 
         <figure>
           <artwork>&lt;interfaces xmlns="urn:example:interfacemgmt"&gt; 
