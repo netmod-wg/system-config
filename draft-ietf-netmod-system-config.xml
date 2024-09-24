@@ -599,8 +599,6 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
 
       <?rfc include="reference.RFC.6242.xml"?>
 
-      <?rfc include="reference.RFC.6991.xml"?>
-
       <?rfc include="reference.RFC.7952.xml"?>
 
       <?rfc include="reference.RFC.8174.xml"?>
