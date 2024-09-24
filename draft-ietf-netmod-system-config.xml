@@ -306,8 +306,7 @@
       <t>Clients may provide configuration nodes that reference nodes defined
       in &lt;system&gt;, override system-provided values, and configure
       descendant nodes of system-defined configuration in &lt;running&gt;, as
-      detailed in <xref target="declare"/>, and <xref
-      target="modifying"/>.</t>
+      detailed in <xref target="dynamic"/>.</t>
 
       <t>To ensure the validity of &lt;intended&gt;, configuration in
       &lt;running&gt; is merged with &lt;system&gt; to become
@@ -423,8 +422,14 @@ boxes denote named datastores</artwork>
       </section>
 
       <section anchor="declare" title="Referencing System Configuration">
-        <t>Clients can create configuration data in &lt;running&gt; that
-        references nodes in &lt;system&gt;.</t>
+        <t>Clients may create configuration data in &lt;running&gt; that
+        references nodes in &lt;system&gt;. For example, some implementations
+        may set built-in entries as a convenience that are allowed to be
+        referenced by clients. It is also possible for the clients to define
+        their customized entries for reference.</t>
+
+        <t><xref target="declare-example"/> provides an example of a client
+        referencing system-defined nodes.</t>
       </section>
 
       <section anchor="modifying"
@@ -432,19 +437,16 @@ boxes denote named datastores</artwork>
         <t>In some cases, a server may allow some parts of system
         configuration (e.g., a leaf's value) to be modified. Modification of
         system configuration is achieved by the client writing configuration
-        to &lt;running&gt; that overrides the system configuration.
-        Configurations defined in &lt;running&gt; take precedence over system
-        configuration nodes in &lt;system&gt; if the server allows the nodes
-        to be modified.</t>
-
-        <t>For instance, descendant nodes in a system-defined list entry may
-        be modifiable or not, even if some system configuration has been
-        copied into &lt;running&gt;. If a system node is non-modifiable,
-        writing a different value for that node MUST return an error during a
-        &lt;edit-config&gt;, &lt;validate&gt; or &lt;commit&gt; operation,
-        depending on the target datastore. The immutability of system
+        nodes with intended values in &lt;running&gt; that override the
+        matched configuration nodes at the corresponding level in
+        &lt;system&gt;. Configurations defined in &lt;running&gt; take
+        precedence over system configuration nodes in &lt;system&gt; if the
+        server allows the nodes to be modified. The immutability of system
         configuration is defined in <xref
         target="I-D.ietf-netmod-immutable-flag"/>.</t>
+
+        <t><xref target="modify-example"/> provides an example of a client
+        overriding a system-instantiated leaf's value.</t>
       </section>
 
       <section title="Configuring Descendant nodes of System Configuration">
@@ -452,6 +454,9 @@ boxes denote named datastores</artwork>
         &lt;system&gt; by writing those additional nodes in &lt;running&gt;.
         Those additional data nodes may not exist in &lt;system&gt; (i.e., an
         addition rather than an override).</t>
+
+        <t><xref target="configure-example"/> provides an example of a client
+        configuring descendant nodes of a system-defined node.</t>
       </section>
     </section>
 
@@ -582,8 +587,6 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
 
       <?rfc include="reference.RFC.8342.xml"?>
 
-      <?rfc include="reference.RFC.8526.xml"?>
-
       <?rfc include="reference.RFC.8639.xml"?>
 
       <?rfc include="reference.RFC.8641.xml"?>
@@ -617,9 +620,6 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
       <xi:include href="https://datatracker.ietf.org/doc/bibxml3/reference.I-D.ietf-netmod-immutable-flag.xml"
                   xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
-      <xi:include href="https://datatracker.ietf.org/doc/bibxml3/reference.I-D.ietf-netconf-privcand.xml"
-                  xmlns:xi="http://www.w3.org/2001/XInclude"/>
-
       <xi:include href="https://datatracker.ietf.org/doc/bibxml3/reference.I-D.ietf-netmod-rfc8407bis.xml"
                   xmlns:xi="http://www.w3.org/2001/XInclude"/>
     </references>
@@ -644,7 +644,7 @@ INSERT_TEXT_FROM_FILE(examples/example-application.yang)
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/example-acl.yang)
               ]]></artwork>
-            </figure></t>
+          </figure></t>
 
         <t>The server may predefine some applications as a convenience for
         clients, these applications are immediately-present system
@@ -681,7 +681,8 @@ INSERT_TEXT_FROM_FILE(examples/applications-declare-operational.xml)
             </figure></t>
       </section>
 
-      <section title="Modifying a System-instantiated Leaf's Value">
+      <section anchor="modify-example"
+               title="Modifying a System-instantiated Leaf's Value">
         <t>This subsection uses the following fictional interface YANG
         module:<figure>
               <artwork><![CDATA[
@@ -706,7 +707,7 @@ INSERT_TEXT_FROM_FILE(examples/interface-system.xml)
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/interface-running-overridden.xml)
               ]]></artwork>
-          </figure>
+        </figure>
 
         <t>Then the configuration of interfaces is present in
         &lt;operational&gt; as follows:<figure>
@@ -716,7 +717,8 @@ INSERT_TEXT_FROM_FILE(examples/interface-operational-overridden.xml)
             </figure></t>
       </section>
 
-      <section title="Configuring Descendant Nodes of a System-defined Node">
+      <section anchor="configure-example"
+               title="Configuring Descendant Nodes of a System-defined Node">
         <t>In the above example, imagine the client further configures the
         description node of a "lo0" interface in &lt;running&gt; using a
         "merge" operation as follows:</t>
@@ -727,7 +729,7 @@ INSERT_TEXT_FROM_FILE(examples/interface-running-addition.xml)
               ]]></artwork>
           </figure>
 
-          <t>The configuration of interface "lo0" is present in
+        <t>The configuration of interface "lo0" is present in
           &lt;operational&gt; as follows:<figure>
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/interface-operational-addition.xml)
