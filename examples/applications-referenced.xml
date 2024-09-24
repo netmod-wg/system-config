@@ -8,7 +8,7 @@
       </ipv4>
       <application>ftp</application>
       <application>tftp</application>
-      <application>my-app-1</application>
+      <application>my-smtp</application>
     </matches>
     <packet-action>forward</packet-action>
   </acl-rule>
