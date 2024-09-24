@@ -1697,6 +1697,12 @@ Contributors
    Nokia
    Email: jason.sterne@nokia.com
 
+   Chongfeng Xie
+   China Telecom
+   Beijing
+   China
+   Email: xiechf@chinatelecom.cn
+
 Authors' Addresses
 
    Qiufang Ma (editor)
@@ -1719,12 +1725,6 @@ Authors' Addresses
 
    Chong Feng
    Email: fengchongllly@gmail.com
-
-
-
-
-
-
 
 
 
