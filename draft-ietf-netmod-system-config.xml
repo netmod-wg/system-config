@@ -229,19 +229,28 @@
         <t>Configuration in &lt;running&gt; is merged with &lt;system&gt; to
         create the contents of &lt;intended&gt; after the configuration
         transformations (e.g., template expansion, removal of inactive
-        configuration defined in <xref target="RFC8342"/>) have been performed
-        (<xref target="conceptual-model"/>).</t>
+        configuration defined in <xref target="RFC8342"/>) have been
+        performed, as described in <xref target="conceptual-model"/>.</t>
 
-        <t>The definition of "intended" origin metadata annotation identity in
-        <xref section="5.3.4" sectionFormat="of" target="RFC8342"/> is also
-        updated (<xref target="origin"/>).</t>
+        <t>This document also updates the definition of "intended" origin
+        metadata annotation identity defined in <xref section="5.3.4"
+        sectionFormat="of" target="RFC8342"/>. The "intended" identity of
+        origin value defined in <xref target="RFC8342"/> represents the origin
+        of configuration provided by &lt;intended&gt;, this document updates
+        its definition as the origin source of configuration explicitly
+        provided by &lt;running&gt;, and allows a subset of configuration in
+        &lt;intended&gt; that flows from &lt;system&gt; yet is not configured
+        or overridden explicitly in &lt;running&gt; to use "system" as its
+        origin value.</t>
       </section>
     </section>
 
     <section anchor="categories" title="Kinds of System Configuration">
-      <t>This document defines two types of system configuration, which are
-      described in <xref target="immediate"/> and <xref
-      target="conditional"/>, respectively.</t>
+      <t>This document defines two types of system configuration.
+      Configuration that is immediately-present and configuration that is
+      conditionally-present. These types of system configuration are described
+      in <xref target="immediate"/> and <xref target="conditional"/>,
+      respectively.</t>
 
       <section anchor="immediate" title="Immediately-present">
         <t>Immediately-present refers to system configuration which is
@@ -287,9 +296,9 @@
           protocols.</t>
 
           <t>Origin: This document does not define any new origin identity.
-          The "system" origin Metadata Annotation <xref target="RFC7952"/> is
-          used to indicate the origin of a data item provided by the system
-          (<xref target="origin"/>).</t>
+          The "system" identity of origin metadata annotation <xref
+          target="RFC7952"/> is used to indicate the origin of a data item
+          provided by the system.</t>
 
           <t>Protocols: YANG-driven management protocols, such as NETCONF and
           RESTCONF.</t>
@@ -365,30 +374,17 @@ rw = read-write; ro = read-only
 boxes denote named datastores</artwork>
         </figure></t>
 
-      <t>Configuration in &lt;system&gt; is non-deletable to clients (e.g., a
+      <t>Configuration in &lt;system&gt; is undeletable to clients (e.g., a
       system-defined list entry can never be removed), even though a node
-      defined in &lt;system&gt; may be overridden in &lt;running&gt;.
-      Deletable system configuration must not be defined in &lt;system&gt;
-      (see also <xref target="factory"/>). If system initializes a value for a
-      particular leaf which is overridden by the client with a different value
-      in &lt;running&gt; (<xref target="modifying"/>), the node in
+      defined in &lt;system&gt; may be overridden in &lt;running&gt;. If it is
+      desired to enable a client to delete system configuration, it can be
+      approximated using &lt;factory-default&gt;, as described in <xref
+      target="factory"/>. If system initializes a value for a particular leaf
+      which is overridden by the client with a different value in
+      &lt;running&gt; (<xref target="modifying"/>), the node in
       &lt;running&gt; may be removed later, in which case system-initialized
       value defined in &lt;system&gt; may still be in use and appear in
       &lt;operational&gt;.</t>
-
-      <section anchor="origin" title="Origin Metadata Annotation">
-        <t>This document does not define any new origin identity when
-        &lt;system&gt; interacts with &lt;intended&gt; and flows into
-        &lt;operational&gt;.</t>
-
-        <t>The "intended" identity of origin value defined in <xref
-        target="RFC8342"/> represents the origin of configuration provided by
-        &lt;intended&gt;, this document updates its definition as the origin
-        source of configuration explicitly provided by &lt;running&gt;, and
-        allows a subset of configuration in &lt;intended&gt; that flows from
-        &lt;system&gt; yet is not configured or overridden explicitly in
-        &lt;running&gt; to use "system" as its origin value.</t>
-      </section>
     </section>
 
     <section title="Static Characteristics">
@@ -400,14 +396,14 @@ boxes denote named datastores</artwork>
       </section>
 
       <section title="No Impact to &lt;operational&gt;">
-        <t>This work intends to have no impact to &lt;operational&gt; and does
-        not define any new origin identity beyond <xref section="5.3.4"
-        sectionFormat="of" target="RFC8342"/>. The existence of &lt;system&gt;
-        enables a subset of those system-generated nodes to be defined like
-        configuration, i.e., made visible to clients in order for being
-        referenced or configurable prior to present in &lt;operational&gt;.
-        "config false" nodes are out of scope, hence existing "config false"
-        nodes are not impacted by this work.</t>
+        <t>This work has no impact to &lt;operational&gt;. Notably, it does
+        not define any new origin identity as it is able to use the existing
+        "system" identity defined in<xref section="5.3.4" sectionFormat="of"
+        target="RFC8342"/>. &lt;system&gt; enables system-generated nodes to
+        be defined like configuration, i.e., made visible to clients in order
+        for being referenced or configurable prior to present in
+        &lt;operational&gt;. "config false" nodes are out of scope, hence
+        existing "config false" nodes are not impacted by this work.</t>
       </section>
     </section>
 
@@ -424,9 +420,9 @@ boxes denote named datastores</artwork>
       <section anchor="declare" title="Referencing System Configuration">
         <t>Clients may create configuration data in &lt;running&gt; that
         references nodes in &lt;system&gt;. For example, some implementations
-        may set built-in entries as a convenience that are allowed to be
-        referenced by clients. It is also possible for the clients to define
-        their customized entries for reference.</t>
+        may define system nodes solely as a convenience for clients to
+        reference. It is also possible for the clients to define their
+        customized nodes for reference.</t>
 
         <t><xref target="declare-example"/> provides an example of a client
         referencing system-defined nodes.</t>
@@ -460,7 +456,10 @@ boxes denote named datastores</artwork>
       </section>
     </section>
 
-    <section title="Relation to Other Datastore">
+    <section title="Interesting Relationships to Other Datastores">
+      <t>This section discusses the relationship of &lt;system&gt; to other
+      datastores known at the time of this writing.</t>
+
       <section anchor="factory"
                title="The &quot;factory-default&quot; Datastore">
         <t>Any deletable system-provided configuration that is populated as
@@ -479,10 +478,10 @@ boxes denote named datastores</artwork>
              title="The &quot;ietf-system-datastore&quot; Module">
       <section title="Data Model Overview">
         <t>This YANG module defines a new YANG identity named "system" that
-        uses the "ds:datastore" identity defined in [RFC8342]. A client can
-        discover the system configuration datastore support on the server by
-        reading the YANG library information from the operational state
-        datastore.</t>
+        uses the "ds: conventional" identity defined in <xref
+        target="RFC8342"/> as its base. A client can discover the system
+        configuration datastore support on the server by reading the YANG
+        library information from the operational state datastore.</t>
 
         <t>The system datastore is defined as a conventional configuration
         datastore and shares a common datastore schema with other conventional
@@ -676,7 +675,7 @@ INSERT_TEXT_FROM_FILE(examples/applications-referenced.xml)
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/applications-declare-operational.xml)
               ]]></artwork>
-            </figure></t>
+          </figure></t>
       </section>
 
       <section anchor="modify-example"

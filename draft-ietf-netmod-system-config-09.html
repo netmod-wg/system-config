@@ -1200,7 +1200,7 @@ li > p:last-of-type {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ma, et al.</td>
-<td class="center">Expires 28 March 2025</td>
+<td class="center">Expires 29 March 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1216,12 +1216,12 @@ li > p:last-of-type {
 <a href="https://www.rfc-editor.org/rfc/rfc8342" class="eref">8342</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-09-24" class="published">24 September 2024</time>
+<time datetime="2024-09-25" class="published">25 September 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-03-28">28 March 2025</time></dd>
+<dd class="expires"><time datetime="2025-03-29">29 March 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1269,7 +1269,7 @@ li > p:last-of-type {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 28 March 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 29 March 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1328,11 +1328,6 @@ li > p:last-of-type {
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4">
             <p id="section-toc.1-1.4.1"><a href="#section-4" class="xref">4</a>.  <a href="#name-conceptual-model-of-datasto" class="xref">Conceptual Model of Datastores</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.1">
-                <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="xref">4.1</a>.  <a href="#name-origin-metadata-annotation" class="xref">Origin Metadata Annotation</a></p>
-</li>
-            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
             <p id="section-toc.1-1.5.1"><a href="#section-5" class="xref">5</a>.  <a href="#name-static-characteristics" class="xref">Static Characteristics</a></p>
@@ -1363,7 +1358,7 @@ li > p:last-of-type {
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
-            <p id="section-toc.1-1.7.1"><a href="#section-7" class="xref">7</a>.  <a href="#name-relation-to-other-datastore" class="xref">Relation to Other Datastore</a></p>
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="xref">7</a>.  <a href="#name-interesting-relationships-t" class="xref">Interesting Relationships to Other Datastores</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.1">
                 <p id="section-toc.1-1.7.2.1.1"><a href="#section-7.1" class="xref">7.1</a>.  <a href="#name-the-factory-default-datasto" class="xref">The "factory-default" Datastore</a></p>
@@ -1578,11 +1573,17 @@ li > p:last-of-type {
 <p id="section-1.3-2">Configuration in &lt;running&gt; is merged with &lt;system&gt; to
         create the contents of &lt;intended&gt; after the configuration
         transformations (e.g., template expansion, removal of inactive
-        configuration defined in <span>[<a href="#RFC8342" class="xref">RFC8342</a>]</span>) have been performed
-        (<a href="#conceptual-model" class="xref">Section 4</a>).<a href="#section-1.3-2" class="pilcrow">¶</a></p>
-<p id="section-1.3-3">The definition of "intended" origin metadata annotation identity in
-        <span><a href="https://rfc-editor.org/rfc/rfc8342#section-5.3.4" class="relref">Section 5.3.4</a> of [<a href="#RFC8342" class="xref">RFC8342</a>]</span> is also
-        updated (<a href="#origin" class="xref">Section 4.1</a>).<a href="#section-1.3-3" class="pilcrow">¶</a></p>
+        configuration defined in <span>[<a href="#RFC8342" class="xref">RFC8342</a>]</span>) have been
+        performed, as described in <a href="#conceptual-model" class="xref">Section 4</a>.<a href="#section-1.3-2" class="pilcrow">¶</a></p>
+<p id="section-1.3-3">This document also updates the definition of "intended" origin
+        metadata annotation identity defined in <span><a href="https://rfc-editor.org/rfc/rfc8342#section-5.3.4" class="relref">Section 5.3.4</a> of [<a href="#RFC8342" class="xref">RFC8342</a>]</span>. The "intended" identity of
+        origin value defined in <span>[<a href="#RFC8342" class="xref">RFC8342</a>]</span> represents the origin
+        of configuration provided by &lt;intended&gt;, this document updates
+        its definition as the origin source of configuration explicitly
+        provided by &lt;running&gt;, and allows a subset of configuration in
+        &lt;intended&gt; that flows from &lt;system&gt; yet is not configured
+        or overridden explicitly in &lt;running&gt; to use "system" as its
+        origin value.<a href="#section-1.3-3" class="pilcrow">¶</a></p>
 </section>
 </section>
 </div>
@@ -1591,8 +1592,11 @@ li > p:last-of-type {
       <h2 id="name-kinds-of-system-configurati">
 <a href="#section-2" class="section-number selfRef">2. </a><a href="#name-kinds-of-system-configurati" class="section-name selfRef">Kinds of System Configuration</a>
       </h2>
-<p id="section-2-1">This document defines two types of system configuration, which are
-      described in <a href="#immediate" class="xref">Section 2.1</a> and <a href="#conditional" class="xref">Section 2.2</a>, respectively.<a href="#section-2-1" class="pilcrow">¶</a></p>
+<p id="section-2-1">This document defines two types of system configuration.
+      Configuration that is immediately-present and configuration that is
+      conditionally-present. These types of system configuration are described
+      in <a href="#immediate" class="xref">Section 2.1</a> and <a href="#conditional" class="xref">Section 2.2</a>,
+      respectively.<a href="#section-2-1" class="pilcrow">¶</a></p>
 <div id="immediate">
 <section id="section-2.1">
         <h3 id="name-immediately-present">
@@ -1647,9 +1651,8 @@ li > p:last-of-type {
           protocols.<a href="#section-3-2.4" class="pilcrow">¶</a>
 </li>
         <li class="normal" id="section-3-2.5">Origin: This document does not define any new origin identity.
-          The "system" origin Metadata Annotation <span>[<a href="#RFC7952" class="xref">RFC7952</a>]</span> is
-          used to indicate the origin of a data item provided by the system
-          (<a href="#origin" class="xref">Section 4.1</a>).<a href="#section-3-2.5" class="pilcrow">¶</a>
+          The "system" identity of origin metadata annotation <span>[<a href="#RFC7952" class="xref">RFC7952</a>]</span> is used to indicate the origin of a data item
+          provided by the system.<a href="#section-3-2.5" class="pilcrow">¶</a>
 </li>
         <li class="normal" id="section-3-2.6">Protocols: YANG-driven management protocols, such as NETCONF and
           RESTCONF.<a href="#section-3-2.6" class="pilcrow">¶</a>
@@ -1726,32 +1729,16 @@ boxes denote named datastores</pre>
 <figcaption><a href="#figure-1" class="selfRef">Figure 1</a>:
 <a href="#name-architectural-model-of-data" class="selfRef">Architectural Model of Datastores</a>
         </figcaption></figure>
-<p id="section-4-6">Configuration in &lt;system&gt; is non-deletable to clients (e.g., a
+<p id="section-4-6">Configuration in &lt;system&gt; is undeletable to clients (e.g., a
       system-defined list entry can never be removed), even though a node
-      defined in &lt;system&gt; may be overridden in &lt;running&gt;.
-      Deletable system configuration must not be defined in &lt;system&gt;
-      (see also <a href="#factory" class="xref">Section 7.1</a>). If system initializes a value for a
-      particular leaf which is overridden by the client with a different value
-      in &lt;running&gt; (<a href="#modifying" class="xref">Section 6.3</a>), the node in
+      defined in &lt;system&gt; may be overridden in &lt;running&gt;. If it is
+      desired to enable a client to delete system configuration, it can be
+      approximated using &lt;factory-default&gt;, as described in <a href="#factory" class="xref">Section 7.1</a>. If system initializes a value for a particular leaf
+      which is overridden by the client with a different value in
+      &lt;running&gt; (<a href="#modifying" class="xref">Section 6.3</a>), the node in
       &lt;running&gt; may be removed later, in which case system-initialized
       value defined in &lt;system&gt; may still be in use and appear in
       &lt;operational&gt;.<a href="#section-4-6" class="pilcrow">¶</a></p>
-<div id="origin">
-<section id="section-4.1">
-        <h3 id="name-origin-metadata-annotation">
-<a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-origin-metadata-annotation" class="section-name selfRef">Origin Metadata Annotation</a>
-        </h3>
-<p id="section-4.1-1">This document does not define any new origin identity when
-        &lt;system&gt; interacts with &lt;intended&gt; and flows into
-        &lt;operational&gt;.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
-<p id="section-4.1-2">The "intended" identity of origin value defined in <span>[<a href="#RFC8342" class="xref">RFC8342</a>]</span> represents the origin of configuration provided by
-        &lt;intended&gt;, this document updates its definition as the origin
-        source of configuration explicitly provided by &lt;running&gt;, and
-        allows a subset of configuration in &lt;intended&gt; that flows from
-        &lt;system&gt; yet is not configured or overridden explicitly in
-        &lt;running&gt; to use "system" as its origin value.<a href="#section-4.1-2" class="pilcrow">¶</a></p>
-</section>
-</div>
 </section>
 </div>
 <section id="section-5">
@@ -1770,13 +1757,13 @@ boxes denote named datastores</pre>
         <h3 id="name-no-impact-to-operational">
 <a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-no-impact-to-operational" class="section-name selfRef">No Impact to &lt;operational&gt;</a>
         </h3>
-<p id="section-5.2-1">This work intends to have no impact to &lt;operational&gt; and does
-        not define any new origin identity beyond <span><a href="https://rfc-editor.org/rfc/rfc8342#section-5.3.4" class="relref">Section 5.3.4</a> of [<a href="#RFC8342" class="xref">RFC8342</a>]</span>. The existence of &lt;system&gt;
-        enables a subset of those system-generated nodes to be defined like
-        configuration, i.e., made visible to clients in order for being
-        referenced or configurable prior to present in &lt;operational&gt;.
-        "config false" nodes are out of scope, hence existing "config false"
-        nodes are not impacted by this work.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
+<p id="section-5.2-1">This work has no impact to &lt;operational&gt;. Notably, it does
+        not define any new origin identity as it is able to use the existing
+        "system" identity defined in<span><a href="https://rfc-editor.org/rfc/rfc8342#section-5.3.4" class="relref">Section 5.3.4</a> of [<a href="#RFC8342" class="xref">RFC8342</a>]</span>. &lt;system&gt; enables system-generated nodes to
+        be defined like configuration, i.e., made visible to clients in order
+        for being referenced or configurable prior to present in
+        &lt;operational&gt;. "config false" nodes are out of scope, hence
+        existing "config false" nodes are not impacted by this work.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
 </section>
 </section>
 <div id="dynamic">
@@ -1801,9 +1788,9 @@ boxes denote named datastores</pre>
         </h3>
 <p id="section-6.2-1">Clients may create configuration data in &lt;running&gt; that
         references nodes in &lt;system&gt;. For example, some implementations
-        may set built-in entries as a convenience that are allowed to be
-        referenced by clients. It is also possible for the clients to define
-        their customized entries for reference.<a href="#section-6.2-1" class="pilcrow">¶</a></p>
+        may define system nodes solely as a convenience for clients to
+        reference. It is also possible for the clients to define their
+        customized nodes for reference.<a href="#section-6.2-1" class="pilcrow">¶</a></p>
 <p id="section-6.2-2"><a href="#declare-example" class="xref">Appendix A.1</a> provides an example of a client
         referencing system-defined nodes.<a href="#section-6.2-2" class="pilcrow">¶</a></p>
 </section>
@@ -1840,9 +1827,11 @@ boxes denote named datastores</pre>
 </section>
 </div>
 <section id="section-7">
-      <h2 id="name-relation-to-other-datastore">
-<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-relation-to-other-datastore" class="section-name selfRef">Relation to Other Datastore</a>
+      <h2 id="name-interesting-relationships-t">
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-interesting-relationships-t" class="section-name selfRef">Interesting Relationships to Other Datastores</a>
       </h2>
+<p id="section-7-1">This section discusses the relationship of &lt;system&gt; to other
+      datastores known at the time of this writing.<a href="#section-7-1" class="pilcrow">¶</a></p>
 <div id="factory">
 <section id="section-7.1">
         <h3 id="name-the-factory-default-datasto">
@@ -1869,10 +1858,9 @@ boxes denote named datastores</pre>
 <a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-data-model-overview" class="section-name selfRef">Data Model Overview</a>
         </h3>
 <p id="section-8.1-1">This YANG module defines a new YANG identity named "system" that
-        uses the "ds:datastore" identity defined in [RFC8342]. A client can
-        discover the system configuration datastore support on the server by
-        reading the YANG library information from the operational state
-        datastore.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
+        uses the "ds: conventional" identity defined in <span>[<a href="#RFC8342" class="xref">RFC8342</a>]</span> as its base. A client can discover the system
+        configuration datastore support on the server by reading the YANG
+        library information from the operational state datastore.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
 <p id="section-8.1-2">The system datastore is defined as a conventional configuration
         datastore and shares a common datastore schema with other conventional
         datastores.<a href="#section-8.1-2" class="pilcrow">¶</a></p>
@@ -1899,7 +1887,7 @@ boxes denote named datastores</pre>
 <a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-yang-module" class="section-name selfRef">YANG Module</a>
         </h3>
 <p id="section-8.2-1" class="keepWithNext">&lt;CODE BEGINS&gt; file
-          "ietf-system-datastore@2024-09-24.yang"<a href="#section-8.2-1" class="pilcrow">¶</a></p>
+          "ietf-system-datastore@2024-09-25.yang"<a href="#section-8.2-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-8.2-2">
 <pre>
 module ietf-system-datastore {
@@ -1927,7 +1915,7 @@ module ietf-system-datastore {
              &lt;mailto:fengchongllly@gmail.com&gt;";
   description
     "This module defines a new YANG identity that uses the
-     ds:datastore identity defined in [RFC8342].
+     ds:conventional identity defined in [RFC8342].
 
      Copyright (c) 2024 IETF Trust and the persons identified
      as authors of the code. All rights reserved.
@@ -1943,7 +1931,7 @@ module ietf-system-datastore {
      (https://www.rfc-editor.org/info/rfcXXXX); see the RFC
      itself for full legal notices.";
 
-  revision 2024-09-24 {
+  revision 2024-09-25 {
     description
       "Initial version.";
     reference

@@ -25,7 +25,7 @@
 
     description
      "This module defines a new YANG identity that uses the 
-      ds:datastore identity defined in [RFC8342].
+      ds:conventional identity defined in [RFC8342].
 
       Copyright (c) 2024 IETF Trust and the persons identified
       as authors of the code. All rights reserved.
