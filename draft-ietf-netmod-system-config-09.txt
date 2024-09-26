@@ -6,7 +6,7 @@ NETMOD                                                        Q. Ma, Ed.
 Internet-Draft                                                     Q. Wu
 Updates: 8342 (if approved)                                       Huawei
 Intended status: Standards Track                                 C. Feng
-Expires: 29 March 2025                                 25 September 2024
+Expires: 30 March 2025                                 26 September 2024
 
 
                       System-defined Configuration
@@ -38,7 +38,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 29 March 2025.
+   This Internet-Draft will expire on 30 March 2025.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Ma, et al.                Expires 29 March 2025                 [Page 1]
+Ma, et al.                Expires 30 March 2025                 [Page 1]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Ma, et al.                Expires 29 March 2025                 [Page 2]
+Ma, et al.                Expires 30 March 2025                 [Page 2]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -165,7 +165,7 @@ Internet-Draft        System-defined Configuration        September 2024
 
 
 
-Ma, et al.                Expires 29 March 2025                 [Page 3]
+Ma, et al.                Expires 30 March 2025                 [Page 3]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -221,7 +221,7 @@ Internet-Draft        System-defined Configuration        September 2024
 
 
 
-Ma, et al.                Expires 29 March 2025                 [Page 4]
+Ma, et al.                Expires 30 March 2025                 [Page 4]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -277,7 +277,7 @@ Internet-Draft        System-defined Configuration        September 2024
 
 
 
-Ma, et al.                Expires 29 March 2025                 [Page 5]
+Ma, et al.                Expires 30 March 2025                 [Page 5]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -333,7 +333,7 @@ Internet-Draft        System-defined Configuration        September 2024
 
 
 
-Ma, et al.                Expires 29 March 2025                 [Page 6]
+Ma, et al.                Expires 30 March 2025                 [Page 6]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -389,7 +389,7 @@ Internet-Draft        System-defined Configuration        September 2024
 
 
 
-Ma, et al.                Expires 29 March 2025                 [Page 7]
+Ma, et al.                Expires 30 March 2025                 [Page 7]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -445,7 +445,7 @@ Internet-Draft        System-defined Configuration        September 2024
 
 
 
-Ma, et al.                Expires 29 March 2025                 [Page 8]
+Ma, et al.                Expires 30 March 2025                 [Page 8]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -501,7 +501,7 @@ Internet-Draft        System-defined Configuration        September 2024
 
 
 
-Ma, et al.                Expires 29 March 2025                 [Page 9]
+Ma, et al.                Expires 30 March 2025                 [Page 9]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -557,7 +557,7 @@ Internet-Draft        System-defined Configuration        September 2024
 
 
 
-Ma, et al.                Expires 29 March 2025                [Page 10]
+Ma, et al.                Expires 30 March 2025                [Page 10]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -596,7 +596,7 @@ Internet-Draft        System-defined Configuration        September 2024
 
 8.2.  YANG Module
 
-   <CODE BEGINS> file "ietf-system-datastore@2024-09-25.yang"
+   <CODE BEGINS> file "ietf-system-datastore@2024-09-26.yang"
 
    module ietf-system-datastore {
      yang-version 1.1;
@@ -613,7 +613,7 @@ Internet-Draft        System-defined Configuration        September 2024
 
 
 
-Ma, et al.                Expires 29 March 2025                [Page 11]
+Ma, et al.                Expires 30 March 2025                [Page 11]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -647,7 +647,7 @@ Internet-Draft        System-defined Configuration        September 2024
         (https://www.rfc-editor.org/info/rfcXXXX); see the RFC
         itself for full legal notices.";
 
-     revision 2024-09-25 {
+     revision 2024-09-26 {
        description
          "Initial version.";
        reference
@@ -669,7 +669,7 @@ Internet-Draft        System-defined Configuration        September 2024
 
 
 
-Ma, et al.                Expires 29 March 2025                [Page 12]
+Ma, et al.                Expires 30 March 2025                [Page 12]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -696,17 +696,14 @@ Internet-Draft        System-defined Configuration        September 2024
 
 10.  Security Considerations
 
-   This section uses the template described in Section 3.7 of
-   [I-D.ietf-netmod-rfc8407bis].
+   This section is modeled after the template described in Section 3.7
+   of [I-D.ietf-netmod-rfc8407bis].
 
-   The "ietf-system-datastore" YANG module defines a schema for data
-   that is designed to be accessed via network management protocols such
-   as NETCONF [RFC6241] or RESTCONF [RFC8040].  These network management
-   protocols are required to use a secure transport layer and mutual
-   authentication, e.g., SSH [RFC6242] without the "none" authentication
-   option, Transport Layer Security (TLS) [RFC8446] with mutual X.509
-   authentication, and HTTPS with HTTP authentication (Section 11 of
-   [RFC9110]).
+   The "ietf-system-datastore" YANG module defines a data model that is
+   designed to be accessed via YANG-based management protocols, such as
+   NETCONF [RFC6241] and RESTCONF [RFC8040].  These protocols have to
+   use a secure transport layer (e.g., SSH [RFC4252], TLS [RFC8446], and
+   QUIC [RFC9000]) and have to use mutual authentication.
 
    The Network Configuration Access Control Model (NACM) [RFC8341]
    provides the means to restrict access for particular NETCONF or
@@ -725,7 +722,10 @@ Internet-Draft        System-defined Configuration        September 2024
 
 
 
-Ma, et al.                Expires 29 March 2025                [Page 13]
+
+
+
+Ma, et al.                Expires 30 March 2025                [Page 13]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -781,7 +781,7 @@ Internet-Draft        System-defined Configuration        September 2024
 
 
 
-Ma, et al.                Expires 29 March 2025                [Page 14]
+Ma, et al.                Expires 30 March 2025                [Page 14]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -797,6 +797,10 @@ Internet-Draft        System-defined Configuration        September 2024
    [RFC3688]  Mealling, M., "The IETF XML Registry", BCP 81, RFC 3688,
               DOI 10.17487/RFC3688, January 2004,
               <https://www.rfc-editor.org/info/rfc3688>.
+
+   [RFC4252]  Ylonen, T. and C. Lonvick, Ed., "The Secure Shell (SSH)
+              Authentication Protocol", RFC 4252, DOI 10.17487/RFC4252,
+              January 2006, <https://www.rfc-editor.org/info/rfc4252>.
 
    [RFC6020]  Bjorklund, M., Ed., "YANG - A Data Modeling Language for
               the Network Configuration Protocol (NETCONF)", RFC 6020,
@@ -828,23 +832,29 @@ Internet-Draft        System-defined Configuration        September 2024
               Version 1.3", RFC 8446, DOI 10.17487/RFC8446, August 2018,
               <https://www.rfc-editor.org/info/rfc8446>.
 
+
+
+
+
+
+Ma, et al.                Expires 30 March 2025                [Page 15]
+
+Internet-Draft        System-defined Configuration        September 2024
+
+
    [RFC8525]  Bierman, A., Bjorklund, M., Schoenwaelder, J., Watsen, K.,
               and R. Wilton, "YANG Library", RFC 8525,
               DOI 10.17487/RFC8525, March 2019,
               <https://www.rfc-editor.org/info/rfc8525>.
 
-
-
-
-
-Ma, et al.                Expires 29 March 2025                [Page 15]
-
-Internet-Draft        System-defined Configuration        September 2024
-
-
    [RFC8808]  Wu, Q., Lengyel, B., and Y. Niu, "A YANG Data Model for
               Factory Default Settings", RFC 8808, DOI 10.17487/RFC8808,
               August 2020, <https://www.rfc-editor.org/info/rfc8808>.
+
+   [RFC9000]  Iyengar, J., Ed. and M. Thomson, Ed., "QUIC: A UDP-Based
+              Multiplexed and Secure Transport", RFC 9000,
+              DOI 10.17487/RFC9000, May 2021,
+              <https://www.rfc-editor.org/info/rfc9000>.
 
    [RFC9110]  Fielding, R., Ed., Nottingham, M., Ed., and J. Reschke,
               Ed., "HTTP Semantics", STD 97, RFC 9110,
@@ -883,17 +893,7 @@ A.1.  Referencing System-defined Nodes
 
 
 
-
-
-
-
-
-
-
-
-
-
-Ma, et al.                Expires 29 March 2025                [Page 16]
+Ma, et al.                Expires 30 March 2025                [Page 16]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -949,7 +949,7 @@ Internet-Draft        System-defined Configuration        September 2024
 
 
 
-Ma, et al.                Expires 29 March 2025                [Page 17]
+Ma, et al.                Expires 30 March 2025                [Page 17]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -1005,7 +1005,7 @@ Internet-Draft        System-defined Configuration        September 2024
 
 
 
-Ma, et al.                Expires 29 March 2025                [Page 18]
+Ma, et al.                Expires 30 March 2025                [Page 18]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -1061,7 +1061,7 @@ Internet-Draft        System-defined Configuration        September 2024
 
 
 
-Ma, et al.                Expires 29 March 2025                [Page 19]
+Ma, et al.                Expires 30 March 2025                [Page 19]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -1117,7 +1117,7 @@ Internet-Draft        System-defined Configuration        September 2024
 
 
 
-Ma, et al.                Expires 29 March 2025                [Page 20]
+Ma, et al.                Expires 30 March 2025                [Page 20]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -1173,7 +1173,7 @@ Internet-Draft        System-defined Configuration        September 2024
 
 
 
-Ma, et al.                Expires 29 March 2025                [Page 21]
+Ma, et al.                Expires 30 March 2025                [Page 21]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -1229,7 +1229,7 @@ A.2.  Modifying a System-instantiated Leaf's Value
 
 
 
-Ma, et al.                Expires 29 March 2025                [Page 22]
+Ma, et al.                Expires 30 March 2025                [Page 22]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -1285,7 +1285,7 @@ A.3.  Configuring Descendant Nodes of a System-defined Node
 
 
 
-Ma, et al.                Expires 29 March 2025                [Page 23]
+Ma, et al.                Expires 30 March 2025                [Page 23]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -1341,7 +1341,7 @@ Appendix B.  Key Use Cases
 
 
 
-Ma, et al.                Expires 29 March 2025                [Page 24]
+Ma, et al.                Expires 30 March 2025                [Page 24]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -1397,7 +1397,7 @@ Internet-Draft        System-defined Configuration        September 2024
 
 
 
-Ma, et al.                Expires 29 March 2025                [Page 25]
+Ma, et al.                Expires 30 March 2025                [Page 25]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -1453,7 +1453,7 @@ B.2.  Client Commits Configuration
 
 
 
-Ma, et al.                Expires 29 March 2025                [Page 26]
+Ma, et al.                Expires 30 March 2025                [Page 26]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -1509,7 +1509,7 @@ Internet-Draft        System-defined Configuration        September 2024
 
 
 
-Ma, et al.                Expires 29 March 2025                [Page 27]
+Ma, et al.                Expires 30 March 2025                [Page 27]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -1565,7 +1565,7 @@ B.3.  Operator Installs Card into a Chassis
 
 
 
-Ma, et al.                Expires 29 March 2025                [Page 28]
+Ma, et al.                Expires 30 March 2025                [Page 28]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -1621,7 +1621,7 @@ B.4.  Client further Commits Configuration
 
 
 
-Ma, et al.                Expires 29 March 2025                [Page 29]
+Ma, et al.                Expires 30 March 2025                [Page 29]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -1677,7 +1677,7 @@ Internet-Draft        System-defined Configuration        September 2024
 
 
 
-Ma, et al.                Expires 29 March 2025                [Page 30]
+Ma, et al.                Expires 30 March 2025                [Page 30]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -1733,7 +1733,7 @@ Acknowledgements
 
 
 
-Ma, et al.                Expires 29 March 2025                [Page 31]
+Ma, et al.                Expires 30 March 2025                [Page 31]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -1789,4 +1789,4 @@ Authors' Addresses
 
 
 
-Ma, et al.                Expires 29 March 2025                [Page 32]
+Ma, et al.                Expires 30 March 2025                [Page 32]

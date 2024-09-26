@@ -546,18 +546,16 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
     </section>
 
     <section anchor="scecurity" title="Security Considerations">
-      <t>This section uses the template described in <xref section="3.7"
-      sectionFormat="of" target="I-D.ietf-netmod-rfc8407bis"/>.</t>
+      <t>This section is modeled after the template described in <xref
+      section="3.7" sectionFormat="of"
+      target="I-D.ietf-netmod-rfc8407bis"/>.</t>
 
-      <t>The "ietf-system-datastore" YANG module defines a schema for data
-      that is designed to be accessed via network management protocols such as
-      NETCONF <xref target="RFC6241"/> or RESTCONF <xref target="RFC8040"/>.
-      These network management protocols are required to use a secure
-      transport layer and mutual authentication, e.g., SSH <xref
-      target="RFC6242"/> without the "none" authentication option, Transport
-      Layer Security (TLS) <xref target="RFC8446"/> with mutual X.509
-      authentication, and HTTPS with HTTP authentication (<xref section="11"
-      sectionFormat="of" target="RFC9110"/>).</t>
+      <t>The "ietf-system-datastore" YANG module defines a data model that is
+      designed to be accessed via YANG-based management protocols, such as
+      NETCONF <xref target="RFC6241"/> and RESTCONF <xref target="RFC8040"/>.
+      These protocols have to use a secure transport layer (e.g., SSH <xref
+      target="RFC4252"/>, TLS <xref target="RFC8446"/>, and QUIC <xref
+      target="RFC9000"/>) and have to use mutual authentication.</t>
 
       <t>The Network Configuration Access Control Model (NACM) <xref
       target="RFC8341"/> provides the means to restrict access for particular
@@ -594,6 +592,8 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
     <references title="Informative References">
       <?rfc include="reference.RFC.3688.xml"?>
 
+      <?rfc include="reference.RFC.4252.xml"?>
+
       <?rfc include="reference.RFC.6020.xml"?>
 
       <?rfc include="reference.RFC.6242.xml"?>
@@ -611,6 +611,8 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
       <?rfc include="reference.RFC.8525.xml"?>
 
       <?rfc include="reference.RFC.8808.xml"?>
+
+      <?rfc include="reference.RFC.9000.xml"?>
 
       <?rfc include="reference.RFC.9110.xml"?>
 
