@@ -145,9 +145,9 @@
       &lt;system&gt;, override system-provided values, and configure
       descendant nodes of system-defined configuration.</t>
 
-      <t>The solution defined in this document requires the use of NMDA.
-      Conformance to this document requires NMDA servers implement the
-      "ietf-system-datastore" YANG module (<xref
+      <t>The solution defined in this document requires the use of NMDA for
+      both clients and servers. Conformance to this document requires NMDA
+      servers implement the "ietf-system-datastore" YANG module (<xref
       target="system-datastore"/>).</t>
 
       <section anchor="terminology" title="Terminology">
@@ -253,7 +253,7 @@
       in <xref target="immediate"/> and <xref target="conditional"/>,
       respectively.</t>
 
-      <section anchor="immediate" title="Immediately-present">
+      <section anchor="immediate" title="Immediately-Present">
         <t>Immediately-present refers to system configuration which is
         generated in &lt;system&gt; when the device is powered on,
         irrespective of physical resource present or not, a special
@@ -261,7 +261,7 @@
         configuration is an always-existing loopback interface.</t>
       </section>
 
-      <section anchor="conditional" title="Conditionally-present">
+      <section anchor="conditional" title="Conditionally-Present">
         <t>Conditionally-present refers to system configuration which is
         generated in &lt;system&gt; based on specific conditions being met in
         a system. For example, if a physical resource is present (e.g., an
@@ -597,8 +597,6 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
 
       <?rfc include="reference.RFC.6020.xml"?>
 
-      <?rfc include="reference.RFC.6242.xml"?>
-
       <?rfc include="reference.RFC.7952.xml"?>
 
       <?rfc include="reference.RFC.8174.xml"?>
@@ -614,8 +612,6 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
       <?rfc include="reference.RFC.8808.xml"?>
 
       <?rfc include="reference.RFC.9000.xml"?>
-
-      <?rfc include="reference.RFC.9110.xml"?>
 
       <xi:include href="https://datatracker.ietf.org/doc/bibxml3/reference.I-D.ietf-netmod-immutable-flag.xml"
                   xmlns:xi="http://www.w3.org/2001/XInclude"/>
