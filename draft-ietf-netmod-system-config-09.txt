@@ -70,8 +70,8 @@ Table of Contents
      1.2.  Requirements Language . . . . . . . . . . . . . . . . . .   5
      1.3.  Updates to RFC 8342 . . . . . . . . . . . . . . . . . . .   5
    2.  Kinds of System Configuration . . . . . . . . . . . . . . . .   5
-     2.1.  Immediately-present . . . . . . . . . . . . . . . . . . .   5
-     2.2.  Conditionally-present . . . . . . . . . . . . . . . . . .   6
+     2.1.  Immediately-Present . . . . . . . . . . . . . . . . . . .   5
+     2.2.  Conditionally-Present . . . . . . . . . . . . . . . . . .   6
    3.  The System Configuration Datastore (<system>) . . . . . . . .   6
    4.  Conceptual Model of Datastores  . . . . . . . . . . . . . . .   7
    5.  Static Characteristics  . . . . . . . . . . . . . . . . . . .   9
@@ -142,9 +142,10 @@ Internet-Draft        System-defined Configuration        September 2024
    <system>, override system-provided values, and configure descendant
    nodes of system-defined configuration.
 
-   The solution defined in this document requires the use of NMDA.
-   Conformance to this document requires NMDA servers implement the
-   "ietf-system-datastore" YANG module (Section 8).
+   The solution defined in this document requires the use of NMDA for
+   both clients and servers.  Conformance to this document requires NMDA
+   servers implement the "ietf-system-datastore" YANG module
+   (Section 8).
 
 1.1.  Terminology
 
@@ -155,7 +156,6 @@ Internet-Draft        System-defined Configuration        September 2024
    The following terms are defined in this document:
 
    system configuration:  Configuration that is provided by the system
-
 
 
 
@@ -264,7 +264,7 @@ Internet-Draft        System-defined Configuration        September 2024
    conditionally-present.  These types of system configuration are
    described in Section 2.1 and Section 2.2, respectively.
 
-2.1.  Immediately-present
+2.1.  Immediately-Present
 
    Immediately-present refers to system configuration which is generated
    in <system> when the device is powered on, irrespective of physical
@@ -282,7 +282,7 @@ Ma, et al.                Expires 2 April 2025                  [Page 5]
 Internet-Draft        System-defined Configuration        September 2024
 
 
-2.2.  Conditionally-present
+2.2.  Conditionally-Present
 
    Conditionally-present refers to system configuration which is
    generated in <system> based on specific conditions being met in a
@@ -807,10 +807,6 @@ Internet-Draft        System-defined Configuration        September 2024
               DOI 10.17487/RFC6020, October 2010,
               <https://www.rfc-editor.org/info/rfc6020>.
 
-   [RFC6242]  Wasserman, M., "Using the NETCONF Protocol over Secure
-              Shell (SSH)", RFC 6242, DOI 10.17487/RFC6242, June 2011,
-              <https://www.rfc-editor.org/info/rfc6242>.
-
    [RFC7952]  Lhotka, L., "Defining and Using Metadata with YANG",
               RFC 7952, DOI 10.17487/RFC7952, August 2016,
               <https://www.rfc-editor.org/info/rfc7952>.
@@ -832,6 +828,10 @@ Internet-Draft        System-defined Configuration        September 2024
               Version 1.3", RFC 8446, DOI 10.17487/RFC8446, August 2018,
               <https://www.rfc-editor.org/info/rfc8446>.
 
+   [RFC8525]  Bierman, A., Bjorklund, M., Schoenwaelder, J., Watsen, K.,
+              and R. Wilton, "YANG Library", RFC 8525,
+              DOI 10.17487/RFC8525, March 2019,
+              <https://www.rfc-editor.org/info/rfc8525>.
 
 
 
@@ -842,11 +842,6 @@ Ma, et al.                Expires 2 April 2025                 [Page 15]
 Internet-Draft        System-defined Configuration        September 2024
 
 
-   [RFC8525]  Bierman, A., Bjorklund, M., Schoenwaelder, J., Watsen, K.,
-              and R. Wilton, "YANG Library", RFC 8525,
-              DOI 10.17487/RFC8525, March 2019,
-              <https://www.rfc-editor.org/info/rfc8525>.
-
    [RFC8808]  Wu, Q., Lengyel, B., and Y. Niu, "A YANG Data Model for
               Factory Default Settings", RFC 8808, DOI 10.17487/RFC8808,
               August 2020, <https://www.rfc-editor.org/info/rfc8808>.
@@ -855,11 +850,6 @@ Internet-Draft        System-defined Configuration        September 2024
               Multiplexed and Secure Transport", RFC 9000,
               DOI 10.17487/RFC9000, May 2021,
               <https://www.rfc-editor.org/info/rfc9000>.
-
-   [RFC9110]  Fielding, R., Ed., Nottingham, M., Ed., and J. Reschke,
-              Ed., "HTTP Semantics", STD 97, RFC 9110,
-              DOI 10.17487/RFC9110, June 2022,
-              <https://www.rfc-editor.org/info/rfc9110>.
 
 Appendix A.  Example of Dynamic Behaviors
 
@@ -872,6 +862,16 @@ Appendix A.  Example of Dynamic Behaviors
 A.1.  Referencing System-defined Nodes
 
    In this subsection, the following fictional module is used:
+
+
+
+
+
+
+
+
+
+
 
 
 

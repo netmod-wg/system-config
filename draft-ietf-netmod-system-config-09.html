@@ -1318,10 +1318,10 @@ li > p:last-of-type {
             <p id="section-toc.1-1.2.1"><a href="#section-2" class="xref">2</a>.  <a href="#name-kinds-of-system-configurati" class="xref">Kinds of System Configuration</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.1">
-                <p id="section-toc.1-1.2.2.1.1"><a href="#section-2.1" class="xref">2.1</a>.  <a href="#name-immediately-present" class="xref">Immediately-present</a></p>
+                <p id="section-toc.1-1.2.2.1.1"><a href="#section-2.1" class="xref">2.1</a>.  <a href="#name-immediately-present" class="xref">Immediately-Present</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.2">
-                <p id="section-toc.1-1.2.2.2.1"><a href="#section-2.2" class="xref">2.2</a>.  <a href="#name-conditionally-present" class="xref">Conditionally-present</a></p>
+                <p id="section-toc.1-1.2.2.2.1"><a href="#section-2.2" class="xref">2.2</a>.  <a href="#name-conditionally-present" class="xref">Conditionally-Present</a></p>
 </li>
             </ul>
 </li>
@@ -1473,9 +1473,9 @@ li > p:last-of-type {
       explicitly created by the clients to reference nodes defined in
       &lt;system&gt;, override system-provided values, and configure
       descendant nodes of system-defined configuration.<a href="#section-1-4" class="pilcrow">¶</a></p>
-<p id="section-1-5">The solution defined in this document requires the use of NMDA.
-      Conformance to this document requires NMDA servers implement the
-      "ietf-system-datastore" YANG module (<a href="#system-datastore" class="xref">Section 8</a>).<a href="#section-1-5" class="pilcrow">¶</a></p>
+<p id="section-1-5">The solution defined in this document requires the use of NMDA for
+      both clients and servers. Conformance to this document requires NMDA
+      servers implement the "ietf-system-datastore" YANG module (<a href="#system-datastore" class="xref">Section 8</a>).<a href="#section-1-5" class="pilcrow">¶</a></p>
 <div id="terminology">
 <section id="section-1.1">
         <h3 id="name-terminology">
@@ -1602,7 +1602,7 @@ li > p:last-of-type {
 <div id="immediate">
 <section id="section-2.1">
         <h3 id="name-immediately-present">
-<a href="#section-2.1" class="section-number selfRef">2.1. </a><a href="#name-immediately-present" class="section-name selfRef">Immediately-present</a>
+<a href="#section-2.1" class="section-number selfRef">2.1. </a><a href="#name-immediately-present" class="section-name selfRef">Immediately-Present</a>
         </h3>
 <p id="section-2.1-1">Immediately-present refers to system configuration which is
         generated in &lt;system&gt; when the device is powered on,
@@ -1614,7 +1614,7 @@ li > p:last-of-type {
 <div id="conditional">
 <section id="section-2.2">
         <h3 id="name-conditionally-present">
-<a href="#section-2.2" class="section-number selfRef">2.2. </a><a href="#name-conditionally-present" class="section-name selfRef">Conditionally-present</a>
+<a href="#section-2.2" class="section-number selfRef">2.2. </a><a href="#name-conditionally-present" class="section-name selfRef">Conditionally-Present</a>
         </h3>
 <p id="section-2.2-1">Conditionally-present refers to system configuration which is
         generated in &lt;system&gt; based on specific conditions being met in
@@ -2076,10 +2076,6 @@ module ietf-system-datastore {
         <dd>
 <span class="refAuthor">Bjorklund, M., Ed.</span>, <span class="refTitle">"YANG - A Data Modeling Language for the Network Configuration Protocol (NETCONF)"</span>, <span class="seriesInfo">RFC 6020</span>, <span class="seriesInfo">DOI 10.17487/RFC6020</span>, <time datetime="2010-10" class="refDate">October 2010</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6020">https://www.rfc-editor.org/info/rfc6020</a>&gt;</span>. </dd>
 <dd class="break"></dd>
-<dt id="RFC6242">[RFC6242]</dt>
-        <dd>
-<span class="refAuthor">Wasserman, M.</span>, <span class="refTitle">"Using the NETCONF Protocol over Secure Shell (SSH)"</span>, <span class="seriesInfo">RFC 6242</span>, <span class="seriesInfo">DOI 10.17487/RFC6242</span>, <time datetime="2011-06" class="refDate">June 2011</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6242">https://www.rfc-editor.org/info/rfc6242</a>&gt;</span>. </dd>
-<dd class="break"></dd>
 <dt id="RFC7952">[RFC7952]</dt>
         <dd>
 <span class="refAuthor">Lhotka, L.</span>, <span class="refTitle">"Defining and Using Metadata with YANG"</span>, <span class="seriesInfo">RFC 7952</span>, <span class="seriesInfo">DOI 10.17487/RFC7952</span>, <time datetime="2016-08" class="refDate">August 2016</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7952">https://www.rfc-editor.org/info/rfc7952</a>&gt;</span>. </dd>
@@ -2109,12 +2105,8 @@ module ietf-system-datastore {
 <span class="refAuthor">Wu, Q.</span>, <span class="refAuthor">Lengyel, B.</span>, and <span class="refAuthor">Y. Niu</span>, <span class="refTitle">"A YANG Data Model for Factory Default Settings"</span>, <span class="seriesInfo">RFC 8808</span>, <span class="seriesInfo">DOI 10.17487/RFC8808</span>, <time datetime="2020-08" class="refDate">August 2020</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8808">https://www.rfc-editor.org/info/rfc8808</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC9000">[RFC9000]</dt>
-        <dd>
-<span class="refAuthor">Iyengar, J., Ed.</span> and <span class="refAuthor">M. Thomson, Ed.</span>, <span class="refTitle">"QUIC: A UDP-Based Multiplexed and Secure Transport"</span>, <span class="seriesInfo">RFC 9000</span>, <span class="seriesInfo">DOI 10.17487/RFC9000</span>, <time datetime="2021-05" class="refDate">May 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9000">https://www.rfc-editor.org/info/rfc9000</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="RFC9110">[RFC9110]</dt>
       <dd>
-<span class="refAuthor">Fielding, R., Ed.</span>, <span class="refAuthor">Nottingham, M., Ed.</span>, and <span class="refAuthor">J. Reschke, Ed.</span>, <span class="refTitle">"HTTP Semantics"</span>, <span class="seriesInfo">STD 97</span>, <span class="seriesInfo">RFC 9110</span>, <span class="seriesInfo">DOI 10.17487/RFC9110</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9110">https://www.rfc-editor.org/info/rfc9110</a>&gt;</span>. </dd>
+<span class="refAuthor">Iyengar, J., Ed.</span> and <span class="refAuthor">M. Thomson, Ed.</span>, <span class="refTitle">"QUIC: A UDP-Based Multiplexed and Secure Transport"</span>, <span class="seriesInfo">RFC 9000</span>, <span class="seriesInfo">DOI 10.17487/RFC9000</span>, <time datetime="2021-05" class="refDate">May 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9000">https://www.rfc-editor.org/info/rfc9000</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
