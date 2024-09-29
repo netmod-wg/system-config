@@ -6,7 +6,7 @@ NETMOD                                                        Q. Ma, Ed.
 Internet-Draft                                                     Q. Wu
 Updates: 8342 (if approved)                                       Huawei
 Intended status: Standards Track                                 C. Feng
-Expires: 30 March 2025                                 26 September 2024
+Expires: 2 April 2025                                  29 September 2024
 
 
                       System-defined Configuration
@@ -19,7 +19,8 @@ Abstract
    contents of these configuration datastores are controlled by clients.
    This document introduces the concept of system configuration
    datastore holding configuration controlled by the system on which a
-   server is running.
+   server is running.  The system configuration can be referenced (e.g.,
+   leafref) by configuration explicitly created by clients.
 
    This document updates RFC 8342.
 
@@ -38,7 +39,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 30 March 2025.
+   This Internet-Draft will expire on 2 April 2025.
 
 Copyright Notice
 
@@ -49,15 +50,15 @@ Copyright Notice
    Provisions Relating to IETF Documents (https://trustee.ietf.org/
    license-info) in effect on the date of publication of this document.
    Please review these documents carefully, as they describe your rights
-   and restrictions with respect to this document.  Code Components
 
 
 
-Ma, et al.                Expires 30 March 2025                 [Page 1]
+Ma, et al.                Expires 2 April 2025                  [Page 1]
 
 Internet-Draft        System-defined Configuration        September 2024
 
 
+   and restrictions with respect to this document.  Code Components
    extracted from this document must include Revised BSD License text as
    described in Section 4.e of the Trust Legal Provisions and are
    provided without warranty as described in the Revised BSD License.
@@ -81,9 +82,9 @@ Table of Contents
      6.2.  Referencing System Configuration  . . . . . . . . . . . .   9
      6.3.  Modifying (Overriding) System Configuration . . . . . . .  10
      6.4.  Configuring Descendant nodes of System Configuration  . .  10
-   7.  Interesting Relationships to Other Datastores . . . . . . . .  10
+   7.  Relationships to Other Datastores . . . . . . . . . . . . . .  10
      7.1.  The "factory-default" Datastore . . . . . . . . . . . . .  10
-   8.  The "ietf-system-datastore" Module  . . . . . . . . . . . . .  11
+   8.  The "ietf-system-datastore" Module  . . . . . . . . . . . . .  10
      8.1.  Data Model Overview . . . . . . . . . . . . . . . . . . .  11
      8.2.  YANG Module . . . . . . . . . . . . . . . . . . . . . . .  11
    9.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  12
@@ -103,13 +104,12 @@ Table of Contents
      B.3.  Operator Installs Card into a Chassis . . . . . . . . . .  28
      B.4.  Client further Commits Configuration  . . . . . . . . . .  29
    Acknowledgements  . . . . . . . . . . . . . . . . . . . . . . . .  31
-   Contributors  . . . . . . . . . . . . . . . . . . . . . . . . . .  32
+   Contributors  . . . . . . . . . . . . . . . . . . . . . . . . . .  31
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  32
 
 
 
-
-Ma, et al.                Expires 30 March 2025                 [Page 2]
+Ma, et al.                Expires 2 April 2025                  [Page 2]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -165,7 +165,7 @@ Internet-Draft        System-defined Configuration        September 2024
 
 
 
-Ma, et al.                Expires 30 March 2025                 [Page 3]
+Ma, et al.                Expires 2 April 2025                  [Page 3]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -221,7 +221,7 @@ Internet-Draft        System-defined Configuration        September 2024
 
 
 
-Ma, et al.                Expires 30 March 2025                 [Page 4]
+Ma, et al.                Expires 2 April 2025                  [Page 4]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -277,7 +277,7 @@ Internet-Draft        System-defined Configuration        September 2024
 
 
 
-Ma, et al.                Expires 30 March 2025                 [Page 5]
+Ma, et al.                Expires 2 April 2025                  [Page 5]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -333,7 +333,7 @@ Internet-Draft        System-defined Configuration        September 2024
 
 
 
-Ma, et al.                Expires 30 March 2025                 [Page 6]
+Ma, et al.                Expires 2 April 2025                  [Page 6]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -389,7 +389,7 @@ Internet-Draft        System-defined Configuration        September 2024
 
 
 
-Ma, et al.                Expires 30 March 2025                 [Page 7]
+Ma, et al.                Expires 2 April 2025                  [Page 7]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -445,7 +445,7 @@ Internet-Draft        System-defined Configuration        September 2024
 
 
 
-Ma, et al.                Expires 30 March 2025                 [Page 8]
+Ma, et al.                Expires 2 April 2025                  [Page 8]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -466,14 +466,15 @@ Internet-Draft        System-defined Configuration        September 2024
 5.1.  Read-only to Clients
 
    The system datastore is read-only (i.e., edits towards <system>
-   directly MUST be denied), though the client may be allowed to
-   override the value of a system-initialized node (see Section 6.3).
+   directly MUST be denied), though the client may be allowed to provide
+   configuration that overrides the value of a system-initialized node
+   (see Section 6.3).
 
 5.2.  No Impact to <operational>
 
    This work has no impact to <operational>.  Notably, it does not
    define any new origin identity as it is able to use the existing
-   "system" identity defined inSection 5.3.4 of [RFC8342]. <system>
+   "system" identity defined in Section 5.3.4 of [RFC8342]. <system>
    enables system-generated nodes to be defined like configuration,
    i.e., made visible to clients in order for being referenced or
    configurable prior to present in <operational>. "config false" nodes
@@ -493,15 +494,14 @@ Internet-Draft        System-defined Configuration        September 2024
 6.2.  Referencing System Configuration
 
    Clients may create configuration data in <running> that references
-   nodes in <system>.  For example, some implementations may define
-   system nodes solely as a convenience for clients to reference.  It is
-   also possible for the clients to define their customized nodes for
+   nodes in <system>.  Some implementations may define system nodes
+   solely as a convenience for clients to reference.  It is also
+   possible for the clients to define their customized nodes for
    reference.
 
 
 
-
-Ma, et al.                Expires 30 March 2025                 [Page 9]
+Ma, et al.                Expires 2 April 2025                  [Page 9]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -513,13 +513,12 @@ Internet-Draft        System-defined Configuration        September 2024
 
    In some cases, a server may allow some parts of system configuration
    (e.g., a leaf's value) to be modified.  Modification of system
-   configuration is achieved by the client writing configuration nodes
-   with intended values in <running> that override the matched
-   configuration nodes at the corresponding level in <system>.
-   Configurations defined in <running> take precedence over system
-   configuration nodes in <system> if the server allows the nodes to be
-   modified.  The immutability of system configuration is defined in
-   [I-D.ietf-netmod-immutable-flag].
+   configuration is achieved by the client writing configuration data in
+   <running> that overrides the values of matched configuration nodes at
+   the corresponding level in <system>.  Configurations defined in
+   <running> take precedence over system configuration nodes in <system>
+   if the server allows the nodes to be modified.  The immutability of
+   system configuration is defined in [I-D.ietf-netmod-immutable-flag].
 
    Appendix A.2 provides an example of a client overriding a system-
    instantiated leaf's value.
@@ -534,10 +533,10 @@ Internet-Draft        System-defined Configuration        September 2024
    Appendix A.3 provides an example of a client configuring descendant
    nodes of a system-defined node.
 
-7.  Interesting Relationships to Other Datastores
+7.  Relationships to Other Datastores
 
-   This section discusses the relationship of <system> to other
-   datastores known at the time of this writing.
+   This section discusses the interesting relationships of <system> to
+   other datastores known at the time of this writing.
 
 7.1.  The "factory-default" Datastore
 
@@ -551,18 +550,17 @@ Internet-Draft        System-defined Configuration        September 2024
    The <factory-reset> RPC operation can reset <system> to its factory
    default contents.
 
+8.  The "ietf-system-datastore" Module
 
 
 
 
 
 
-Ma, et al.                Expires 30 March 2025                [Page 10]
+Ma, et al.                Expires 2 April 2025                 [Page 10]
 
 Internet-Draft        System-defined Configuration        September 2024
 
-
-8.  The "ietf-system-datastore" Module
 
 8.1.  Data Model Overview
 
@@ -596,7 +594,7 @@ Internet-Draft        System-defined Configuration        September 2024
 
 8.2.  YANG Module
 
-   <CODE BEGINS> file "ietf-system-datastore@2024-09-26.yang"
+   <CODE BEGINS> file "ietf-system-datastore@2024-09-29.yang"
 
    module ietf-system-datastore {
      yang-version 1.1;
@@ -610,16 +608,16 @@ Internet-Draft        System-defined Configuration        September 2024
      }
 
      organization
+       "IETF NETMOD (Network Modeling) Working Group";
+     contact
 
 
 
-Ma, et al.                Expires 30 March 2025                [Page 11]
+Ma, et al.                Expires 2 April 2025                 [Page 11]
 
 Internet-Draft        System-defined Configuration        September 2024
 
 
-       "IETF NETMOD (Network Modeling) Working Group";
-     contact
        "WG Web:   https://datatracker.ietf.org/wg/netmod/
         WG List:  NETMOD WG list <mailto:netmod@ietf.org>
 
@@ -647,7 +645,7 @@ Internet-Draft        System-defined Configuration        September 2024
         (https://www.rfc-editor.org/info/rfcXXXX); see the RFC
         itself for full legal notices.";
 
-     revision 2024-09-26 {
+     revision 2024-09-29 {
        description
          "Initial version.";
        reference
@@ -669,7 +667,9 @@ Internet-Draft        System-defined Configuration        September 2024
 
 
 
-Ma, et al.                Expires 30 March 2025                [Page 12]
+
+
+Ma, et al.                Expires 2 April 2025                 [Page 12]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -725,7 +725,7 @@ Internet-Draft        System-defined Configuration        September 2024
 
 
 
-Ma, et al.                Expires 30 March 2025                [Page 13]
+Ma, et al.                Expires 2 April 2025                 [Page 13]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -772,16 +772,16 @@ Internet-Draft        System-defined Configuration        September 2024
    [I-D.ietf-netmod-immutable-flag]
               Ma, Q., Wu, Q., Lengyel, B., and H. Li, "YANG Metadata
               Annotation for Immutable Flag", Work in Progress,
-              Internet-Draft, draft-ietf-netmod-immutable-flag-01, 28
-              June 2024, <https://datatracker.ietf.org/doc/html/draft-
-              ietf-netmod-immutable-flag-01>.
+              Internet-Draft, draft-ietf-netmod-immutable-flag-02, 27
+              September 2024, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-netmod-immutable-flag-02>.
 
 
 
 
 
 
-Ma, et al.                Expires 30 March 2025                [Page 14]
+Ma, et al.                Expires 2 April 2025                 [Page 14]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -790,9 +790,9 @@ Internet-Draft        System-defined Configuration        September 2024
               Bierman, A., Boucadair, M., and Q. Wu, "Guidelines for
               Authors and Reviewers of Documents Containing YANG Data
               Models", Work in Progress, Internet-Draft, draft-ietf-
-              netmod-rfc8407bis-15, 10 September 2024,
+              netmod-rfc8407bis-17, 27 September 2024,
               <https://datatracker.ietf.org/doc/html/draft-ietf-netmod-
-              rfc8407bis-15>.
+              rfc8407bis-17>.
 
    [RFC3688]  Mealling, M., "The IETF XML Registry", BCP 81, RFC 3688,
               DOI 10.17487/RFC3688, January 2004,
@@ -837,7 +837,7 @@ Internet-Draft        System-defined Configuration        September 2024
 
 
 
-Ma, et al.                Expires 30 March 2025                [Page 15]
+Ma, et al.                Expires 2 April 2025                 [Page 15]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -893,7 +893,7 @@ A.1.  Referencing System-defined Nodes
 
 
 
-Ma, et al.                Expires 30 March 2025                [Page 16]
+Ma, et al.                Expires 2 April 2025                 [Page 16]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -949,7 +949,7 @@ Internet-Draft        System-defined Configuration        September 2024
 
 
 
-Ma, et al.                Expires 30 March 2025                [Page 17]
+Ma, et al.                Expires 2 April 2025                 [Page 17]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -1005,7 +1005,7 @@ Internet-Draft        System-defined Configuration        September 2024
 
 
 
-Ma, et al.                Expires 30 March 2025                [Page 18]
+Ma, et al.                Expires 2 April 2025                 [Page 18]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -1061,7 +1061,7 @@ Internet-Draft        System-defined Configuration        September 2024
 
 
 
-Ma, et al.                Expires 30 March 2025                [Page 19]
+Ma, et al.                Expires 2 April 2025                 [Page 19]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -1106,8 +1106,9 @@ Internet-Draft        System-defined Configuration        September 2024
      </acl-rule>
    </acl>
 
-   And <operational> might contain the configuration of applications as
-   follows:
+   As different entries of application configuration in <system> and
+   <running> is merged to create <intended>, <operational> might contain
+   the configuration of applications as follows:
 
 
 
@@ -1116,8 +1117,7 @@ Internet-Draft        System-defined Configuration        September 2024
 
 
 
-
-Ma, et al.                Expires 30 March 2025                [Page 20]
+Ma, et al.                Expires 2 April 2025                 [Page 20]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -1126,17 +1126,17 @@ Internet-Draft        System-defined Configuration        September 2024
                  xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
                  or:origin="or:intended">
      <application>
-       <name>my-app-1</name>
+       <name>my-smtp</name>
        <app-id>101</app-id>
        <protocol>tcp</protocol>
        <destination-port>2345</destination-port>
-       <description>customized application</description>
+       <description>customized smtp application</description>
        <security-protection>
          <risk-level>high</risk-level>
        </security-protection>
      </application>
      <application>
-       <name>my-app-2</name>
+       <name>my-foo</name>
        <app-id>102</app-id>
        <protocol>udp</protocol>
        <destination-port>69</destination-port>
@@ -1173,7 +1173,7 @@ Internet-Draft        System-defined Configuration        September 2024
 
 
 
-Ma, et al.                Expires 30 March 2025                [Page 21]
+Ma, et al.                Expires 2 April 2025                 [Page 21]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -1229,7 +1229,7 @@ A.2.  Modifying a System-instantiated Leaf's Value
 
 
 
-Ma, et al.                Expires 30 March 2025                [Page 22]
+Ma, et al.                Expires 2 April 2025                 [Page 22]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -1285,7 +1285,7 @@ A.3.  Configuring Descendant Nodes of a System-defined Node
 
 
 
-Ma, et al.                Expires 30 March 2025                [Page 23]
+Ma, et al.                Expires 2 April 2025                 [Page 23]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -1341,7 +1341,7 @@ Appendix B.  Key Use Cases
 
 
 
-Ma, et al.                Expires 30 March 2025                [Page 24]
+Ma, et al.                Expires 2 April 2025                 [Page 24]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -1370,10 +1370,7 @@ Internet-Draft        System-defined Configuration        September 2024
          }
          leaf enabled {
            type boolean;
-           default "false";
-         }
-         leaf mtu {
-           type uint32;
+           default "true";
          }
          leaf-list ip-address {
            type inet:ip-address;
@@ -1392,19 +1389,18 @@ Internet-Draft        System-defined Configuration        September 2024
      }
    }
 
-
-
-
-
-
-Ma, et al.                Expires 30 March 2025                [Page 25]
-
-Internet-Draft        System-defined Configuration        September 2024
-
-
    For each use case, corresponding sample configuration in <running>,
    <system>, <intended> and <operational> are shown.  The XML snippets
    are used only for illustration purposes.
+
+
+
+
+
+Ma, et al.                Expires 2 April 2025                 [Page 25]
+
+Internet-Draft        System-defined Configuration        September 2024
+
 
 B.1.  Device Powers On
 
@@ -1419,10 +1415,9 @@ B.1.  Device Powers On
      <interface>
        <name>lo0</name>
        <type>loopback</type>
-       <enabled>true</enabled>
        <ip-address>127.0.0.1</ip-address>
        <ip-address>::1</ip-address>
-       <description>predefined interface</description>
+       <description>system-defined interface</description>
      </interface>
    </interfaces>
 
@@ -1430,7 +1425,9 @@ B.1.  Device Powers On
    in <system>, the configuration of interface in <intended> would be
    identical to the one in <system> shown above.
 
-   And <operational> will show the system-provided loopback interface:
+   And <operational> will show the system-provided loopback interface,
+   note that <operational> also includes the default value specified in
+   the YANG module:
 
    <interfaces xmlns="urn:example:interfacemgmt"
                xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
@@ -1438,10 +1435,10 @@ B.1.  Device Powers On
      <interface>
        <name>lo0</name>
        <type>loopback</type>
-       <enabled>true</enabled>
+       <enabled or:origin="or:default">true</enabled>
        <ip-address>127.0.0.1</ip-address>
        <ip-address>::1</ip-address>
-       <description>predefined interface</description>
+       <description>system-defined interface</description>
      </interface>
    </interfaces>
 
@@ -1453,7 +1450,10 @@ B.2.  Client Commits Configuration
 
 
 
-Ma, et al.                Expires 30 March 2025                [Page 26]
+
+
+
+Ma, et al.                Expires 2 April 2025                 [Page 26]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -1461,7 +1461,7 @@ Internet-Draft        System-defined Configuration        September 2024
    <interfaces xmlns="urn:example:interfacemgmt">
      <interface>
        <name>et-0/0/0</name>
-       <type>ethernet</type>
+       <ip-address>192.168.10.10</ip-address>
        <description>pre-provisioned interface</description>
      </interface>
    </interfaces>
@@ -1473,10 +1473,9 @@ Internet-Draft        System-defined Configuration        September 2024
      <interface>
        <name>lo0</name>
        <type>loopback</type>
-       <enabled>true</enabled>
        <ip-address>127.0.0.1</ip-address>
        <ip-address>::1</ip-address>
-       <description>predefined interface</description>
+       <description>system-defined interface</description>
      </interface>
    </interfaces>
 
@@ -1487,14 +1486,13 @@ Internet-Draft        System-defined Configuration        September 2024
      <interface>
        <name>lo0</name>
        <type>loopback</type>
-       <enabled>true</enabled>
        <ip-address>127.0.0.1</ip-address>
        <ip-address>::1</ip-address>
-       <description>predefined interface</description>
+       <description>system-defined interface</description>
      </interface>
      <interface>
        <name>et-0/0/0</name>
-       <type>ethernet</type>
+       <ip-address>192.168.10.10</ip-address>
        <description>pre-provisioned interface</description>
      </interface>
    </interfaces>
@@ -1509,7 +1507,9 @@ Internet-Draft        System-defined Configuration        September 2024
 
 
 
-Ma, et al.                Expires 30 March 2025                [Page 27]
+
+
+Ma, et al.                Expires 2 April 2025                 [Page 27]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -1520,10 +1520,10 @@ Internet-Draft        System-defined Configuration        September 2024
      <interface or:origin="or:system">
        <name>lo0</name>
        <type>loopback</type>
-       <enabled>true</enabled>
+       <enabled or:origin="or:default">true</enabled>
        <ip-address>127.0.0.1</ip-address>
        <ip-address>::1</ip-address>
-       <description>predefined interface</description>
+       <description>system-defined interface</description>
      </interface>
    </interfaces>
 
@@ -1536,7 +1536,7 @@ B.3.  Operator Installs Card into a Chassis
    <interfaces xmlns="urn:example:interfacemgmt">
      <interface>
        <name>et-0/0/0</name>
-       <type>ethernet</type>
+       <ip-address>192.168.10.10</ip-address>
        <description>pre-provisioned interface</description>
      </interface>
    </interfaces>
@@ -1547,16 +1547,14 @@ B.3.  Operator Installs Card into a Chassis
      <interface>
        <name>lo0</name>
        <type>loopback</type>
-       <enabled>true</enabled>
        <ip-address>127.0.0.1</ip-address>
        <ip-address>::1</ip-address>
-       <description>predefined interface</description>
+       <description>system-defined interface</description>
      </interface>
      <interface>
        <name>et-0/0/0</name>
        <type>ethernet</type>
-       <mtu>1500</mtu>
-       <speed>100Mb</speed>
+       <description>system-defined interface</description>
      </interface>
    </interfaces>
 
@@ -1565,7 +1563,9 @@ B.3.  Operator Installs Card into a Chassis
 
 
 
-Ma, et al.                Expires 30 March 2025                [Page 28]
+
+
+Ma, et al.                Expires 2 April 2025                 [Page 28]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -1574,16 +1574,14 @@ Internet-Draft        System-defined Configuration        September 2024
      <interface>
        <name>lo0</name>
        <type>loopback</type>
-       <enabled>true</enabled>
        <ip-address>127.0.0.1</ip-address>
        <ip-address>::1</ip-address>
-       <description>predefined interface</description>
+       <description>system-defined interface</description>
      </interface>
      <interface>
        <name>et-0/0/0</name>
        <type>ethernet</type>
-       <mtu>1500</mtu>
-       <speed>100Mb</speed>
+       <ip-address>192.168.10.10</ip-address>
        <description>pre-provisioned interface</description>
      </interface>
    </interfaces>
@@ -1596,32 +1594,34 @@ Internet-Draft        System-defined Configuration        September 2024
      <interface or:origin="or:system">
        <name>lo0</name>
        <type>loopback</type>
-       <enabled>true</enabled>
+       <enabled or:origin="or:default">true</enabled>
        <ip-address>127.0.0.1</ip-address>
        <ip-address>::1</ip-address>
-       <description>predefined interface</description>
+       <description>system-defined interface</description>
      </interface>
      <interface>
        <name>et-0/0/0</name>
-       <type>ethernet</type>
-       <enabled or:origin="or:default">false</enabled>
-       <mtu or:origin="or:system">1500</mtu>
-       <speed or:origin="or:system">100Mb</speed>
+       <type or:origin="or:system">ethernet</type>
+       <enabled or:origin="or:default">true</enabled>
+       <ip-address>192.168.10.10</ip-address>
        <description>pre-provisioned interface</description>
      </interface>
    </interfaces>
 
 B.4.  Client further Commits Configuration
 
-   If the client further sets the speed of interface "et-0/0/0" to a
-   lower rate in <running> using a "merge" operation with the referenced
-   node "type" being explicitly declared and enables this interface:
+   If the client further sets the speed of interface "et-0/0/0" in
+   <running> using a "merge" operation:
 
 
 
 
 
-Ma, et al.                Expires 30 March 2025                [Page 29]
+
+
+
+
+Ma, et al.                Expires 2 April 2025                 [Page 29]
 
 Internet-Draft        System-defined Configuration        September 2024
 
@@ -1629,11 +1629,7 @@ Internet-Draft        System-defined Configuration        September 2024
    <interfaces xmlns="urn:example:interfacemgmt">
      <interface>
        <name>et-0/0/0</name>
-       <type>ethernet</type>
-       <enabled>false</enabled>
-       <mtu>1500</mtu>
        <speed>10Mb</speed>
-       <description>pre-provisioned interface</description>
      </interface>
    </interfaces>
 
@@ -1643,65 +1639,48 @@ Internet-Draft        System-defined Configuration        September 2024
      <interface>
        <name>lo0</name>
        <type>loopback</type>
-       <enabled>true</enabled>
        <ip-address>127.0.0.1</ip-address>
        <ip-address>::1</ip-address>
-       <description>predefined interface</description>
+       <description>system-defined interface</description>
      </interface>
      <interface>
        <name>et-0/0/0</name>
        <type>ethernet</type>
-       <mtu>1500</mtu>
-       <speed>100Mb</speed>
+       <description>system-defined interface</description>
      </interface>
    </interfaces>
 
    And the contents of <intended> which represents a merged results of
    <running> and <system> are as follows:
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Ma, et al.                Expires 30 March 2025                [Page 30]
-
-Internet-Draft        System-defined Configuration        September 2024
-
-
    <interfaces xmlns="urn:example:interfacemgmt">
      <interface>
        <name>lo0</name>
        <type>loopback</type>
-       <enabled>true</enabled>
        <ip-address>127.0.0.1</ip-address>
        <ip-address>::1</ip-address>
-       <description>predefined interface</description>
+       <description>system-defined interface</description>
      </interface>
      <interface>
        <name>et-0/0/0</name>
        <type>ethernet</type>
-       <enabled>true</enabled>
-       <mtu>1500</mtu>
+       <ip-address>192.168.10.10</ip-address>
        <speed>10Mb</speed>
        <description>pre-provisioned interface</description>
      </interface>
    </interfaces>
 
    And <operational> would appear as follows:
+
+
+
+
+
+
+Ma, et al.                Expires 2 April 2025                 [Page 30]
+
+Internet-Draft        System-defined Configuration        September 2024
+
 
    <interfaces xmlns="urn:example:interfacemgmt"
                xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
@@ -1712,13 +1691,13 @@ Internet-Draft        System-defined Configuration        September 2024
        <enabled>true</enabled>
        <ip-address>127.0.0.1</ip-address>
        <ip-address>::1</ip-address>
-       <description>predefined interface</description>
+       <description>system-defined interface</description>
      </interface>
      <interface>
        <name>et-0/0/0</name>
-       <type>ethernet</type>
-       <enabled>true</enabled>
-       <mtu or:origin="or:system">1500</mtu>
+       <type or:origin="or:system">ethernet</type>
+       <enabled or:origin="or:default">true</enabled>
+       <ip-address>192.168.10.10</ip-address>
        <speed>10Mb</speed>
        <description>pre-provisioned interface</description>
      </interface>
@@ -1730,13 +1709,6 @@ Acknowledgements
    providing input to this document: Balazs Lengyel, Robert Wilton,
    Juergen Schoenwaelder, Andy Bierman, Martin Bjorklund, Mohamed
    Boucadair, Michal Vasko, Alexander Clemm, and Timothy Carey.
-
-
-
-Ma, et al.                Expires 30 March 2025                [Page 31]
-
-Internet-Draft        System-defined Configuration        September 2024
-
 
 Contributors
 
@@ -1758,6 +1730,13 @@ Contributors
    Beijing
    China
    Email: xiechf@chinatelecom.cn
+
+
+
+Ma, et al.                Expires 2 April 2025                 [Page 31]
+
+Internet-Draft        System-defined Configuration        September 2024
+
 
 Authors' Addresses
 
@@ -1789,4 +1768,25 @@ Authors' Addresses
 
 
 
-Ma, et al.                Expires 30 March 2025                [Page 32]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Ma, et al.                Expires 2 April 2025                 [Page 32]

@@ -110,7 +110,8 @@
       contents of these configuration datastores are controlled by clients.
       This document introduces the concept of system configuration datastore
       holding configuration controlled by the system on which a server is
-      running.</t>
+      running. The system configuration can be referenced (e.g., leafref) by
+      configuration explicitly created by clients.</t>
 
       <t>This document updates RFC 8342.</t>
     </abstract>
@@ -391,14 +392,14 @@ boxes denote named datastores</artwork>
       <section title="Read-only to Clients">
         <t>The system datastore is read-only (i.e., edits towards
         &lt;system&gt; directly MUST be denied), though the client may be
-        allowed to override the value of a system-initialized node (see <xref
-        target="modifying"/>).</t>
+        allowed to provide configuration that overrides the value of a
+        system-initialized node (see <xref target="modifying"/>).</t>
       </section>
 
       <section title="No Impact to &lt;operational&gt;">
         <t>This work has no impact to &lt;operational&gt;. Notably, it does
         not define any new origin identity as it is able to use the existing
-        "system" identity defined in<xref section="5.3.4" sectionFormat="of"
+        "system" identity defined in <xref section="5.3.4" sectionFormat="of"
         target="RFC8342"/>. &lt;system&gt; enables system-generated nodes to
         be defined like configuration, i.e., made visible to clients in order
         for being referenced or configurable prior to present in
@@ -419,10 +420,10 @@ boxes denote named datastores</artwork>
 
       <section anchor="declare" title="Referencing System Configuration">
         <t>Clients may create configuration data in &lt;running&gt; that
-        references nodes in &lt;system&gt;. For example, some implementations
-        may define system nodes solely as a convenience for clients to
-        reference. It is also possible for the clients to define their
-        customized nodes for reference.</t>
+        references nodes in &lt;system&gt;. Some implementations may define
+        system nodes solely as a convenience for clients to reference. It is
+        also possible for the clients to define their customized nodes for
+        reference.</t>
 
         <t><xref target="declare-example"/> provides an example of a client
         referencing system-defined nodes.</t>
@@ -433,13 +434,12 @@ boxes denote named datastores</artwork>
         <t>In some cases, a server may allow some parts of system
         configuration (e.g., a leaf's value) to be modified. Modification of
         system configuration is achieved by the client writing configuration
-        nodes with intended values in &lt;running&gt; that override the
-        matched configuration nodes at the corresponding level in
-        &lt;system&gt;. Configurations defined in &lt;running&gt; take
-        precedence over system configuration nodes in &lt;system&gt; if the
-        server allows the nodes to be modified. The immutability of system
-        configuration is defined in <xref
-        target="I-D.ietf-netmod-immutable-flag"/>.</t>
+        data in &lt;running&gt; that overrides the values of matched
+        configuration nodes at the corresponding level in &lt;system&gt;.
+        Configurations defined in &lt;running&gt; take precedence over system
+        configuration nodes in &lt;system&gt; if the server allows the nodes
+        to be modified. The immutability of system configuration is defined in
+        <xref target="I-D.ietf-netmod-immutable-flag"/>.</t>
 
         <t><xref target="modify-example"/> provides an example of a client
         overriding a system-instantiated leaf's value.</t>
@@ -456,9 +456,10 @@ boxes denote named datastores</artwork>
       </section>
     </section>
 
-    <section title="Interesting Relationships to Other Datastores">
-      <t>This section discusses the relationship of &lt;system&gt; to other
-      datastores known at the time of this writing.</t>
+    <section title="Relationships to Other Datastores">
+      <t>This section discusses the interesting relationships of
+      &lt;system&gt; to other datastores known at the time of this
+      writing.</t>
 
       <section anchor="factory"
                title="The &quot;factory-default&quot; Datastore">
@@ -672,8 +673,10 @@ INSERT_TEXT_FROM_FILE(examples/applications-referenced.xml)
                ]]></artwork>
           </figure></t>
 
-        <t>And &lt;operational&gt; might contain the configuration of
-        applications as follows:<figure>
+        <t>As different entries of application configuration in &lt;system&gt;
+        and &lt;running&gt; is merged to create &lt;intended&gt;,
+        &lt;operational&gt; might contain the configuration of applications as
+        follows:<figure>
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/applications-declare-operational.xml)
               ]]></artwork>
@@ -729,7 +732,7 @@ INSERT_TEXT_FROM_FILE(examples/interface-running-addition.xml)
           </figure>
 
         <t>The configuration of interface "lo0" is present in
-          &lt;operational&gt; as follows:<figure>
+        &lt;operational&gt; as follows:<figure>
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/interface-operational-addition.xml)
               ]]></artwork>
@@ -763,10 +766,9 @@ INSERT_TEXT_FROM_FILE(examples/example-interface-management.yang)
   &lt;interface&gt; 
     &lt;name&gt;lo0&lt;/name&gt;  
     &lt;type&gt;loopback&lt;/type&gt;  
-    &lt;enabled&gt;true&lt;/enabled&gt;  
     &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;  
     &lt;ip-address&gt;::1&lt;/ip-address&gt;  
-    &lt;description&gt;predefined interface&lt;/description&gt; 
+    &lt;description&gt;system-defined interface&lt;/description&gt; 
   &lt;/interface&gt; 
 &lt;/interfaces&gt;</artwork>
         </figure>
@@ -777,7 +779,8 @@ INSERT_TEXT_FROM_FILE(examples/example-interface-management.yang)
         above.</t>
 
         <t>And &lt;operational&gt; will show the system-provided loopback
-        interface:</t>
+        interface, note that &lt;operational&gt; also includes the default
+        value specified in the YANG module:</t>
 
         <figure>
           <artwork>&lt;interfaces xmlns="urn:example:interfacemgmt"
@@ -786,10 +789,10 @@ INSERT_TEXT_FROM_FILE(examples/example-interface-management.yang)
   &lt;interface&gt; 
     &lt;name&gt;lo0&lt;/name&gt;  
     &lt;type&gt;loopback&lt;/type&gt;  
-    &lt;enabled&gt;true&lt;/enabled&gt;  
+    &lt;enabled or:origin="or:default"&gt;true&lt;/enabled&gt;  
     &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;  
     &lt;ip-address&gt;::1&lt;/ip-address&gt;  
-    &lt;description&gt;predefined interface&lt;/description&gt; 
+    &lt;description&gt;system-defined interface&lt;/description&gt; 
   &lt;/interface&gt; 
 &lt;/interfaces&gt;</artwork>
         </figure>
@@ -803,8 +806,8 @@ INSERT_TEXT_FROM_FILE(examples/example-interface-management.yang)
         <figure>
           <artwork>&lt;interfaces xmlns="urn:example:interfacemgmt"&gt; 
   &lt;interface&gt; 
-    &lt;name&gt;et-0/0/0&lt;/name&gt;  
-    &lt;type&gt;ethernet&lt;/type&gt;
+    &lt;name&gt;et-0/0/0&lt;/name&gt;
+    &lt;ip-address&gt;192.168.10.10&lt;/ip-address&gt;
     &lt;description&gt;pre-provisioned interface&lt;/description&gt; 
   &lt;/interface&gt; 
 &lt;/interfaces&gt;</artwork>
@@ -818,10 +821,9 @@ INSERT_TEXT_FROM_FILE(examples/example-interface-management.yang)
   &lt;interface&gt; 
     &lt;name&gt;lo0&lt;/name&gt;  
     &lt;type&gt;loopback&lt;/type&gt; 
-    &lt;enabled&gt;true&lt;/enabled&gt; 
     &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;  
     &lt;ip-address&gt;::1&lt;/ip-address&gt; 
-    &lt;description&gt;predefined interface&lt;/description&gt;  
+    &lt;description&gt;system-defined interface&lt;/description&gt;  
   &lt;/interface&gt; 
 &lt;/interfaces&gt;</artwork>
         </figure>
@@ -834,14 +836,13 @@ INSERT_TEXT_FROM_FILE(examples/example-interface-management.yang)
   &lt;interface&gt; 
     &lt;name&gt;lo0&lt;/name&gt;  
     &lt;type&gt;loopback&lt;/type&gt; 
-    &lt;enabled&gt;true&lt;/enabled&gt; 
     &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;  
     &lt;ip-address&gt;::1&lt;/ip-address&gt; 
-    &lt;description&gt;predefined interface&lt;/description&gt;  
+    &lt;description&gt;system-defined interface&lt;/description&gt;  
   &lt;/interface&gt; 
   &lt;interface&gt; 
     &lt;name&gt;et-0/0/0&lt;/name&gt;  
-    &lt;type&gt;ethernet&lt;/type&gt;
+    &lt;ip-address&gt;192.168.10.10&lt;/ip-address&gt;
     &lt;description&gt;pre-provisioned interface&lt;/description&gt; 
   &lt;/interface&gt; 
 &lt;/interfaces&gt;</artwork>
@@ -858,10 +859,10 @@ INSERT_TEXT_FROM_FILE(examples/example-interface-management.yang)
   &lt;interface or:origin="or:system"&gt;
     &lt;name&gt;lo0&lt;/name&gt;  
     &lt;type&gt;loopback&lt;/type&gt; 
-    &lt;enabled&gt;true&lt;/enabled&gt; 
+    &lt;enabled or:origin="or:default"&gt;true&lt;/enabled&gt; 
     &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;  
     &lt;ip-address&gt;::1&lt;/ip-address&gt; 
-    &lt;description&gt;predefined interface&lt;/description&gt;  
+    &lt;description&gt;system-defined interface&lt;/description&gt;  
   &lt;/interface&gt; 
 &lt;/interfaces&gt;              </artwork>
         </figure>
@@ -876,8 +877,8 @@ INSERT_TEXT_FROM_FILE(examples/example-interface-management.yang)
         <figure>
           <artwork>&lt;interfaces xmlns="urn:example:interfacemgmt"&gt; 
   &lt;interface&gt; 
-    &lt;name&gt;et-0/0/0&lt;/name&gt;  
-    &lt;type&gt;ethernet&lt;/type&gt;
+    &lt;name&gt;et-0/0/0&lt;/name&gt;
+    &lt;ip-address&gt;192.168.10.10&lt;/ip-address&gt;
     &lt;description&gt;pre-provisioned interface&lt;/description&gt; 
   &lt;/interface&gt; 
 &lt;/interfaces&gt;</artwork>
@@ -890,16 +891,14 @@ INSERT_TEXT_FROM_FILE(examples/example-interface-management.yang)
   &lt;interface&gt; 
     &lt;name&gt;lo0&lt;/name&gt;  
     &lt;type&gt;loopback&lt;/type&gt; 
-    &lt;enabled&gt;true&lt;/enabled&gt; 
     &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;  
     &lt;ip-address&gt;::1&lt;/ip-address&gt; 
-    &lt;description&gt;predefined interface&lt;/description&gt;  
+    &lt;description&gt;system-defined interface&lt;/description&gt;  
   &lt;/interface&gt; 
   &lt;interface&gt; 
     &lt;name&gt;et-0/0/0&lt;/name&gt;
-    &lt;type&gt;ethernet&lt;/type&gt; 
-    &lt;mtu&gt;1500&lt;/mtu&gt; 
-    &lt;speed&gt;100Mb&lt;/speed&gt;
+    &lt;type&gt;ethernet&lt;/type&gt;
+    &lt;description&gt;system-defined interface&lt;/description&gt;
   &lt;/interface&gt; 
 &lt;/interfaces&gt;</artwork>
         </figure>
@@ -912,16 +911,14 @@ INSERT_TEXT_FROM_FILE(examples/example-interface-management.yang)
   &lt;interface&gt; 
     &lt;name&gt;lo0&lt;/name&gt;  
     &lt;type&gt;loopback&lt;/type&gt; 
-    &lt;enabled&gt;true&lt;/enabled&gt; 
     &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;  
     &lt;ip-address&gt;::1&lt;/ip-address&gt; 
-    &lt;description&gt;predefined interface&lt;/description&gt;  
+    &lt;description&gt;system-defined interface&lt;/description&gt;  
   &lt;/interface&gt; 
   &lt;interface&gt; 
     &lt;name&gt;et-0/0/0&lt;/name&gt;
-    &lt;type&gt;ethernet&lt;/type&gt; 
-    &lt;mtu&gt;1500&lt;/mtu&gt; 
-    &lt;speed&gt;100Mb&lt;/speed&gt;
+    &lt;type&gt;ethernet&lt;/type&gt;
+    &lt;ip-address&gt;192.168.10.10&lt;/ip-address&gt;
     &lt;description&gt;pre-provisioned interface&lt;/description&gt; 
   &lt;/interface&gt; 
 &lt;/interfaces&gt;</artwork>
@@ -936,17 +933,16 @@ INSERT_TEXT_FROM_FILE(examples/example-interface-management.yang)
   &lt;interface or:origin="or:system"&gt;
     &lt;name&gt;lo0&lt;/name&gt;  
     &lt;type&gt;loopback&lt;/type&gt; 
-    &lt;enabled&gt;true&lt;/enabled&gt; 
+    &lt;enabled or:origin="or:default"&gt;true&lt;/enabled&gt; 
     &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;  
     &lt;ip-address&gt;::1&lt;/ip-address&gt; 
-    &lt;description&gt;predefined interface&lt;/description&gt;  
+    &lt;description&gt;system-defined interface&lt;/description&gt;  
   &lt;/interface&gt; 
   &lt;interface&gt; 
     &lt;name&gt;et-0/0/0&lt;/name&gt;
-    &lt;type&gt;ethernet&lt;/type&gt;
-    &lt;enabled or:origin="or:default"&gt;false&lt;/enabled&gt;  
-    &lt;mtu or:origin="or:system"&gt;1500&lt;/mtu&gt; 
-    &lt;speed or:origin="or:system"&gt;100Mb&lt;/speed&gt;
+    &lt;type or:origin="or:system"&gt;ethernet&lt;/type&gt;
+    &lt;enabled or:origin="or:default"&gt;true&lt;/enabled&gt;  
+    &lt;ip-address&gt;192.168.10.10&lt;/ip-address&gt;
     &lt;description&gt;pre-provisioned interface&lt;/description&gt; 
   &lt;/interface&gt; 
 &lt;/interfaces&gt;            </artwork>
@@ -954,18 +950,12 @@ INSERT_TEXT_FROM_FILE(examples/example-interface-management.yang)
       </section>
 
       <section title="Client further Commits Configuration">
-        <t>If the client further sets the speed of interface "et-0/0/0" to a
-        lower rate in &lt;running&gt; using a "merge" operation with the
-        referenced node "type" being explicitly declared and enables this
-        interface:<figure>
+        <t>If the client further sets the speed of interface "et-0/0/0" in
+        &lt;running&gt; using a "merge" operation:<figure>
             <artwork>&lt;interfaces xmlns="urn:example:interfacemgmt"&gt; 
   &lt;interface&gt; 
     &lt;name&gt;et-0/0/0&lt;/name&gt;
-    &lt;type&gt;ethernet&lt;/type&gt;
-    &lt;enabled&gt;false&lt;/enabled&gt;  
-    &lt;mtu&gt;1500&lt;/mtu&gt; 
     &lt;speed&gt;10Mb&lt;/speed&gt;
-    &lt;description&gt;pre-provisioned interface&lt;/description&gt; 
   &lt;/interface&gt; 
 &lt;/interfaces&gt;           </artwork>
           </figure></t>
@@ -975,18 +965,16 @@ INSERT_TEXT_FROM_FILE(examples/example-interface-management.yang)
   &lt;interface&gt; 
     &lt;name&gt;lo0&lt;/name&gt;  
     &lt;type&gt;loopback&lt;/type&gt; 
-    &lt;enabled&gt;true&lt;/enabled&gt; 
     &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;  
     &lt;ip-address&gt;::1&lt;/ip-address&gt; 
-    &lt;description&gt;predefined interface&lt;/description&gt;  
+    &lt;description&gt;system-defined interface&lt;/description&gt;  
   &lt;/interface&gt; 
   &lt;interface&gt; 
     &lt;name&gt;et-0/0/0&lt;/name&gt;
-    &lt;type&gt;ethernet&lt;/type&gt; 
-    &lt;mtu&gt;1500&lt;/mtu&gt; 
-    &lt;speed&gt;100Mb&lt;/speed&gt;
+    &lt;type&gt;ethernet&lt;/type&gt;
+    &lt;description&gt;system-defined interface&lt;/description&gt;
   &lt;/interface&gt; 
-&lt;/interfaces&gt;           </artwork>
+&lt;/interfaces&gt;         </artwork>
           </figure></t>
 
         <t>And the contents of &lt;intended&gt; which represents a merged
@@ -995,20 +983,18 @@ INSERT_TEXT_FROM_FILE(examples/example-interface-management.yang)
   &lt;interface&gt; 
     &lt;name&gt;lo0&lt;/name&gt;  
     &lt;type&gt;loopback&lt;/type&gt; 
-    &lt;enabled&gt;true&lt;/enabled&gt; 
     &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;  
     &lt;ip-address&gt;::1&lt;/ip-address&gt; 
-    &lt;description&gt;predefined interface&lt;/description&gt;  
+    &lt;description&gt;system-defined interface&lt;/description&gt;  
   &lt;/interface&gt; 
   &lt;interface&gt; 
     &lt;name&gt;et-0/0/0&lt;/name&gt;
-    &lt;type&gt;ethernet&lt;/type&gt; 
-    &lt;enabled&gt;true&lt;/enabled&gt;
-    &lt;mtu&gt;1500&lt;/mtu&gt; 
+    &lt;type&gt;ethernet&lt;/type&gt;
+    &lt;ip-address&gt;192.168.10.10&lt;/ip-address&gt;
     &lt;speed&gt;10Mb&lt;/speed&gt;
-    &lt;description&gt;pre-provisioned interface&lt;/description&gt;  
+    &lt;description&gt;pre-provisioned interface&lt;/description&gt; 
   &lt;/interface&gt; 
-&lt;/interfaces&gt;            </artwork>
+&lt;/interfaces&gt;           </artwork>
           </figure></t>
 
         <t>And &lt;operational&gt; would appear as follows:<figure>
@@ -1021,13 +1007,13 @@ INSERT_TEXT_FROM_FILE(examples/example-interface-management.yang)
     &lt;enabled&gt;true&lt;/enabled&gt; 
     &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;  
     &lt;ip-address&gt;::1&lt;/ip-address&gt; 
-    &lt;description&gt;predefined interface&lt;/description&gt;  
+    &lt;description&gt;system-defined interface&lt;/description&gt;  
   &lt;/interface&gt; 
   &lt;interface&gt; 
     &lt;name&gt;et-0/0/0&lt;/name&gt;
-    &lt;type&gt;ethernet&lt;/type&gt; 
-    &lt;enabled&gt;true&lt;/enabled&gt;
-    &lt;mtu or:origin="or:system"&gt;1500&lt;/mtu&gt; 
+    &lt;type or:origin="or:system"&gt;ethernet&lt;/type&gt; 
+    &lt;enabled or:origin="or:default"&gt;true&lt;/enabled&gt;
+    &lt;ip-address&gt;192.168.10.10&lt;/ip-address&gt;
     &lt;speed&gt;10Mb&lt;/speed&gt; 
     &lt;description&gt;pre-provisioned interface&lt;/description&gt; 
   &lt;/interface&gt; 

@@ -2,17 +2,17 @@
               xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
               or:origin="or:intended">
   <application>
-    <name>my-app-1</name>
+    <name>my-smtp</name>
     <app-id>101</app-id>
     <protocol>tcp</protocol>
     <destination-port>2345</destination-port>
-    <description>customized application</description>
+    <description>customized smtp application</description>
     <security-protection>
       <risk-level>high</risk-level>
     </security-protection>
   </application>
   <application>
-    <name>my-app-2</name>
+    <name>my-foo</name>
     <app-id>102</app-id>
     <protocol>udp</protocol>
     <destination-port>69</destination-port>

@@ -14,7 +14,8 @@
       contents of these configuration datastores are controlled by clients.
       This document introduces the concept of system configuration datastore
       holding configuration controlled by the system on which a server is
-      running. 
+      running. The system configuration can be referenced (e.g., leafref) by
+      configuration explicitly created by clients. 
        This document updates RFC 8342. 
     " name="description">
 <meta content="xml2rfc 3.14.2" name="generator">
@@ -1200,7 +1201,7 @@ li > p:last-of-type {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ma, et al.</td>
-<td class="center">Expires 30 March 2025</td>
+<td class="center">Expires 2 April 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1216,12 +1217,12 @@ li > p:last-of-type {
 <a href="https://www.rfc-editor.org/rfc/rfc8342" class="eref">8342</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-09-26" class="published">26 September 2024</time>
+<time datetime="2024-09-29" class="published">29 September 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-03-30">30 March 2025</time></dd>
+<dd class="expires"><time datetime="2025-04-02">2 April 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1247,7 +1248,8 @@ li > p:last-of-type {
       contents of these configuration datastores are controlled by clients.
       This document introduces the concept of system configuration datastore
       holding configuration controlled by the system on which a server is
-      running.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+      running. The system configuration can be referenced (e.g., leafref) by
+      configuration explicitly created by clients.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 <p id="section-abstract-2">This document updates RFC 8342.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
 </section>
 <div id="status-of-memo">
@@ -1269,7 +1271,7 @@ li > p:last-of-type {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 30 March 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 2 April 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1358,7 +1360,7 @@ li > p:last-of-type {
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
-            <p id="section-toc.1-1.7.1"><a href="#section-7" class="xref">7</a>.  <a href="#name-interesting-relationships-t" class="xref">Interesting Relationships to Other Datastores</a></p>
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="xref">7</a>.  <a href="#name-relationships-to-other-data" class="xref">Relationships to Other Datastores</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.1">
                 <p id="section-toc.1-1.7.2.1.1"><a href="#section-7.1" class="xref">7.1</a>.  <a href="#name-the-factory-default-datasto" class="xref">The "factory-default" Datastore</a></p>
@@ -1751,7 +1753,8 @@ boxes denote named datastores</pre>
         </h3>
 <p id="section-5.1-1">The system datastore is read-only (i.e., edits towards
         &lt;system&gt; directly MUST be denied), though the client may be
-        allowed to override the value of a system-initialized node (see <a href="#modifying" class="xref">Section 6.3</a>).<a href="#section-5.1-1" class="pilcrow">¶</a></p>
+        allowed to provide configuration that overrides the value of a
+        system-initialized node (see <a href="#modifying" class="xref">Section 6.3</a>).<a href="#section-5.1-1" class="pilcrow">¶</a></p>
 </section>
 <section id="section-5.2">
         <h3 id="name-no-impact-to-operational">
@@ -1759,7 +1762,7 @@ boxes denote named datastores</pre>
         </h3>
 <p id="section-5.2-1">This work has no impact to &lt;operational&gt;. Notably, it does
         not define any new origin identity as it is able to use the existing
-        "system" identity defined in<span><a href="https://rfc-editor.org/rfc/rfc8342#section-5.3.4" class="relref">Section 5.3.4</a> of [<a href="#RFC8342" class="xref">RFC8342</a>]</span>. &lt;system&gt; enables system-generated nodes to
+        "system" identity defined in <span><a href="https://rfc-editor.org/rfc/rfc8342#section-5.3.4" class="relref">Section 5.3.4</a> of [<a href="#RFC8342" class="xref">RFC8342</a>]</span>. &lt;system&gt; enables system-generated nodes to
         be defined like configuration, i.e., made visible to clients in order
         for being referenced or configurable prior to present in
         &lt;operational&gt;. "config false" nodes are out of scope, hence
@@ -1787,10 +1790,10 @@ boxes denote named datastores</pre>
 <a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-referencing-system-configur" class="section-name selfRef">Referencing System Configuration</a>
         </h3>
 <p id="section-6.2-1">Clients may create configuration data in &lt;running&gt; that
-        references nodes in &lt;system&gt;. For example, some implementations
-        may define system nodes solely as a convenience for clients to
-        reference. It is also possible for the clients to define their
-        customized nodes for reference.<a href="#section-6.2-1" class="pilcrow">¶</a></p>
+        references nodes in &lt;system&gt;. Some implementations may define
+        system nodes solely as a convenience for clients to reference. It is
+        also possible for the clients to define their customized nodes for
+        reference.<a href="#section-6.2-1" class="pilcrow">¶</a></p>
 <p id="section-6.2-2"><a href="#declare-example" class="xref">Appendix A.1</a> provides an example of a client
         referencing system-defined nodes.<a href="#section-6.2-2" class="pilcrow">¶</a></p>
 </section>
@@ -1803,12 +1806,12 @@ boxes denote named datastores</pre>
 <p id="section-6.3-1">In some cases, a server may allow some parts of system
         configuration (e.g., a leaf's value) to be modified. Modification of
         system configuration is achieved by the client writing configuration
-        nodes with intended values in &lt;running&gt; that override the
-        matched configuration nodes at the corresponding level in
-        &lt;system&gt;. Configurations defined in &lt;running&gt; take
-        precedence over system configuration nodes in &lt;system&gt; if the
-        server allows the nodes to be modified. The immutability of system
-        configuration is defined in <span>[<a href="#I-D.ietf-netmod-immutable-flag" class="xref">I-D.ietf-netmod-immutable-flag</a>]</span>.<a href="#section-6.3-1" class="pilcrow">¶</a></p>
+        data in &lt;running&gt; that overrides the values of matched
+        configuration nodes at the corresponding level in &lt;system&gt;.
+        Configurations defined in &lt;running&gt; take precedence over system
+        configuration nodes in &lt;system&gt; if the server allows the nodes
+        to be modified. The immutability of system configuration is defined in
+        <span>[<a href="#I-D.ietf-netmod-immutable-flag" class="xref">I-D.ietf-netmod-immutable-flag</a>]</span>.<a href="#section-6.3-1" class="pilcrow">¶</a></p>
 <p id="section-6.3-2"><a href="#modify-example" class="xref">Appendix A.2</a> provides an example of a client
         overriding a system-instantiated leaf's value.<a href="#section-6.3-2" class="pilcrow">¶</a></p>
 </section>
@@ -1827,11 +1830,12 @@ boxes denote named datastores</pre>
 </section>
 </div>
 <section id="section-7">
-      <h2 id="name-interesting-relationships-t">
-<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-interesting-relationships-t" class="section-name selfRef">Interesting Relationships to Other Datastores</a>
+      <h2 id="name-relationships-to-other-data">
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-relationships-to-other-data" class="section-name selfRef">Relationships to Other Datastores</a>
       </h2>
-<p id="section-7-1">This section discusses the relationship of &lt;system&gt; to other
-      datastores known at the time of this writing.<a href="#section-7-1" class="pilcrow">¶</a></p>
+<p id="section-7-1">This section discusses the interesting relationships of
+      &lt;system&gt; to other datastores known at the time of this
+      writing.<a href="#section-7-1" class="pilcrow">¶</a></p>
 <div id="factory">
 <section id="section-7.1">
         <h3 id="name-the-factory-default-datasto">
@@ -1887,7 +1891,7 @@ boxes denote named datastores</pre>
 <a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-yang-module" class="section-name selfRef">YANG Module</a>
         </h3>
 <p id="section-8.2-1" class="keepWithNext">&lt;CODE BEGINS&gt; file
-          "ietf-system-datastore@2024-09-26.yang"<a href="#section-8.2-1" class="pilcrow">¶</a></p>
+          "ietf-system-datastore@2024-09-29.yang"<a href="#section-8.2-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-8.2-2">
 <pre>
 module ietf-system-datastore {
@@ -1931,7 +1935,7 @@ module ietf-system-datastore {
      (https://www.rfc-editor.org/info/rfcXXXX); see the RFC
      itself for full legal notices.";
 
-  revision 2024-09-26 {
+  revision 2024-09-29 {
     description
       "Initial version.";
     reference
@@ -1989,7 +1993,7 @@ module ietf-system-datastore {
       <h2 id="name-security-considerations">
 <a href="#section-10" class="section-number selfRef">10. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
-<p id="section-10-1">This section is modeled after the template described in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-netmod-rfc8407bis-15#section-3.7" class="relref">Section 3.7</a> of [<a href="#I-D.ietf-netmod-rfc8407bis" class="xref">I-D.ietf-netmod-rfc8407bis</a>]</span>.<a href="#section-10-1" class="pilcrow">¶</a></p>
+<p id="section-10-1">This section is modeled after the template described in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-netmod-rfc8407bis-17#section-3.7" class="relref">Section 3.7</a> of [<a href="#I-D.ietf-netmod-rfc8407bis" class="xref">I-D.ietf-netmod-rfc8407bis</a>]</span>.<a href="#section-10-1" class="pilcrow">¶</a></p>
 <p id="section-10-2">The "ietf-system-datastore" YANG module defines a data model that is
       designed to be accessed via YANG-based management protocols, such as
       NETCONF <span>[<a href="#RFC6241" class="xref">RFC6241</a>]</span> and RESTCONF <span>[<a href="#RFC8040" class="xref">RFC8040</a>]</span>.
@@ -2054,11 +2058,11 @@ module ietf-system-datastore {
 <dl class="references">
 <dt id="I-D.ietf-netmod-immutable-flag">[I-D.ietf-netmod-immutable-flag]</dt>
         <dd>
-<span class="refAuthor">Ma, Q.</span>, <span class="refAuthor">Wu, Q.</span>, <span class="refAuthor">Lengyel, B.</span>, and <span class="refAuthor">H. Li</span>, <span class="refTitle">"YANG Metadata Annotation for Immutable Flag"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-netmod-immutable-flag-01</span>, <time datetime="2024-06-28" class="refDate">28 June 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-netmod-immutable-flag-01">https://datatracker.ietf.org/doc/html/draft-ietf-netmod-immutable-flag-01</a>&gt;</span>. </dd>
+<span class="refAuthor">Ma, Q.</span>, <span class="refAuthor">Wu, Q.</span>, <span class="refAuthor">Lengyel, B.</span>, and <span class="refAuthor">H. Li</span>, <span class="refTitle">"YANG Metadata Annotation for Immutable Flag"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-netmod-immutable-flag-02</span>, <time datetime="2024-09-27" class="refDate">27 September 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-netmod-immutable-flag-02">https://datatracker.ietf.org/doc/html/draft-ietf-netmod-immutable-flag-02</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-netmod-rfc8407bis">[I-D.ietf-netmod-rfc8407bis]</dt>
         <dd>
-<span class="refAuthor">Bierman, A.</span>, <span class="refAuthor">Boucadair, M.</span>, and <span class="refAuthor">Q. Wu</span>, <span class="refTitle">"Guidelines for Authors and Reviewers of Documents Containing YANG Data Models"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-netmod-rfc8407bis-15</span>, <time datetime="2024-09-10" class="refDate">10 September 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-netmod-rfc8407bis-15">https://datatracker.ietf.org/doc/html/draft-ietf-netmod-rfc8407bis-15</a>&gt;</span>. </dd>
+<span class="refAuthor">Bierman, A.</span>, <span class="refAuthor">Boucadair, M.</span>, and <span class="refAuthor">Q. Wu</span>, <span class="refTitle">"Guidelines for Authors and Reviewers of Documents Containing YANG Data Models"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-netmod-rfc8407bis-17</span>, <time datetime="2024-09-27" class="refDate">27 September 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-netmod-rfc8407bis-17">https://datatracker.ietf.org/doc/html/draft-ietf-netmod-rfc8407bis-17</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC3688">[RFC3688]</dt>
         <dd>
@@ -2319,25 +2323,27 @@ module example-acl {
 &lt;/acl&gt;
 </pre><a href="#appendix-A.1-10" class="pilcrow">¶</a>
 </div>
-<p id="appendix-A.1-11">And &lt;operational&gt; might contain the configuration of
-        applications as follows:<a href="#appendix-A.1-11" class="pilcrow">¶</a></p>
+<p id="appendix-A.1-11">As different entries of application configuration in &lt;system&gt;
+        and &lt;running&gt; is merged to create &lt;intended&gt;,
+        &lt;operational&gt; might contain the configuration of applications as
+        follows:<a href="#appendix-A.1-11" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="appendix-A.1-12">
 <pre>
 &lt;applications xmlns="urn:example:application"
               xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
               or:origin="or:intended"&gt;
   &lt;application&gt;
-    &lt;name&gt;my-app-1&lt;/name&gt;
+    &lt;name&gt;my-smtp&lt;/name&gt;
     &lt;app-id&gt;101&lt;/app-id&gt;
     &lt;protocol&gt;tcp&lt;/protocol&gt;
     &lt;destination-port&gt;2345&lt;/destination-port&gt;
-    &lt;description&gt;customized application&lt;/description&gt;
+    &lt;description&gt;customized smtp application&lt;/description&gt;
     &lt;security-protection&gt;
       &lt;risk-level&gt;high&lt;/risk-level&gt;
     &lt;/security-protection&gt;
   &lt;/application&gt;
   &lt;application&gt;
-    &lt;name&gt;my-app-2&lt;/name&gt;
+    &lt;name&gt;my-foo&lt;/name&gt;
     &lt;app-id&gt;102&lt;/app-id&gt;
     &lt;protocol&gt;udp&lt;/protocol&gt;
     &lt;destination-port&gt;69&lt;/destination-port&gt;
@@ -2480,7 +2486,7 @@ module example-interface {
 </pre><a href="#appendix-A.3-2" class="pilcrow">¶</a>
 </div>
 <p id="appendix-A.3-3">The configuration of interface "lo0" is present in
-          &lt;operational&gt; as follows:<a href="#appendix-A.3-3" class="pilcrow">¶</a></p>
+        &lt;operational&gt; as follows:<a href="#appendix-A.3-3" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="appendix-A.3-4">
 <pre>
 &lt;interfaces xmlns="urn:example:interface"
@@ -2533,10 +2539,7 @@ module example-interface-management {
       }
       leaf enabled {
         type boolean;
-        default "false";
-      }
-      leaf mtu {
-        type uint32;
+        default "true";
       }
       leaf-list ip-address {
         type inet:ip-address;
@@ -2574,10 +2577,9 @@ module example-interface-management {
   &lt;interface&gt;
     &lt;name&gt;lo0&lt;/name&gt;
     &lt;type&gt;loopback&lt;/type&gt;
-    &lt;enabled&gt;true&lt;/enabled&gt;
     &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
     &lt;ip-address&gt;::1&lt;/ip-address&gt;
-    &lt;description&gt;predefined interface&lt;/description&gt;
+    &lt;description&gt;system-defined interface&lt;/description&gt;
   &lt;/interface&gt;
 &lt;/interfaces&gt;</pre><a href="#appendix-B.1-3" class="pilcrow">¶</a>
 </div>
@@ -2586,7 +2588,8 @@ module example-interface-management {
         &lt;intended&gt; would be identical to the one in &lt;system&gt; shown
         above.<a href="#appendix-B.1-4" class="pilcrow">¶</a></p>
 <p id="appendix-B.1-5">And &lt;operational&gt; will show the system-provided loopback
-        interface:<a href="#appendix-B.1-5" class="pilcrow">¶</a></p>
+        interface, note that &lt;operational&gt; also includes the default
+        value specified in the YANG module:<a href="#appendix-B.1-5" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="appendix-B.1-6">
 <pre>&lt;interfaces xmlns="urn:example:interfacemgmt"
             xmlns:or="urn:ietf:params:xml:ns:yang:ietf-origin"
@@ -2594,10 +2597,10 @@ module example-interface-management {
   &lt;interface&gt;
     &lt;name&gt;lo0&lt;/name&gt;
     &lt;type&gt;loopback&lt;/type&gt;
-    &lt;enabled&gt;true&lt;/enabled&gt;
+    &lt;enabled or:origin="or:default"&gt;true&lt;/enabled&gt;
     &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
     &lt;ip-address&gt;::1&lt;/ip-address&gt;
-    &lt;description&gt;predefined interface&lt;/description&gt;
+    &lt;description&gt;system-defined interface&lt;/description&gt;
   &lt;/interface&gt;
 &lt;/interfaces&gt;</pre><a href="#appendix-B.1-6" class="pilcrow">¶</a>
 </div>
@@ -2613,7 +2616,7 @@ module example-interface-management {
 <pre>&lt;interfaces xmlns="urn:example:interfacemgmt"&gt;
   &lt;interface&gt;
     &lt;name&gt;et-0/0/0&lt;/name&gt;
-    &lt;type&gt;ethernet&lt;/type&gt;
+    &lt;ip-address&gt;192.168.10.10&lt;/ip-address&gt;
     &lt;description&gt;pre-provisioned interface&lt;/description&gt;
   &lt;/interface&gt;
 &lt;/interfaces&gt;</pre><a href="#appendix-B.2-2" class="pilcrow">¶</a>
@@ -2625,10 +2628,9 @@ module example-interface-management {
   &lt;interface&gt;
     &lt;name&gt;lo0&lt;/name&gt;
     &lt;type&gt;loopback&lt;/type&gt;
-    &lt;enabled&gt;true&lt;/enabled&gt;
     &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
     &lt;ip-address&gt;::1&lt;/ip-address&gt;
-    &lt;description&gt;predefined interface&lt;/description&gt;
+    &lt;description&gt;system-defined interface&lt;/description&gt;
   &lt;/interface&gt;
 &lt;/interfaces&gt;</pre><a href="#appendix-B.2-4" class="pilcrow">¶</a>
 </div>
@@ -2639,14 +2641,13 @@ module example-interface-management {
   &lt;interface&gt;
     &lt;name&gt;lo0&lt;/name&gt;
     &lt;type&gt;loopback&lt;/type&gt;
-    &lt;enabled&gt;true&lt;/enabled&gt;
     &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
     &lt;ip-address&gt;::1&lt;/ip-address&gt;
-    &lt;description&gt;predefined interface&lt;/description&gt;
+    &lt;description&gt;system-defined interface&lt;/description&gt;
   &lt;/interface&gt;
   &lt;interface&gt;
     &lt;name&gt;et-0/0/0&lt;/name&gt;
-    &lt;type&gt;ethernet&lt;/type&gt;
+    &lt;ip-address&gt;192.168.10.10&lt;/ip-address&gt;
     &lt;description&gt;pre-provisioned interface&lt;/description&gt;
   &lt;/interface&gt;
 &lt;/interfaces&gt;</pre><a href="#appendix-B.2-6" class="pilcrow">¶</a>
@@ -2661,10 +2662,10 @@ module example-interface-management {
   &lt;interface or:origin="or:system"&gt;
     &lt;name&gt;lo0&lt;/name&gt;
     &lt;type&gt;loopback&lt;/type&gt;
-    &lt;enabled&gt;true&lt;/enabled&gt;
+    &lt;enabled or:origin="or:default"&gt;true&lt;/enabled&gt;
     &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
     &lt;ip-address&gt;::1&lt;/ip-address&gt;
-    &lt;description&gt;predefined interface&lt;/description&gt;
+    &lt;description&gt;system-defined interface&lt;/description&gt;
   &lt;/interface&gt;
 &lt;/interfaces&gt;</pre><a href="#appendix-B.2-8" class="pilcrow">¶</a>
 </div>
@@ -2681,7 +2682,7 @@ module example-interface-management {
 <pre>&lt;interfaces xmlns="urn:example:interfacemgmt"&gt;
   &lt;interface&gt;
     &lt;name&gt;et-0/0/0&lt;/name&gt;
-    &lt;type&gt;ethernet&lt;/type&gt;
+    &lt;ip-address&gt;192.168.10.10&lt;/ip-address&gt;
     &lt;description&gt;pre-provisioned interface&lt;/description&gt;
   &lt;/interface&gt;
 &lt;/interfaces&gt;</pre><a href="#appendix-B.3-2" class="pilcrow">¶</a>
@@ -2692,16 +2693,14 @@ module example-interface-management {
   &lt;interface&gt;
     &lt;name&gt;lo0&lt;/name&gt;
     &lt;type&gt;loopback&lt;/type&gt;
-    &lt;enabled&gt;true&lt;/enabled&gt;
     &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
     &lt;ip-address&gt;::1&lt;/ip-address&gt;
-    &lt;description&gt;predefined interface&lt;/description&gt;
+    &lt;description&gt;system-defined interface&lt;/description&gt;
   &lt;/interface&gt;
   &lt;interface&gt;
     &lt;name&gt;et-0/0/0&lt;/name&gt;
     &lt;type&gt;ethernet&lt;/type&gt;
-    &lt;mtu&gt;1500&lt;/mtu&gt;
-    &lt;speed&gt;100Mb&lt;/speed&gt;
+    &lt;description&gt;system-defined interface&lt;/description&gt;
   &lt;/interface&gt;
 &lt;/interfaces&gt;</pre><a href="#appendix-B.3-4" class="pilcrow">¶</a>
 </div>
@@ -2712,16 +2711,14 @@ module example-interface-management {
   &lt;interface&gt;
     &lt;name&gt;lo0&lt;/name&gt;
     &lt;type&gt;loopback&lt;/type&gt;
-    &lt;enabled&gt;true&lt;/enabled&gt;
     &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
     &lt;ip-address&gt;::1&lt;/ip-address&gt;
-    &lt;description&gt;predefined interface&lt;/description&gt;
+    &lt;description&gt;system-defined interface&lt;/description&gt;
   &lt;/interface&gt;
   &lt;interface&gt;
     &lt;name&gt;et-0/0/0&lt;/name&gt;
     &lt;type&gt;ethernet&lt;/type&gt;
-    &lt;mtu&gt;1500&lt;/mtu&gt;
-    &lt;speed&gt;100Mb&lt;/speed&gt;
+    &lt;ip-address&gt;192.168.10.10&lt;/ip-address&gt;
     &lt;description&gt;pre-provisioned interface&lt;/description&gt;
   &lt;/interface&gt;
 &lt;/interfaces&gt;</pre><a href="#appendix-B.3-6" class="pilcrow">¶</a>
@@ -2734,17 +2731,16 @@ module example-interface-management {
   &lt;interface or:origin="or:system"&gt;
     &lt;name&gt;lo0&lt;/name&gt;
     &lt;type&gt;loopback&lt;/type&gt;
-    &lt;enabled&gt;true&lt;/enabled&gt;
+    &lt;enabled or:origin="or:default"&gt;true&lt;/enabled&gt;
     &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
     &lt;ip-address&gt;::1&lt;/ip-address&gt;
-    &lt;description&gt;predefined interface&lt;/description&gt;
+    &lt;description&gt;system-defined interface&lt;/description&gt;
   &lt;/interface&gt;
   &lt;interface&gt;
     &lt;name&gt;et-0/0/0&lt;/name&gt;
-    &lt;type&gt;ethernet&lt;/type&gt;
-    &lt;enabled or:origin="or:default"&gt;false&lt;/enabled&gt;
-    &lt;mtu or:origin="or:system"&gt;1500&lt;/mtu&gt;
-    &lt;speed or:origin="or:system"&gt;100Mb&lt;/speed&gt;
+    &lt;type or:origin="or:system"&gt;ethernet&lt;/type&gt;
+    &lt;enabled or:origin="or:default"&gt;true&lt;/enabled&gt;
+    &lt;ip-address&gt;192.168.10.10&lt;/ip-address&gt;
     &lt;description&gt;pre-provisioned interface&lt;/description&gt;
   &lt;/interface&gt;
 &lt;/interfaces&gt;</pre><a href="#appendix-B.3-8" class="pilcrow">¶</a>
@@ -2754,19 +2750,13 @@ module example-interface-management {
         <h3 id="name-client-further-commits-conf">
 <a href="#appendix-B.4" class="section-number selfRef">B.4. </a><a href="#name-client-further-commits-conf" class="section-name selfRef">Client further Commits Configuration</a>
         </h3>
-<p id="appendix-B.4-1">If the client further sets the speed of interface "et-0/0/0" to a
-        lower rate in &lt;running&gt; using a "merge" operation with the
-        referenced node "type" being explicitly declared and enables this
-        interface:<a href="#appendix-B.4-1" class="pilcrow">¶</a></p>
+<p id="appendix-B.4-1">If the client further sets the speed of interface "et-0/0/0" in
+        &lt;running&gt; using a "merge" operation:<a href="#appendix-B.4-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="appendix-B.4-2">
 <pre>&lt;interfaces xmlns="urn:example:interfacemgmt"&gt;
   &lt;interface&gt;
     &lt;name&gt;et-0/0/0&lt;/name&gt;
-    &lt;type&gt;ethernet&lt;/type&gt;
-    &lt;enabled&gt;false&lt;/enabled&gt;
-    &lt;mtu&gt;1500&lt;/mtu&gt;
     &lt;speed&gt;10Mb&lt;/speed&gt;
-    &lt;description&gt;pre-provisioned interface&lt;/description&gt;
   &lt;/interface&gt;
 &lt;/interfaces&gt;</pre><a href="#appendix-B.4-2" class="pilcrow">¶</a>
 </div>
@@ -2776,16 +2766,14 @@ module example-interface-management {
   &lt;interface&gt;
     &lt;name&gt;lo0&lt;/name&gt;
     &lt;type&gt;loopback&lt;/type&gt;
-    &lt;enabled&gt;true&lt;/enabled&gt;
     &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
     &lt;ip-address&gt;::1&lt;/ip-address&gt;
-    &lt;description&gt;predefined interface&lt;/description&gt;
+    &lt;description&gt;system-defined interface&lt;/description&gt;
   &lt;/interface&gt;
   &lt;interface&gt;
     &lt;name&gt;et-0/0/0&lt;/name&gt;
     &lt;type&gt;ethernet&lt;/type&gt;
-    &lt;mtu&gt;1500&lt;/mtu&gt;
-    &lt;speed&gt;100Mb&lt;/speed&gt;
+    &lt;description&gt;system-defined interface&lt;/description&gt;
   &lt;/interface&gt;
 &lt;/interfaces&gt;</pre><a href="#appendix-B.4-4" class="pilcrow">¶</a>
 </div>
@@ -2796,16 +2784,14 @@ module example-interface-management {
   &lt;interface&gt;
     &lt;name&gt;lo0&lt;/name&gt;
     &lt;type&gt;loopback&lt;/type&gt;
-    &lt;enabled&gt;true&lt;/enabled&gt;
     &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
     &lt;ip-address&gt;::1&lt;/ip-address&gt;
-    &lt;description&gt;predefined interface&lt;/description&gt;
+    &lt;description&gt;system-defined interface&lt;/description&gt;
   &lt;/interface&gt;
   &lt;interface&gt;
     &lt;name&gt;et-0/0/0&lt;/name&gt;
     &lt;type&gt;ethernet&lt;/type&gt;
-    &lt;enabled&gt;true&lt;/enabled&gt;
-    &lt;mtu&gt;1500&lt;/mtu&gt;
+    &lt;ip-address&gt;192.168.10.10&lt;/ip-address&gt;
     &lt;speed&gt;10Mb&lt;/speed&gt;
     &lt;description&gt;pre-provisioned interface&lt;/description&gt;
   &lt;/interface&gt;
@@ -2822,13 +2808,13 @@ module example-interface-management {
     &lt;enabled&gt;true&lt;/enabled&gt;
     &lt;ip-address&gt;127.0.0.1&lt;/ip-address&gt;
     &lt;ip-address&gt;::1&lt;/ip-address&gt;
-    &lt;description&gt;predefined interface&lt;/description&gt;
+    &lt;description&gt;system-defined interface&lt;/description&gt;
   &lt;/interface&gt;
   &lt;interface&gt;
     &lt;name&gt;et-0/0/0&lt;/name&gt;
-    &lt;type&gt;ethernet&lt;/type&gt;
-    &lt;enabled&gt;true&lt;/enabled&gt;
-    &lt;mtu or:origin="or:system"&gt;1500&lt;/mtu&gt;
+    &lt;type or:origin="or:system"&gt;ethernet&lt;/type&gt;
+    &lt;enabled or:origin="or:default"&gt;true&lt;/enabled&gt;
+    &lt;ip-address&gt;192.168.10.10&lt;/ip-address&gt;
     &lt;speed&gt;10Mb&lt;/speed&gt;
     &lt;description&gt;pre-provisioned interface&lt;/description&gt;
   &lt;/interface&gt;

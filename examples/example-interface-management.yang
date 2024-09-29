@@ -22,10 +22,7 @@ module example-interface-management {
       }
       leaf enabled {
         type boolean;
-        default "false";
-      }
-      leaf mtu {
-        type uint32;
+        default "true";
       }
       leaf-list ip-address {
         type inet:ip-address;
