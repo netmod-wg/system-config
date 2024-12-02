@@ -239,7 +239,7 @@
         origin value defined in <xref target="RFC8342"/> represents the origin
         of configuration provided by &lt;intended&gt;, this document updates
         its definition as the origin source of configuration explicitly
-        provided by &lt;running&gt;, and allows a subset of configuration in
+        provided by clients, and allows a subset of configuration in
         &lt;intended&gt; that flows from &lt;system&gt; yet is not configured
         or overridden explicitly in &lt;running&gt; to use "system" as its
         origin value.</t>
@@ -416,6 +416,25 @@ boxes denote named datastores</artwork>
         The updates of system configuration may be obtained through YANG
         notifications (e.g., on-change notification) <xref
         target="RFC8639"/><xref target="RFC8641"/>.</t>
+
+        <t>Servers MUST ensure that any updates of &lt;system&gt; do not
+        render &lt;intended&gt; invalid. However, any mechanism for handling
+        these circumstances is outside the scope of this document. That said,
+        here are some examples of how a server might behave ensuring
+        &lt;intended&gt; (and &lt;running&gt;) remains valid: <list style="symbols">
+            <t>Servers migrate system configuration update (e.g., a renamed
+            list key) in &lt;running&gt;.</t>
+
+            <t>Servers copy the referenced system configuration that has been
+            removed from &lt;system&gt; (e.g., if an interface is physically
+            removed) into &lt;running&gt;.</t>
+
+            <t>Servers reject the operation to change system configuration
+            (e.g., software upgrade fails) and needs the client to update the
+            configuration in &lt;running&gt; as a prerequisite. Servers are
+            recommended to include some hints in error responses to help
+            clients understand how &lt;running&gt; should be updated.</t>
+          </list></t>
       </section>
 
       <section anchor="declare" title="Referencing System Configuration">
