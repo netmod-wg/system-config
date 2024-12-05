@@ -400,11 +400,15 @@ boxes denote named datastores</artwork>
         <t>This work has no impact to &lt;operational&gt;. Notably, it does
         not define any new origin identity as it is able to use the existing
         "system" identity defined in <xref section="5.3.4" sectionFormat="of"
-        target="RFC8342"/>. &lt;system&gt; enables system-generated nodes to
-        be defined like configuration, i.e., made visible to clients in order
-        for being referenced or configurable prior to present in
-        &lt;operational&gt;. "config false" nodes are out of scope, hence
-        existing "config false" nodes are not impacted by this work.</t>
+        target="RFC8342"/>. This document does not assert that all
+        configuration nodes in &lt;operational&gt; with origin "system"
+        originate from &lt;system&gt;, especially in cases where it is
+        ambiguous which origin should be used. &lt;system&gt; enables
+        system-generated nodes to be defined like configuration, i.e., made
+        visible to clients in order for being referenced or configurable prior
+        to present in &lt;operational&gt;. "config false" nodes are out of
+        scope, hence existing "config false" nodes are not impacted by this
+        work.</t>
       </section>
     </section>
 
@@ -421,7 +425,8 @@ boxes denote named datastores</artwork>
         render &lt;intended&gt; invalid. However, any mechanism for handling
         these circumstances is outside the scope of this document. That said,
         here are some examples of how a server might behave ensuring
-        &lt;intended&gt; (and &lt;running&gt;) remains valid: <list style="symbols">
+        &lt;intended&gt; (and &lt;running&gt;) remains valid: <list
+            style="symbols">
             <t>Servers migrate system configuration update (e.g., a renamed
             list key) in &lt;running&gt;.</t>
 
@@ -751,7 +756,7 @@ INSERT_TEXT_FROM_FILE(examples/interface-running-addition.xml)
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/interface-operational-addition.xml)
               ]]></artwork>
-            </figure></t>
+          </figure></t>
       </section>
     </section>
 
