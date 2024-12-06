@@ -1201,7 +1201,7 @@ li > p:last-of-type {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ma, et al.</td>
-<td class="center">Expires 8 June 2025</td>
+<td class="center">Expires 9 June 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1217,12 +1217,12 @@ li > p:last-of-type {
 <a href="https://www.rfc-editor.org/rfc/rfc8342" class="eref">8342</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-12-05" class="published">5 December 2024</time>
+<time datetime="2024-12-06" class="published">6 December 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-06-08">8 June 2025</time></dd>
+<dd class="expires"><time datetime="2025-06-09">9 June 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1271,7 +1271,7 @@ li > p:last-of-type {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 8 June 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 9 June 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1793,17 +1793,21 @@ boxes denote named datastores</pre>
         here are some examples of how a server might behave ensuring
         &lt;intended&gt; (and &lt;running&gt;) remains valid:<a href="#section-6.1-2" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-6.1-3.1">Servers migrate system configuration update (e.g., a renamed
-            list key) in &lt;running&gt;.<a href="#section-6.1-3.1" class="pilcrow">¶</a>
+<li class="normal" id="section-6.1-3.1">Servers migrate references in &lt;running&gt; from old
+            system-defined nodes to new system-defined nodes, assuming that
+            the new references have the same semantic properties as the old
+            reference. Since this migration changes data in &lt;running&gt;,
+            it is RECOMMENDED to alert clients that such change may occur.<a href="#section-6.1-3.1" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-6.1-3.2">Servers copy the referenced system configuration that has been
-            removed from &lt;system&gt; (e.g., if an interface is physically
-            removed) into &lt;running&gt;.<a href="#section-6.1-3.2" class="pilcrow">¶</a>
+          <li class="normal" id="section-6.1-3.2">Servers copy referenced system-defined node into
+            &lt;running&gt;. Since this migration changes data in
+            &lt;running&gt;, it is RECOMMENDED to alert clients that such
+            change may occur.<a href="#section-6.1-3.2" class="pilcrow">¶</a>
 </li>
           <li class="normal" id="section-6.1-3.3">Servers reject the operation to change system configuration
             (e.g., software upgrade fails) and needs the client to update the
             configuration in &lt;running&gt; as a prerequisite. Servers are
-            recommended to include some hints in error responses to help
+            RECOMMENDED to include some hints in error responses to help
             clients understand how &lt;running&gt; should be updated.<a href="#section-6.1-3.3" class="pilcrow">¶</a>
 </li>
         </ul>
@@ -1915,7 +1919,7 @@ boxes denote named datastores</pre>
 <a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-yang-module" class="section-name selfRef">YANG Module</a>
         </h3>
 <p id="section-8.2-1" class="keepWithNext">&lt;CODE BEGINS&gt; file
-          "ietf-system-datastore@2024-12-05.yang"<a href="#section-8.2-1" class="pilcrow">¶</a></p>
+          "ietf-system-datastore@2024-12-06.yang"<a href="#section-8.2-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-8.2-2">
 <pre>
 module ietf-system-datastore {
@@ -1959,7 +1963,7 @@ module ietf-system-datastore {
      (https://www.rfc-editor.org/info/rfcXXXX); see the RFC
      itself for full legal notices.";
 
-  revision 2024-12-05 {
+  revision 2024-12-06 {
     description
       "Initial version.";
     reference

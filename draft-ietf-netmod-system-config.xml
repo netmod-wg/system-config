@@ -427,17 +427,21 @@ boxes denote named datastores</artwork>
         here are some examples of how a server might behave ensuring
         &lt;intended&gt; (and &lt;running&gt;) remains valid: <list
             style="symbols">
-            <t>Servers migrate system configuration update (e.g., a renamed
-            list key) in &lt;running&gt;.</t>
+            <t>Servers migrate references in &lt;running&gt; from old
+            system-defined nodes to new system-defined nodes, assuming that
+            the new references have the same semantic properties as the old
+            reference. Since this migration changes data in &lt;running&gt;,
+            it is RECOMMENDED to alert clients that such change may occur.</t>
 
-            <t>Servers copy the referenced system configuration that has been
-            removed from &lt;system&gt; (e.g., if an interface is physically
-            removed) into &lt;running&gt;.</t>
+            <t>Servers copy referenced system-defined node into
+            &lt;running&gt;. Since this migration changes data in
+            &lt;running&gt;, it is RECOMMENDED to alert clients that such
+            change may occur.</t>
 
             <t>Servers reject the operation to change system configuration
             (e.g., software upgrade fails) and needs the client to update the
             configuration in &lt;running&gt; as a prerequisite. Servers are
-            recommended to include some hints in error responses to help
+            RECOMMENDED to include some hints in error responses to help
             clients understand how &lt;running&gt; should be updated.</t>
           </list></t>
       </section>
