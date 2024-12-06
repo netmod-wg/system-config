@@ -433,7 +433,7 @@ boxes denote named datastores</artwork>
             reference. Since this migration changes data in &lt;running&gt;,
             it is RECOMMENDED to alert clients that such change may occur.</t>
 
-            <t>Servers copy referenced system-defined node into
+            <t>Servers copy referenced system-defined nodes into
             &lt;running&gt;. Since this migration changes data in
             &lt;running&gt;, it is RECOMMENDED to alert clients that such
             change may occur.</t>

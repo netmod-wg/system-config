@@ -518,9 +518,9 @@ Internet-Draft        System-defined Configuration         December 2024
       Since this migration changes data in <running>, it is RECOMMENDED
       to alert clients that such change may occur.
 
-   *  Servers copy referenced system-defined node into <running>.  Since
-      this migration changes data in <running>, it is RECOMMENDED to
-      alert clients that such change may occur.
+   *  Servers copy referenced system-defined nodes into <running>.
+      Since this migration changes data in <running>, it is RECOMMENDED
+      to alert clients that such change may occur.
 
    *  Servers reject the operation to change system configuration (e.g.,
       software upgrade fails) and needs the client to update the
