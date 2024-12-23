@@ -133,10 +133,11 @@
 
       <t>Some servers allow the descendant nodes of system-defined
       configuration to be configured or modified. For example, the system
-      configuration may contain an almost empty physical interface, while the
-      client needs to be able to add, modify, or remove a number of descendant
-      nodes. Some descendant nodes may not be modifiable (e.g., the interface
-      "type" set by the system).</t>
+      configuration may contain an almost empty physical interface, whose
+      existence in the system configuration is tied to the presence of
+      particular hardware, while the client needs to be able to add, modify,
+      or remove a number of descendant nodes. Some descendant nodes may not be
+      modifiable (e.g., the interface "type" set by the system).</t>
 
       <t>This document updates the NMDA defined in <xref target="RFC8342"/>
       with a read-only conventional configuration datastore called "system" to
@@ -158,16 +159,14 @@
 
         <t>The following terms are defined in this document:<list
             style="hanging">
-            <t hangText="system configuration: ">Configuration that is
-            provided by the system itself. System configuration is present in
-            the system configuration datastore (regardless of whether it is
-            applied or referenced). It is a different and separate concept
-            from factory default configuration defined in <xref
-            target="RFC8808"/> (which represents a preset initial
-            configuration that is used to initialize the configuration of a
-            server). System configuration may also be referred to as
-            "system-defined configuration" or "system-provided configuration"
-            throughout this document.</t>
+            <t hangText="system configuration: "><xref format="none"
+            target="RFC8342">RFC 8342</xref> defines it as "Configuration that
+            is supplied by the device itself." The current definition expands
+            on the definition from <xref target="RFC8342"/> that system
+            configuration is present in the system configuration datastore
+            (regardless of whether it is applied or referenced). It may also
+            be referred to as "system-defined configuration" or
+            "system-provided configuration" throughout this document.</t>
 
             <t hangText="system configuration datastore: ">A configuration
             datastore holding configuration provided by the system itself.
@@ -242,23 +241,24 @@
         provided by clients, and allows a subset of configuration in
         &lt;intended&gt; that flows from &lt;system&gt; yet is not configured
         or overridden explicitly in &lt;running&gt; to use "system" as its
-        origin value.</t>
+        origin value. Note all configuration nodes in &lt;operational&gt; with
+        origin "system" MUST originate from &lt;system&gt;.</t>
       </section>
     </section>
 
     <section anchor="categories" title="Kinds of System Configuration">
       <t>This document defines two types of system configuration.
-      Configuration that is immediately-present and configuration that is
+      Configuration that is always-present and configuration that is
       conditionally-present. These types of system configuration are described
       in <xref target="immediate"/> and <xref target="conditional"/>,
       respectively.</t>
 
-      <section anchor="immediate" title="Immediately-Present">
-        <t>Immediately-present refers to system configuration which is
-        generated in &lt;system&gt; when the device is powered on,
-        irrespective of physical resource present or not, a special
-        functionality enabled or not. An example of immediately-present system
-        configuration is an always-existing loopback interface.</t>
+      <section anchor="immediate" title="Always-Present">
+        <t>Always-present refers to system configuration which is generated in
+        &lt;system&gt; when the device is powered on, irrespective of physical
+        resource present or not, a special functionality enabled or not. An
+        example of always-present system configuration is an always-existing
+        loopback interface.</t>
       </section>
 
       <section anchor="conditional" title="Conditionally-Present">
@@ -266,11 +266,11 @@
         generated in &lt;system&gt; based on specific conditions being met in
         a system. For example, if a physical resource is present (e.g., an
         interface card is inserted), the system automatically detects it and
-        loads associated configuration; when the physical resource is not
+        loads the associated configuration; when the physical resource is not
         present (an interface card is removed), the system configuration will
-        be automatically cleared. Another example is when a special
-        functionality is enabled, e.g., when a license or feature is enabled,
-        specific configuration may be created by the system.</t>
+        automatically be removed from &lt;system&gt;. Another example is when
+        a special functionality is enabled, e.g., when a license or feature is
+        enabled, specific configuration may be created by the system.</t>
       </section>
     </section>
 
@@ -400,15 +400,11 @@ boxes denote named datastores</artwork>
         <t>This work has no impact to &lt;operational&gt;. Notably, it does
         not define any new origin identity as it is able to use the existing
         "system" identity defined in <xref section="5.3.4" sectionFormat="of"
-        target="RFC8342"/>. This document does not assert that all
-        configuration nodes in &lt;operational&gt; with origin "system"
-        originate from &lt;system&gt;, especially in cases where it is
-        ambiguous which origin should be used. &lt;system&gt; enables
-        system-generated nodes to be defined like configuration, i.e., made
-        visible to clients in order for being referenced or configurable prior
-        to present in &lt;operational&gt;. "config false" nodes are out of
-        scope, hence existing "config false" nodes are not impacted by this
-        work.</t>
+        target="RFC8342"/>. &lt;system&gt; enables system-generated nodes to
+        be defined like configuration, i.e., made visible to clients in order
+        for being referenced or configurable prior to present in
+        &lt;operational&gt;. "config false" nodes are out of scope, hence
+        existing "config false" nodes are not impacted by this work.</t>
       </section>
     </section>
 
@@ -421,29 +417,10 @@ boxes denote named datastores</artwork>
         notifications (e.g., on-change notification) <xref
         target="RFC8639"/><xref target="RFC8641"/>.</t>
 
-        <t>Servers MUST ensure that any updates of &lt;system&gt; do not
-        render &lt;intended&gt; invalid. However, any mechanism for handling
-        these circumstances is outside the scope of this document. That said,
-        here are some examples of how a server might behave ensuring
-        &lt;intended&gt; (and &lt;running&gt;) remains valid: <list
-            style="symbols">
-            <t>Servers migrate references in &lt;running&gt; from old
-            system-defined nodes to new system-defined nodes, assuming that
-            the new references have the same semantic properties as the old
-            reference. Since this migration changes data in &lt;running&gt;,
-            it is RECOMMENDED to alert clients that such change may occur.</t>
-
-            <t>Servers copy referenced system-defined nodes into
-            &lt;running&gt;. Since this migration changes data in
-            &lt;running&gt;, it is RECOMMENDED to alert clients that such
-            change may occur.</t>
-
-            <t>Servers reject the operation to change system configuration
-            (e.g., software upgrade fails) and needs the client to update the
-            configuration in &lt;running&gt; as a prerequisite. Servers are
-            RECOMMENDED to include some hints in error responses to help
-            clients understand how &lt;running&gt; should be updated.</t>
-          </list></t>
+        <t>If system configuration changes, &lt;running&gt; SHOULD remain
+        accurate and consistent with &lt;system&gt;. However, any mechanism
+        for handling these circumstances is outside the scope of this
+        document.</t>
       </section>
 
       <section anchor="declare" title="Referencing System Configuration">
@@ -466,8 +443,9 @@ boxes denote named datastores</artwork>
         configuration nodes at the corresponding level in &lt;system&gt;.
         Configurations defined in &lt;running&gt; take precedence over system
         configuration nodes in &lt;system&gt; if the server allows the nodes
-        to be modified. The immutability of system configuration is defined in
-        <xref target="I-D.ietf-netmod-immutable-flag"/>.</t>
+        to be modified (some implementations may have immutable system
+        configuration as per <xref
+        target="I-D.ietf-netmod-immutable-flag"/>).</t>
 
         <t><xref target="modify-example"/> provides an example of a client
         overriding a system-instantiated leaf's value.</t>
@@ -491,12 +469,16 @@ boxes denote named datastores</artwork>
 
       <section anchor="factory"
                title="The &quot;factory-default&quot; Datastore">
-        <t>Any deletable system-provided configuration that is populated as
-        part of &lt;running&gt; by the system at boot up, without being part
-        of the contents of a &lt;startup&gt; datastore, must be defined in
-        &lt;factory-default&gt; <xref target="RFC8808"/>, which is used to
-        initialize &lt;running&gt; when the device is first-time powered on or
-        reset to its factory default condition.</t>
+        <t>The "factory-default" datastore defined in <xref target="RFC8808"/>
+        is used to initialize &lt;running&gt; when the device is first-time
+        powered on or reset to its factory default condition. If a
+        &lt;factory-default&gt; is supported on a server, any deletable
+        system-provided configuration that is populated as part of
+        &lt;running&gt; by the system at boot up, without being part of the
+        contents of &lt;startup&gt;, must be defined in
+        &lt;factory-default&gt;. Otherwise, deletable system configuration
+        could be provided as the initial contents of &lt;startup&gt; as an
+        alternative.</t>
 
         <t>The &lt;factory-reset&gt; RPC operation can reset &lt;system&gt; to
         its factory default contents.</t>
@@ -664,7 +646,7 @@ INSERT_TEXT_FROM_FILE(examples/example-application.yang)
               ]]></artwork>
           </figure>A fictional ACL YANG module is used as follows, which
         defines a leafref for the leaf-list "application" data node to refer
-          to an existing application name.<figure>
+        to an existing application name.<figure>
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/example-acl.yang)
               ]]></artwork>
@@ -716,11 +698,10 @@ INSERT_TEXT_FROM_FILE(examples/example-interface.yang)
               ]]></artwork>
           </figure></t>
 
-        <t>Suppose the system provides an immediately-present loopback
-        interface (named "lo0") with a MTU value "65536", a default IPv4
-        address of "127.0.0.1", and a default IPv6 address of "::1". The
-        configuration of "lo0" interface is present in &lt;system&gt; as
-        follows:<figure>
+        <t>Suppose the system provides an always-present loopback interface
+        (named "lo0") with a MTU value "65536", a default IPv4 address of
+        "127.0.0.1", and a default IPv6 address of "::1". The configuration of
+        "lo0" interface is present in &lt;system&gt; as follows:<figure>
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/interface-system.xml)
               ]]></artwork>
@@ -779,7 +760,7 @@ INSERT_TEXT_FROM_FILE(examples/example-interface-management.yang)
 
       <section title="Device Powers On">
         <t>When the device is powered on, suppose the system provides an
-        immediately-present loopback interface (named "lo0") which is not
+        always-present loopback interface (named "lo0") which is not
         explicitly configured in &lt;running&gt;. Thus, no configuration for
         interfaces appears in &lt;running&gt;;</t>
 
@@ -837,8 +818,9 @@ INSERT_TEXT_FROM_FILE(examples/example-interface-management.yang)
 &lt;/interfaces&gt;</artwork>
         </figure>
 
-        <t>And the contents of &lt;system&gt; keep unchanged since the
-        interface is not physically present:</t>
+        <t>And the contents of &lt;system&gt; remain unchanged, only
+        containing the "lo" loopback interface, since the interface "et-0/0/0"
+        is not physically present:</t>
 
         <figure>
           <artwork>&lt;interfaces xmlns="urn:example:interfacemgmt"&gt; 
