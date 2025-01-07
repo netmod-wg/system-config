@@ -20,7 +20,7 @@
     " name="description">
 <meta content="xml2rfc 3.14.2" name="generator">
 <meta content="system config" name="keyword">
-<meta content="draft-ietf-netmod-system-config-10" name="ietf.draft">
+<meta content="draft-ietf-netmod-system-config-11" name="ietf.draft">
 <!-- Generator version information:
   xml2rfc 3.14.2
     Python 3.8.10
@@ -39,7 +39,7 @@
     setuptools 45.2.0
     six 1.14.0
 -->
-<link href="draft-ietf-netmod-system-config-10.xml" rel="alternate" type="application/rfc+xml">
+<link href="draft-ietf-netmod-system-config-11.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
 <style type="text/css">/*
 
@@ -1197,11 +1197,11 @@ li > p:last-of-type {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">System-defined Configuration</td>
-<td class="right">December 2024</td>
+<td class="right">January 2025</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ma, et al.</td>
-<td class="center">Expires 9 June 2025</td>
+<td class="center">Expires 11 July 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1211,18 +1211,18 @@ li > p:last-of-type {
 <dt class="label-workgroup">Workgroup:</dt>
 <dd class="workgroup">NETMOD</dd>
 <dt class="label-internet-draft">Internet-Draft:</dt>
-<dd class="internet-draft">draft-ietf-netmod-system-config-10</dd>
+<dd class="internet-draft">draft-ietf-netmod-system-config-11</dd>
 <dt class="label-updates">Updates:</dt>
 <dd class="updates">
 <a href="https://www.rfc-editor.org/rfc/rfc8342" class="eref">8342</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-12-06" class="published">6 December 2024</time>
+<time datetime="2025-01-07" class="published">7 January 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-06-09">9 June 2025</time></dd>
+<dd class="expires"><time datetime="2025-07-11">11 July 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1271,7 +1271,7 @@ li > p:last-of-type {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 9 June 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 11 July 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1280,7 +1280,7 @@ li > p:last-of-type {
 <a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
         </h2>
 <p id="section-boilerplate.2-1">
-            Copyright (c) 2024 IETF Trust and the persons identified as the
+            Copyright (c) 2025 IETF Trust and the persons identified as the
             document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.2-2">
             This document is subject to BCP 78 and the IETF Trust's Legal
@@ -1318,7 +1318,7 @@ li > p:last-of-type {
             <p id="section-toc.1-1.2.1"><a href="#section-2" class="xref">2</a>.  <a href="#name-kinds-of-system-configurati" class="xref">Kinds of System Configuration</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.1">
-                <p id="section-toc.1-1.2.2.1.1"><a href="#section-2.1" class="xref">2.1</a>.  <a href="#name-immediately-present" class="xref">Immediately-Present</a></p>
+                <p id="section-toc.1-1.2.2.1.1"><a href="#section-2.1" class="xref">2.1</a>.  <a href="#name-always-present" class="xref">Always-Present</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.2">
                 <p id="section-toc.1-1.2.2.2.1"><a href="#section-2.2" class="xref">2.2</a>.  <a href="#name-conditionally-present" class="xref">Conditionally-Present</a></p>
@@ -1463,10 +1463,11 @@ li > p:last-of-type {
       a server.<a href="#section-1-2" class="pilcrow">¶</a></p>
 <p id="section-1-3">Some servers allow the descendant nodes of system-defined
       configuration to be configured or modified. For example, the system
-      configuration may contain an almost empty physical interface, while the
-      client needs to be able to add, modify, or remove a number of descendant
-      nodes. Some descendant nodes may not be modifiable (e.g., the interface
-      "type" set by the system).<a href="#section-1-3" class="pilcrow">¶</a></p>
+      configuration may contain an almost empty physical interface, whose
+      existence in the system configuration is tied to the presence of
+      particular hardware, while the client needs to be able to add, modify,
+      or remove a number of descendant nodes. Some descendant nodes may not be
+      modifiable (e.g., the interface "type" set by the system).<a href="#section-1-3" class="pilcrow">¶</a></p>
 <p id="section-1-4">This document updates the NMDA defined in <span>[<a href="#RFC8342" class="xref">RFC8342</a>]</span>
       with a read-only conventional configuration datastore called "system" to
       expose system-defined configuration. The solution enables configuration
@@ -1486,15 +1487,14 @@ li > p:last-of-type {
 <p id="section-1.1-2">The following terms are defined in this document:<a href="#section-1.1-2" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlParallel" id="section-1.1-3">
           <dt id="section-1.1-3.1">system configuration: </dt>
-          <dd style="margin-left: 1.5em" id="section-1.1-3.2">Configuration that is
-            provided by the system itself. System configuration is present in
-            the system configuration datastore (regardless of whether it is
-            applied or referenced). It is a different and separate concept
-            from factory default configuration defined in <span>[<a href="#RFC8808" class="xref">RFC8808</a>]</span> (which represents a preset initial
-            configuration that is used to initialize the configuration of a
-            server). System configuration may also be referred to as
-            "system-defined configuration" or "system-provided configuration"
-            throughout this document.<a href="#section-1.1-3.2" class="pilcrow">¶</a>
+          <dd style="margin-left: 1.5em" id="section-1.1-3.2">
+            <a href="#RFC8342" class="xref">RFC 8342</a> defines it as "Configuration that
+            is supplied by the device itself." The current definition expands
+            on the definition from <span>[<a href="#RFC8342" class="xref">RFC8342</a>]</span> that system
+            configuration is present in the system configuration datastore
+            (regardless of whether it is applied or referenced). It may also
+            be referred to as "system-defined configuration" or
+            "system-provided configuration" throughout this document.<a href="#section-1.1-3.2" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
 <dt id="section-1.1-3.3">system configuration datastore: </dt>
@@ -1585,7 +1585,10 @@ li > p:last-of-type {
         provided by clients, and allows a subset of configuration in
         &lt;intended&gt; that flows from &lt;system&gt; yet is not configured
         or overridden explicitly in &lt;running&gt; to use "system" as its
-        origin value.<a href="#section-1.3-3" class="pilcrow">¶</a></p>
+        origin value. All configuration nodes in &lt;operational&gt; with
+        origin "system" MUST originate from &lt;system&gt;. Configuration
+        copied from &lt;system&gt; into &lt;running&gt; has its origin value
+        reported as "intended" when it flows into &lt;operational&gt;.<a href="#section-1.3-3" class="pilcrow">¶</a></p>
 </section>
 </section>
 </div>
@@ -1595,20 +1598,20 @@ li > p:last-of-type {
 <a href="#section-2" class="section-number selfRef">2. </a><a href="#name-kinds-of-system-configurati" class="section-name selfRef">Kinds of System Configuration</a>
       </h2>
 <p id="section-2-1">This document defines two types of system configuration.
-      Configuration that is immediately-present and configuration that is
+      Configuration that is always-present and configuration that is
       conditionally-present. These types of system configuration are described
       in <a href="#immediate" class="xref">Section 2.1</a> and <a href="#conditional" class="xref">Section 2.2</a>,
       respectively.<a href="#section-2-1" class="pilcrow">¶</a></p>
 <div id="immediate">
 <section id="section-2.1">
-        <h3 id="name-immediately-present">
-<a href="#section-2.1" class="section-number selfRef">2.1. </a><a href="#name-immediately-present" class="section-name selfRef">Immediately-Present</a>
+        <h3 id="name-always-present">
+<a href="#section-2.1" class="section-number selfRef">2.1. </a><a href="#name-always-present" class="section-name selfRef">Always-Present</a>
         </h3>
-<p id="section-2.1-1">Immediately-present refers to system configuration which is
-        generated in &lt;system&gt; when the device is powered on,
-        irrespective of physical resource present or not, a special
-        functionality enabled or not. An example of immediately-present system
-        configuration is an always-existing loopback interface.<a href="#section-2.1-1" class="pilcrow">¶</a></p>
+<p id="section-2.1-1">Always-present refers to system configuration which is generated in
+        &lt;system&gt; when the device is powered on, irrespective of physical
+        resource present or not, a special functionality enabled or not. An
+        example of always-present system configuration is an always-existing
+        loopback interface.<a href="#section-2.1-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="conditional">
@@ -1620,11 +1623,11 @@ li > p:last-of-type {
         generated in &lt;system&gt; based on specific conditions being met in
         a system. For example, if a physical resource is present (e.g., an
         interface card is inserted), the system automatically detects it and
-        loads associated configuration; when the physical resource is not
+        loads the associated configuration; when the physical resource is not
         present (an interface card is removed), the system configuration will
-        be automatically cleared. Another example is when a special
-        functionality is enabled, e.g., when a license or feature is enabled,
-        specific configuration may be created by the system.<a href="#section-2.2-1" class="pilcrow">¶</a></p>
+        automatically be removed from &lt;system&gt;. Another example is when
+        a special functionality is enabled, e.g., when a license or feature is
+        enabled, specific configuration may be created by the system.<a href="#section-2.2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1762,15 +1765,11 @@ boxes denote named datastores</pre>
         </h3>
 <p id="section-5.2-1">This work has no impact to &lt;operational&gt;. Notably, it does
         not define any new origin identity as it is able to use the existing
-        "system" identity defined in <span><a href="https://rfc-editor.org/rfc/rfc8342#section-5.3.4" class="relref">Section 5.3.4</a> of [<a href="#RFC8342" class="xref">RFC8342</a>]</span>. This document does not assert that all
-        configuration nodes in &lt;operational&gt; with origin "system"
-        originate from &lt;system&gt;, especially in cases where it is
-        ambiguous which origin should be used. &lt;system&gt; enables
-        system-generated nodes to be defined like configuration, i.e., made
-        visible to clients in order for being referenced or configurable prior
-        to present in &lt;operational&gt;. "config false" nodes are out of
-        scope, hence existing "config false" nodes are not impacted by this
-        work.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
+        "system" identity defined in <span><a href="https://rfc-editor.org/rfc/rfc8342#section-5.3.4" class="relref">Section 5.3.4</a> of [<a href="#RFC8342" class="xref">RFC8342</a>]</span>. &lt;system&gt; enables system-generated nodes to
+        be defined like configuration, i.e., made visible to clients in order
+        for being referenced or configurable prior to present in
+        &lt;operational&gt;. "config false" nodes are out of scope, hence
+        existing "config false" nodes are not impacted by this work.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
 </section>
 </section>
 <div id="dynamic">
@@ -1787,30 +1786,10 @@ boxes denote named datastores</pre>
         system-controlled resources change (see <a href="#conditional" class="xref">Section 2.2</a>).
         The updates of system configuration may be obtained through YANG
         notifications (e.g., on-change notification) <span>[<a href="#RFC8639" class="xref">RFC8639</a>]</span><span>[<a href="#RFC8641" class="xref">RFC8641</a>]</span>.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
-<p id="section-6.1-2">Servers MUST ensure that any updates of &lt;system&gt; do not
-        render &lt;intended&gt; invalid. However, any mechanism for handling
-        these circumstances is outside the scope of this document. That said,
-        here are some examples of how a server might behave ensuring
-        &lt;intended&gt; (and &lt;running&gt;) remains valid:<a href="#section-6.1-2" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-6.1-3.1">Servers migrate references in &lt;running&gt; from old
-            system-defined nodes to new system-defined nodes, assuming that
-            the new references have the same semantic properties as the old
-            reference. Since this migration changes data in &lt;running&gt;,
-            it is RECOMMENDED to alert clients that such change may occur.<a href="#section-6.1-3.1" class="pilcrow">¶</a>
-</li>
-          <li class="normal" id="section-6.1-3.2">Servers copy referenced system-defined nodes into
-            &lt;running&gt;. Since this migration changes data in
-            &lt;running&gt;, it is RECOMMENDED to alert clients that such
-            change may occur.<a href="#section-6.1-3.2" class="pilcrow">¶</a>
-</li>
-          <li class="normal" id="section-6.1-3.3">Servers reject the operation to change system configuration
-            (e.g., software upgrade fails) and needs the client to update the
-            configuration in &lt;running&gt; as a prerequisite. Servers are
-            RECOMMENDED to include some hints in error responses to help
-            clients understand how &lt;running&gt; should be updated.<a href="#section-6.1-3.3" class="pilcrow">¶</a>
-</li>
-        </ul>
+<p id="section-6.1-2">If system configuration changes, &lt;running&gt; SHOULD remain
+        accurate and consistent with &lt;system&gt;. However, any mechanism
+        for handling these circumstances is outside the scope of this
+        document.<a href="#section-6.1-2" class="pilcrow">¶</a></p>
 </section>
 <div id="declare">
 <section id="section-6.2">
@@ -1838,8 +1817,8 @@ boxes denote named datastores</pre>
         configuration nodes at the corresponding level in &lt;system&gt;.
         Configurations defined in &lt;running&gt; take precedence over system
         configuration nodes in &lt;system&gt; if the server allows the nodes
-        to be modified. The immutability of system configuration is defined in
-        <span>[<a href="#I-D.ietf-netmod-immutable-flag" class="xref">I-D.ietf-netmod-immutable-flag</a>]</span>.<a href="#section-6.3-1" class="pilcrow">¶</a></p>
+        to be modified (some implementations may have immutable system
+        configuration as per <span>[<a href="#I-D.ietf-netmod-immutable-flag" class="xref">I-D.ietf-netmod-immutable-flag</a>]</span>).<a href="#section-6.3-1" class="pilcrow">¶</a></p>
 <p id="section-6.3-2"><a href="#modify-example" class="xref">Appendix A.2</a> provides an example of a client
         overriding a system-instantiated leaf's value.<a href="#section-6.3-2" class="pilcrow">¶</a></p>
 </section>
@@ -1869,12 +1848,16 @@ boxes denote named datastores</pre>
         <h3 id="name-the-factory-default-datasto">
 <a href="#section-7.1" class="section-number selfRef">7.1. </a><a href="#name-the-factory-default-datasto" class="section-name selfRef">The "factory-default" Datastore</a>
         </h3>
-<p id="section-7.1-1">Any deletable system-provided configuration that is populated as
-        part of &lt;running&gt; by the system at boot up, without being part
-        of the contents of a &lt;startup&gt; datastore, must be defined in
-        &lt;factory-default&gt; <span>[<a href="#RFC8808" class="xref">RFC8808</a>]</span>, which is used to
-        initialize &lt;running&gt; when the device is first-time powered on or
-        reset to its factory default condition.<a href="#section-7.1-1" class="pilcrow">¶</a></p>
+<p id="section-7.1-1">The "factory-default" datastore defined in <span>[<a href="#RFC8808" class="xref">RFC8808</a>]</span>
+        is used to initialize &lt;running&gt; when the device is first-time
+        powered on or reset to its factory default condition. If a
+        &lt;factory-default&gt; is supported on a server, any deletable
+        system-provided configuration that is populated as part of
+        &lt;running&gt; by the system at boot up, without being part of the
+        contents of &lt;startup&gt;, must be defined in
+        &lt;factory-default&gt;. Otherwise, deletable system configuration
+        could be provided as the initial contents of &lt;startup&gt; as an
+        alternative.<a href="#section-7.1-1" class="pilcrow">¶</a></p>
 <p id="section-7.1-2">The &lt;factory-reset&gt; RPC operation can reset &lt;system&gt; to
         its factory default contents.<a href="#section-7.1-2" class="pilcrow">¶</a></p>
 </section>
@@ -1919,7 +1902,7 @@ boxes denote named datastores</pre>
 <a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-yang-module" class="section-name selfRef">YANG Module</a>
         </h3>
 <p id="section-8.2-1" class="keepWithNext">&lt;CODE BEGINS&gt; file
-          "ietf-system-datastore@2024-12-06.yang"<a href="#section-8.2-1" class="pilcrow">¶</a></p>
+          "ietf-system-datastore@2025-01-07.yang"<a href="#section-8.2-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-8.2-2">
 <pre>
 module ietf-system-datastore {
@@ -1949,7 +1932,7 @@ module ietf-system-datastore {
     "This module defines a new YANG identity that uses the
      ds:conventional identity defined in [RFC8342].
 
-     Copyright (c) 2024 IETF Trust and the persons identified
+     Copyright (c) 2025 IETF Trust and the persons identified
      as authors of the code. All rights reserved.
 
      Redistribution and use in source and binary forms, with
@@ -1963,7 +1946,7 @@ module ietf-system-datastore {
      (https://www.rfc-editor.org/info/rfcXXXX); see the RFC
      itself for full legal notices.";
 
-  revision 2024-12-06 {
+  revision 2025-01-07 {
     description
       "Initial version.";
     reference
@@ -2204,7 +2187,7 @@ module example-application {
 </div>
 <p id="appendix-A.1-3">A fictional ACL YANG module is used as follows, which
         defines a leafref for the leaf-list "application" data node to refer
-          to an existing application name.<a href="#appendix-A.1-3" class="pilcrow">¶</a></p>
+        to an existing application name.<a href="#appendix-A.1-3" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="appendix-A.1-4">
 <pre>
 module example-acl {
@@ -2440,11 +2423,10 @@ module example-interface {
 
 </pre><a href="#appendix-A.2-2" class="pilcrow">¶</a>
 </div>
-<p id="appendix-A.2-3">Suppose the system provides an immediately-present loopback
-        interface (named "lo0") with a MTU value "65536", a default IPv4
-        address of "127.0.0.1", and a default IPv6 address of "::1". The
-        configuration of "lo0" interface is present in &lt;system&gt; as
-        follows:<a href="#appendix-A.2-3" class="pilcrow">¶</a></p>
+<p id="appendix-A.2-3">Suppose the system provides an always-present loopback interface
+        (named "lo0") with a MTU value "65536", a default IPv4 address of
+        "127.0.0.1", and a default IPv6 address of "::1". The configuration of
+        "lo0" interface is present in &lt;system&gt; as follows:<a href="#appendix-A.2-3" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="appendix-A.2-4">
 <pre>
 &lt;interfaces xmlns="urn:example:interface"&gt;
@@ -2588,7 +2570,7 @@ module example-interface-management {
 <a href="#appendix-B.1" class="section-number selfRef">B.1. </a><a href="#name-device-powers-on" class="section-name selfRef">Device Powers On</a>
         </h3>
 <p id="appendix-B.1-1">When the device is powered on, suppose the system provides an
-        immediately-present loopback interface (named "lo0") which is not
+        always-present loopback interface (named "lo0") which is not
         explicitly configured in &lt;running&gt;. Thus, no configuration for
         interfaces appears in &lt;running&gt;;<a href="#appendix-B.1-1" class="pilcrow">¶</a></p>
 <p id="appendix-B.1-2">And the contents of &lt;system&gt; are:<a href="#appendix-B.1-2" class="pilcrow">¶</a></p>
@@ -2641,8 +2623,9 @@ module example-interface-management {
   &lt;/interface&gt;
 &lt;/interfaces&gt;</pre><a href="#appendix-B.2-2" class="pilcrow">¶</a>
 </div>
-<p id="appendix-B.2-3">And the contents of &lt;system&gt; keep unchanged since the
-        interface is not physically present:<a href="#appendix-B.2-3" class="pilcrow">¶</a></p>
+<p id="appendix-B.2-3">And the contents of &lt;system&gt; remain unchanged, only
+        containing the "lo" loopback interface, since the interface "et-0/0/0"
+        is not physically present:<a href="#appendix-B.2-3" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="appendix-B.2-4">
 <pre>&lt;interfaces xmlns="urn:example:interfacemgmt"&gt;
   &lt;interface&gt;
