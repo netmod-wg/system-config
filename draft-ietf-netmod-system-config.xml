@@ -96,7 +96,7 @@
       </address>
     </author>
 
-    <date year="2024"/>
+    <date year="2025"/>
 
     <area>ops</area>
 
@@ -241,8 +241,10 @@
         provided by clients, and allows a subset of configuration in
         &lt;intended&gt; that flows from &lt;system&gt; yet is not configured
         or overridden explicitly in &lt;running&gt; to use "system" as its
-        origin value. Note all configuration nodes in &lt;operational&gt; with
-        origin "system" MUST originate from &lt;system&gt;.</t>
+        origin value. All configuration nodes in &lt;operational&gt; with
+        origin "system" MUST originate from &lt;system&gt;. Configuration
+        copied from &lt;system&gt; into &lt;running&gt; has its origin value
+        reported as "intended" when it flows into &lt;operational&gt;. </t>
       </section>
     </section>
 

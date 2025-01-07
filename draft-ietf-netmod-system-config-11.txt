@@ -6,7 +6,7 @@ NETMOD                                                        Q. Ma, Ed.
 Internet-Draft                                                     Q. Wu
 Updates: 8342 (if approved)                                       Huawei
 Intended status: Standards Track                                 C. Feng
-Expires: 26 June 2025                                   23 December 2024
+Expires: 11 July 2025                                     7 January 2025
 
 
                       System-defined Configuration
@@ -39,11 +39,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 26 June 2025.
+   This Internet-Draft will expire on 11 July 2025.
 
 Copyright Notice
 
-   Copyright (c) 2024 IETF Trust and the persons identified as the
+   Copyright (c) 2025 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Ma, et al.                Expires 26 June 2025                  [Page 1]
+Ma, et al.                Expires 11 July 2025                  [Page 1]
 
-Internet-Draft        System-defined Configuration         December 2024
+Internet-Draft        System-defined Configuration          January 2025
 
 
    and restrictions with respect to this document.  Code Components
@@ -71,9 +71,9 @@ Table of Contents
      1.3.  Updates to RFC 8342 . . . . . . . . . . . . . . . . . . .   5
    2.  Kinds of System Configuration . . . . . . . . . . . . . . . .   5
      2.1.  Always-Present  . . . . . . . . . . . . . . . . . . . . .   5
-     2.2.  Conditionally-Present . . . . . . . . . . . . . . . . . .   5
+     2.2.  Conditionally-Present . . . . . . . . . . . . . . . . . .   6
    3.  The System Configuration Datastore (<system>) . . . . . . . .   6
-   4.  Conceptual Model of Datastores  . . . . . . . . . . . . . . .   6
+   4.  Conceptual Model of Datastores  . . . . . . . . . . . . . . .   7
    5.  Static Characteristics  . . . . . . . . . . . . . . . . . . .   9
      5.1.  Read-only to Clients  . . . . . . . . . . . . . . . . . .   9
      5.2.  No Impact to <operational>  . . . . . . . . . . . . . . .   9
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Ma, et al.                Expires 26 June 2025                  [Page 2]
+Ma, et al.                Expires 11 July 2025                  [Page 2]
 
-Internet-Draft        System-defined Configuration         December 2024
+Internet-Draft        System-defined Configuration          January 2025
 
 
 1.  Introduction
@@ -165,9 +165,9 @@ Internet-Draft        System-defined Configuration         December 2024
 
 
 
-Ma, et al.                Expires 26 June 2025                  [Page 3]
+Ma, et al.                Expires 11 July 2025                  [Page 3]
 
-Internet-Draft        System-defined Configuration         December 2024
+Internet-Draft        System-defined Configuration          January 2025
 
 
       supplied by the device itself."  The current definition expands on
@@ -221,9 +221,9 @@ Internet-Draft        System-defined Configuration         December 2024
 
 
 
-Ma, et al.                Expires 26 June 2025                  [Page 4]
+Ma, et al.                Expires 11 July 2025                  [Page 4]
 
-Internet-Draft        System-defined Configuration         December 2024
+Internet-Draft        System-defined Configuration          January 2025
 
 
 1.3.  Updates to RFC 8342
@@ -247,8 +247,10 @@ Internet-Draft        System-defined Configuration         December 2024
    explicitly provided by clients, and allows a subset of configuration
    in <intended> that flows from <system> yet is not configured or
    overridden explicitly in <running> to use "system" as its origin
-   value.  Note all configuration nodes in <operational> with origin
-   "system" MUST originate from <system>.
+   value.  All configuration nodes in <operational> with origin "system"
+   MUST originate from <system>.  Configuration copied from <system>
+   into <running> has its origin value reported as "intended" when it
+   flows into <operational>.
 
 2.  Kinds of System Configuration
 
@@ -265,6 +267,21 @@ Internet-Draft        System-defined Configuration         December 2024
    example of always-present system configuration is an always-existing
    loopback interface.
 
+
+
+
+
+
+
+
+
+
+
+Ma, et al.                Expires 11 July 2025                  [Page 5]
+
+Internet-Draft        System-defined Configuration          January 2025
+
+
 2.2.  Conditionally-Present
 
    Conditionally-present refers to system configuration which is
@@ -274,14 +291,6 @@ Internet-Draft        System-defined Configuration         December 2024
    loads the associated configuration; when the physical resource is not
    present (an interface card is removed), the system configuration will
    automatically be removed from <system>.  Another example is when a
-
-
-
-Ma, et al.                Expires 26 June 2025                  [Page 5]
-
-Internet-Draft        System-defined Configuration         December 2024
-
-
    special functionality is enabled, e.g., when a license or feature is
    enabled, specific configuration may be created by the system.
 
@@ -316,27 +325,25 @@ Internet-Draft        System-defined Configuration         December 2024
 
    The system configuration datastore doesn't persist across reboots.
 
+
+
+
+
+
+
+
+
+Ma, et al.                Expires 11 July 2025                  [Page 6]
+
+Internet-Draft        System-defined Configuration          January 2025
+
+
 4.  Conceptual Model of Datastores
 
    Clients may provide configuration nodes that reference nodes defined
    in <system>, override system-provided values, and configure
    descendant nodes of system-defined configuration in <running>, as
    detailed in Section 6.
-
-
-
-
-
-
-
-
-
-
-
-Ma, et al.                Expires 26 June 2025                  [Page 6]
-
-Internet-Draft        System-defined Configuration         December 2024
-
 
    To ensure the validity of <intended>, configuration in <running> is
    merged with <system> to become <intended>, in which process,
@@ -382,16 +389,9 @@ Internet-Draft        System-defined Configuration         December 2024
 
 
 
-
-
-
-
-
-
-
-Ma, et al.                Expires 26 June 2025                  [Page 7]
+Ma, et al.                Expires 11 July 2025                  [Page 7]
 
-Internet-Draft        System-defined Configuration         December 2024
+Internet-Draft        System-defined Configuration          January 2025
 
 
                 +-------------+                 +-----------+
@@ -445,9 +445,9 @@ Internet-Draft        System-defined Configuration         December 2024
 
 
 
-Ma, et al.                Expires 26 June 2025                  [Page 8]
+Ma, et al.                Expires 11 July 2025                  [Page 8]
 
-Internet-Draft        System-defined Configuration         December 2024
+Internet-Draft        System-defined Configuration          January 2025
 
 
    Configuration in <system> is undeletable to clients (e.g., a system-
@@ -501,9 +501,9 @@ Internet-Draft        System-defined Configuration         December 2024
 
 
 
-Ma, et al.                Expires 26 June 2025                  [Page 9]
+Ma, et al.                Expires 11 July 2025                  [Page 9]
 
-Internet-Draft        System-defined Configuration         December 2024
+Internet-Draft        System-defined Configuration          January 2025
 
 
 6.2.  Referencing System Configuration
@@ -557,9 +557,9 @@ Internet-Draft        System-defined Configuration         December 2024
 
 
 
-Ma, et al.                Expires 26 June 2025                 [Page 10]
+Ma, et al.                Expires 11 July 2025                 [Page 10]
 
-Internet-Draft        System-defined Configuration         December 2024
+Internet-Draft        System-defined Configuration          January 2025
 
 
 7.1.  The "factory-default" Datastore
@@ -613,14 +613,14 @@ Internet-Draft        System-defined Configuration         December 2024
 
 
 
-Ma, et al.                Expires 26 June 2025                 [Page 11]
+Ma, et al.                Expires 11 July 2025                 [Page 11]
 
-Internet-Draft        System-defined Configuration         December 2024
+Internet-Draft        System-defined Configuration          January 2025
 
 
 8.2.  YANG Module
 
-   <CODE BEGINS> file "ietf-system-datastore@2024-12-23.yang"
+   <CODE BEGINS> file "ietf-system-datastore@2025-01-07.yang"
 
    module ietf-system-datastore {
      yang-version 1.1;
@@ -649,7 +649,7 @@ Internet-Draft        System-defined Configuration         December 2024
        "This module defines a new YANG identity that uses the
         ds:conventional identity defined in [RFC8342].
 
-        Copyright (c) 2024 IETF Trust and the persons identified
+        Copyright (c) 2025 IETF Trust and the persons identified
         as authors of the code. All rights reserved.
 
         Redistribution and use in source and binary forms, with
@@ -663,15 +663,15 @@ Internet-Draft        System-defined Configuration         December 2024
         (https://www.rfc-editor.org/info/rfcXXXX); see the RFC
         itself for full legal notices.";
 
-     revision 2024-12-23 {
+     revision 2025-01-07 {
        description
          "Initial version.";
 
 
 
-Ma, et al.                Expires 26 June 2025                 [Page 12]
+Ma, et al.                Expires 11 July 2025                 [Page 12]
 
-Internet-Draft        System-defined Configuration         December 2024
+Internet-Draft        System-defined Configuration          January 2025
 
 
        reference
@@ -725,9 +725,9 @@ Internet-Draft        System-defined Configuration         December 2024
 
 
 
-Ma, et al.                Expires 26 June 2025                 [Page 13]
+Ma, et al.                Expires 11 July 2025                 [Page 13]
 
-Internet-Draft        System-defined Configuration         December 2024
+Internet-Draft        System-defined Configuration          January 2025
 
 
    The Network Configuration Access Control Model (NACM) [RFC8341]
@@ -781,9 +781,9 @@ Internet-Draft        System-defined Configuration         December 2024
 
 
 
-Ma, et al.                Expires 26 June 2025                 [Page 14]
+Ma, et al.                Expires 11 July 2025                 [Page 14]
 
-Internet-Draft        System-defined Configuration         December 2024
+Internet-Draft        System-defined Configuration          January 2025
 
 
    [RFC8641]  Clemm, A. and E. Voit, "Subscription to YANG Notifications
@@ -837,9 +837,9 @@ Internet-Draft        System-defined Configuration         December 2024
 
 
 
-Ma, et al.                Expires 26 June 2025                 [Page 15]
+Ma, et al.                Expires 11 July 2025                 [Page 15]
 
-Internet-Draft        System-defined Configuration         December 2024
+Internet-Draft        System-defined Configuration          January 2025
 
 
    [RFC8407]  Bierman, A., "Guidelines for Authors and Reviewers of
@@ -893,9 +893,9 @@ A.1.  Referencing System-defined Nodes
 
 
 
-Ma, et al.                Expires 26 June 2025                 [Page 16]
+Ma, et al.                Expires 11 July 2025                 [Page 16]
 
-Internet-Draft        System-defined Configuration         December 2024
+Internet-Draft        System-defined Configuration          January 2025
 
 
    module example-application {
@@ -949,9 +949,9 @@ Internet-Draft        System-defined Configuration         December 2024
 
 
 
-Ma, et al.                Expires 26 June 2025                 [Page 17]
+Ma, et al.                Expires 11 July 2025                 [Page 17]
 
-Internet-Draft        System-defined Configuration         December 2024
+Internet-Draft        System-defined Configuration          January 2025
 
 
    module example-acl {
@@ -1005,9 +1005,9 @@ Internet-Draft        System-defined Configuration         December 2024
 
 
 
-Ma, et al.                Expires 26 June 2025                 [Page 18]
+Ma, et al.                Expires 11 July 2025                 [Page 18]
 
-Internet-Draft        System-defined Configuration         December 2024
+Internet-Draft        System-defined Configuration          January 2025
 
 
    }
@@ -1061,9 +1061,9 @@ Internet-Draft        System-defined Configuration         December 2024
 
 
 
-Ma, et al.                Expires 26 June 2025                 [Page 19]
+Ma, et al.                Expires 11 July 2025                 [Page 19]
 
-Internet-Draft        System-defined Configuration         December 2024
+Internet-Draft        System-defined Configuration          January 2025
 
 
    <applications xmlns="urn:example:application">
@@ -1117,9 +1117,9 @@ Internet-Draft        System-defined Configuration         December 2024
 
 
 
-Ma, et al.                Expires 26 June 2025                 [Page 20]
+Ma, et al.                Expires 11 July 2025                 [Page 20]
 
-Internet-Draft        System-defined Configuration         December 2024
+Internet-Draft        System-defined Configuration          January 2025
 
 
    <applications xmlns="urn:example:application"
@@ -1173,9 +1173,9 @@ Internet-Draft        System-defined Configuration         December 2024
 
 
 
-Ma, et al.                Expires 26 June 2025                 [Page 21]
+Ma, et al.                Expires 11 July 2025                 [Page 21]
 
-Internet-Draft        System-defined Configuration         December 2024
+Internet-Draft        System-defined Configuration          January 2025
 
 
 A.2.  Modifying a System-instantiated Leaf's Value
@@ -1229,9 +1229,9 @@ A.2.  Modifying a System-instantiated Leaf's Value
 
 
 
-Ma, et al.                Expires 26 June 2025                 [Page 22]
+Ma, et al.                Expires 11 July 2025                 [Page 22]
 
-Internet-Draft        System-defined Configuration         December 2024
+Internet-Draft        System-defined Configuration          January 2025
 
 
    A client modifies the value of MTU to 9216 and adds the following
@@ -1285,9 +1285,9 @@ A.3.  Configuring Descendant Nodes of a System-defined Node
 
 
 
-Ma, et al.                Expires 26 June 2025                 [Page 23]
+Ma, et al.                Expires 11 July 2025                 [Page 23]
 
-Internet-Draft        System-defined Configuration         December 2024
+Internet-Draft        System-defined Configuration          January 2025
 
 
    <interfaces xmlns="urn:example:interface"
@@ -1341,9 +1341,9 @@ Appendix B.  Key Use Cases
 
 
 
-Ma, et al.                Expires 26 June 2025                 [Page 24]
+Ma, et al.                Expires 11 July 2025                 [Page 24]
 
-Internet-Draft        System-defined Configuration         December 2024
+Internet-Draft        System-defined Configuration          January 2025
 
 
    module example-interface-management {
@@ -1397,9 +1397,9 @@ Internet-Draft        System-defined Configuration         December 2024
 
 
 
-Ma, et al.                Expires 26 June 2025                 [Page 25]
+Ma, et al.                Expires 11 July 2025                 [Page 25]
 
-Internet-Draft        System-defined Configuration         December 2024
+Internet-Draft        System-defined Configuration          January 2025
 
 
 B.1.  Device Powers On
@@ -1453,9 +1453,9 @@ B.2.  Client Commits Configuration
 
 
 
-Ma, et al.                Expires 26 June 2025                 [Page 26]
+Ma, et al.                Expires 11 July 2025                 [Page 26]
 
-Internet-Draft        System-defined Configuration         December 2024
+Internet-Draft        System-defined Configuration          January 2025
 
 
    <interfaces xmlns="urn:example:interfacemgmt">
@@ -1509,9 +1509,9 @@ Internet-Draft        System-defined Configuration         December 2024
 
 
 
-Ma, et al.                Expires 26 June 2025                 [Page 27]
+Ma, et al.                Expires 11 July 2025                 [Page 27]
 
-Internet-Draft        System-defined Configuration         December 2024
+Internet-Draft        System-defined Configuration          January 2025
 
 
    <interfaces xmlns="urn:example:interfacemgmt"
@@ -1565,9 +1565,9 @@ B.3.  Operator Installs Card into a Chassis
 
 
 
-Ma, et al.                Expires 26 June 2025                 [Page 28]
+Ma, et al.                Expires 11 July 2025                 [Page 28]
 
-Internet-Draft        System-defined Configuration         December 2024
+Internet-Draft        System-defined Configuration          January 2025
 
 
    <interfaces xmlns="urn:example:interfacemgmt">
@@ -1621,9 +1621,9 @@ B.4.  Client further Commits Configuration
 
 
 
-Ma, et al.                Expires 26 June 2025                 [Page 29]
+Ma, et al.                Expires 11 July 2025                 [Page 29]
 
-Internet-Draft        System-defined Configuration         December 2024
+Internet-Draft        System-defined Configuration          January 2025
 
 
    <interfaces xmlns="urn:example:interfacemgmt">
@@ -1677,9 +1677,9 @@ Internet-Draft        System-defined Configuration         December 2024
 
 
 
-Ma, et al.                Expires 26 June 2025                 [Page 30]
+Ma, et al.                Expires 11 July 2025                 [Page 30]
 
-Internet-Draft        System-defined Configuration         December 2024
+Internet-Draft        System-defined Configuration          January 2025
 
 
    <interfaces xmlns="urn:example:interfacemgmt"
@@ -1708,7 +1708,7 @@ Acknowledgements
    The authors would like to thank for following for discussions and
    providing input to this document: Balazs Lengyel, Robert Wilton,
    Juergen Schoenwaelder, Andy Bierman, Martin Bjorklund, Mohamed
-   Boucadair, Michal Vaško, Alexander Clemm, and Timothy Carey.
+   Boucadair, Michal Vasko, Alexander Clemm, and Timothy Carey.
 
 Contributors
 
@@ -1733,9 +1733,9 @@ Contributors
 
 
 
-Ma, et al.                Expires 26 June 2025                 [Page 31]
+Ma, et al.                Expires 11 July 2025                 [Page 31]
 
-Internet-Draft        System-defined Configuration         December 2024
+Internet-Draft        System-defined Configuration          January 2025
 
 
 Authors' Addresses
@@ -1789,4 +1789,4 @@ Authors' Addresses
 
 
 
-Ma, et al.                Expires 26 June 2025                 [Page 32]
+Ma, et al.                Expires 11 July 2025                 [Page 32]
