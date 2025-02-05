@@ -161,12 +161,12 @@
             style="hanging">
             <t hangText="system configuration: "><xref format="none"
             target="RFC8342">RFC 8342</xref> defines it as "Configuration that
-            is supplied by the device itself." The current definition expands
-            on the definition from <xref target="RFC8342"/> that system
-            configuration is present in the system configuration datastore
-            (regardless of whether it is applied or referenced). It may also
-            be referred to as "system-defined configuration" or
-            "system-provided configuration" throughout this document.</t>
+            is supplied by the device itself." The definition herein refines
+            that definition of system configuration to represent configuration
+            present in the system configuration datastore (regardless of
+            whether it is applied or referenced). It may also be referred to
+            as "system-defined configuration" or "system-provided
+            configuration" throughout this document.</t>
 
             <t hangText="system configuration datastore: ">A configuration
             datastore holding configuration provided by the system itself.
@@ -242,9 +242,10 @@
         &lt;intended&gt; that flows from &lt;system&gt; yet is not configured
         or overridden explicitly in &lt;running&gt; to use "system" as its
         origin value. All configuration nodes in &lt;operational&gt; with
-        origin "system" MUST originate from &lt;system&gt;. Configuration
-        copied from &lt;system&gt; into &lt;running&gt; has its origin value
-        reported as "intended" when it flows into &lt;operational&gt;. </t>
+        origin "system" MUST originate from &lt;system&gt; without being
+        supplied in &lt;running&gt;. Configuration copied from &lt;system&gt;
+        into &lt;running&gt; has its origin value reported as "intended" when
+        it flows into &lt;operational&gt;.</t>
       </section>
     </section>
 
@@ -381,13 +382,12 @@ boxes denote named datastores</artwork>
       system-defined list entry can never be removed), even though a node
       defined in &lt;system&gt; may be overridden in &lt;running&gt;. If it is
       desired to enable a client to delete system configuration, it can be
-      approximated using &lt;factory-default&gt;, as described in <xref
-      target="factory"/>. If system initializes a value for a particular leaf
-      which is overridden by the client with a different value in
-      &lt;running&gt; (<xref target="modifying"/>), the node in
-      &lt;running&gt; may be removed later, in which case system-initialized
-      value defined in &lt;system&gt; may still be in use and appear in
-      &lt;operational&gt;.</t>
+      approximated using &lt;factory-default&gt; (<xref target="RFC8808"/>).
+      If system initializes a value for a particular leaf which is overridden
+      by the client with a different value in &lt;running&gt; (<xref
+      target="modifying"/>), the node in &lt;running&gt; may be removed later,
+      in which case system-initialized value defined in &lt;system&gt; may
+      still be in use and appear in &lt;operational&gt;.</t>
     </section>
 
     <section title="Static Characteristics">
@@ -419,10 +419,9 @@ boxes denote named datastores</artwork>
         notifications (e.g., on-change notification) <xref
         target="RFC8639"/><xref target="RFC8641"/>.</t>
 
-        <t>If system configuration changes, &lt;running&gt; SHOULD remain
-        accurate and consistent with &lt;system&gt;. However, any mechanism
-        for handling these circumstances is outside the scope of this
-        document.</t>
+        <t>If system configuration changes, &lt;running&gt; SHOULD remain a
+        valid configuration data tree. Any mechanisms to achieve this are
+        outside the scope of this document.</t>
       </section>
 
       <section anchor="declare" title="Referencing System Configuration">
@@ -461,29 +460,6 @@ boxes denote named datastores</artwork>
 
         <t><xref target="configure-example"/> provides an example of a client
         configuring descendant nodes of a system-defined node.</t>
-      </section>
-    </section>
-
-    <section title="Relationships to Other Datastores">
-      <t>This section discusses the interesting relationships of
-      &lt;system&gt; to other datastores known at the time of this
-      writing.</t>
-
-      <section anchor="factory"
-               title="The &quot;factory-default&quot; Datastore">
-        <t>The "factory-default" datastore defined in <xref target="RFC8808"/>
-        is used to initialize &lt;running&gt; when the device is first-time
-        powered on or reset to its factory default condition. If a
-        &lt;factory-default&gt; is supported on a server, any deletable
-        system-provided configuration that is populated as part of
-        &lt;running&gt; by the system at boot up, without being part of the
-        contents of &lt;startup&gt;, must be defined in
-        &lt;factory-default&gt;. Otherwise, deletable system configuration
-        could be provided as the initial contents of &lt;startup&gt; as an
-        alternative.</t>
-
-        <t>The &lt;factory-reset&gt; RPC operation can reset &lt;system&gt; to
-        its factory default contents.</t>
       </section>
     </section>
 
