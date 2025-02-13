@@ -241,11 +241,13 @@
         provided by clients, and allows a subset of configuration in
         &lt;intended&gt; that flows from &lt;system&gt; yet is not configured
         or overridden explicitly in &lt;running&gt; to use "system" as its
-        origin value. All configuration nodes in &lt;operational&gt; with
-        origin "system" MUST originate from &lt;system&gt; without being
-        supplied in &lt;running&gt;. Configuration copied from &lt;system&gt;
-        into &lt;running&gt; has its origin value reported as "intended" when
-        it flows into &lt;operational&gt;.</t>
+        origin value. As per <xref section="5.3.4" sectionFormat="of"
+        target="RFC8342"/>, all configuration with origin value being reported
+        as "intended" MUST originate from &lt;running&gt;, which includes any
+        configuration in &lt;system&gt; that has been copied into
+        &lt;running&gt;. Configuration that is in &lt;system&gt; and not also
+        present in &lt;running&gt; MUST be reported as origin "system" in
+        &lt;operational&gt;.</t>
       </section>
     </section>
 
