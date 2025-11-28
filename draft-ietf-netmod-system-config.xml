@@ -154,8 +154,8 @@
       <section anchor="terminology" title="Terminology">
         <t>This document assumes that the reader is familiar with the contents
         of <xref target="RFC6241"/>, <xref target="RFC7950"/>, <xref
-        target="RFC8342"/>, <xref target="RFC8407"/>, and <xref
-        target="RFC8525"/> and uses terminologies from those documents.</t>
+        target="RFC8342"/>, and <xref target="RFC8525"/> and uses
+        terminologies from those documents.</t>
 
         <t>The following terms are defined in this document:<list
             style="hanging">
@@ -565,11 +565,7 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
     <references title="Normative References">
       <?rfc include="reference.RFC.2119.xml"?>
 
-      <?rfc include="reference.RFC.6241.xml"?>
-
       <?rfc include="reference.RFC.7950.xml"?>
-
-      <?rfc include="reference.RFC.8040.xml"?>
 
       <?rfc include="reference.RFC.8341.xml"?>
 
@@ -587,13 +583,15 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
 
       <?rfc include="reference.RFC.6020.xml"?>
 
+      <?rfc include="reference.RFC.6241.xml"?>
+
       <?rfc include="reference.RFC.7952.xml"?>
+
+      <?rfc include="reference.RFC.8040.xml"?>
 
       <?rfc include="reference.RFC.8174.xml"?>
 
       <?rfc include="reference.RFC.8340.xml"?>
-
-      <?rfc include="reference.RFC.8407.xml"?>
 
       <?rfc include="reference.RFC.8446.xml"?>
 
