@@ -691,7 +691,7 @@ INSERT_TEXT_FROM_FILE(examples/interface-system.xml)
               ]]></artwork>
           </figure></t>
 
-        <t>A client modifies the value of MTU to 9216 and adds the following
+        <t>A client modifies the value of MTU to 9216 by adding the following
         configuration into &lt;running&gt; using a "merge" operation:</t>
 
         <figure>
