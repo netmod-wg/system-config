@@ -13,7 +13,7 @@
     <name>my-foo</name>
     <app-id>102</app-id>
     <protocol>udp</protocol>
-    <destination-port>69</destination-port>
+    <destination-port>1024</destination-port>
     <description>customized application</description>
   </application>
 </applications>
