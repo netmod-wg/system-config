@@ -400,13 +400,13 @@ boxes denote named datastores</artwork>
         system-initialized node (see <xref target="modifying"/>).</t>
       </section>
 
-      <section title="No Impact to &lt;operational&gt;">
-        <t>This work has no impact to &lt;operational&gt;. Notably, it does
-        not define any new origin identity as it is able to use the existing
-        "system" identity defined in <xref section="5.3.4" sectionFormat="of"
-        target="RFC8342"/>. &lt;system&gt; enables system-generated nodes to
-        be defined like configuration, i.e., made visible to clients in order
-        for being referenced or configurable prior to present in
+      <section title="No Changes to &lt;operational&gt;">
+        <t>This work does not change the definition of &lt;operational&gt;; it
+        clarifies origin reporting, i.e., the origin of nodes sourced from
+        &lt;system&gt; is reported as "system" unless explicitly configured or
+        overridden in &lt;running&gt;. &lt;system&gt; enables system-generated
+        nodes to be defined like configuration, i.e., made visible to clients
+        in order for being referenced or configurable prior to present in
         &lt;operational&gt;. "config false" nodes are out of scope, hence
         existing "config false" nodes are not impacted by this work.</t>
       </section>
@@ -469,7 +469,7 @@ boxes denote named datastores</artwork>
              title="The &quot;ietf-system-datastore&quot; Module">
       <section title="Data Model Overview">
         <t>This YANG module defines a new YANG identity named "system" that
-        uses the "ds: conventional" identity defined in <xref
+        uses the "ds:conventional" identity defined in <xref
         target="RFC8342"/> as its base. A client can discover the system
         configuration datastore support on the server by reading the YANG
         library information from the operational state datastore.</t>
@@ -511,7 +511,7 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
 
     <section anchor="IANA" title="IANA Considerations">
       <section title="The &quot;IETF XML&quot; Registry">
-        <t>This document registers two XML namespace URNs in the 'IETF XML
+        <t>This document registers one XML namespace URI in the 'IETF XML
         registry', following the format defined in <xref
         target="RFC3688"/>.</t>
 
@@ -523,7 +523,7 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
       </section>
 
       <section title="The &quot;YANG Module Names&quot; Registry">
-        <t>This document registers two module names in the 'YANG Module Names'
+        <t>This document registers one YANG module in the 'YANG Module Names'
         registry, defined in <xref target="RFC6020"/>.</t>
 
         <figure>
@@ -553,9 +553,9 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
       NETCONF or RESTCONF users to a preconfigured subset of all available
       NETCONF or RESTCONF protocol operations and content.</t>
 
-      <t>The YANG module only defines a identity that uses the
+      <t>The YANG module only defines an identity that uses the
       "ds:conventional" identity as its base. The module by itself does not
-      expose any data nodes that are writable, date nodes that contain
+      expose any data nodes that are writable, data nodes that contain
       read-only state, or RPCs. As such, there are no additional security
       issues related to the YANG module that need to be considered.</t>
     </section>
@@ -614,7 +614,10 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
       <t>This section presents some sample data models and corresponding
       contents of various datastores with different dynamic behaviors
       described in <xref target="dynamic"/>. The XML snippets are used only
-      for illustration purposes.</t>
+      for illustration purposes. Note this section does not show the contents
+      of &lt;intended&gt; as they are related to the configuration in
+      &lt;operational&gt; assuming the intended configuration is applied
+      successfully.</t>
 
       <t/>
 
@@ -641,11 +644,10 @@ INSERT_TEXT_FROM_FILE(examples/example-acl.yang)
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/applications-system.xml)
               ]]></artwork>
-          </figure>
+        </figure>
 
-        <t>The client may also define its customized applications. Suppose the
-        configuration of applications is present in &lt;running&gt; as
-        follows:<figure>
+        <t>The client may also define its customized applications. Those
+        applications may be present in &lt;running&gt; as follows:<figure>
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/applications-running.xml)
               ]]></artwork>
@@ -660,9 +662,11 @@ INSERT_TEXT_FROM_FILE(examples/applications-referenced.xml)
           </figure></t>
 
         <t>As different entries of application configuration in &lt;system&gt;
-        and &lt;running&gt; is merged to create &lt;intended&gt;,
-        &lt;operational&gt; might contain the configuration of applications as
-        follows:<figure>
+        and &lt;running&gt; are merged to create &lt;intended&gt; and there
+        are no merging conflicts in the contents between &lt;system&gt; and
+        &lt;running&gt;, &lt;operational&gt; might contain the configuration
+        of applications with the values of origin reflecting the source of
+        entries as follows:<figure>
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/applications-declare-operational.xml)
               ]]></artwork>
@@ -679,7 +683,7 @@ INSERT_TEXT_FROM_FILE(examples/example-interface.yang)
           </figure></t>
 
         <t>Suppose the system provides an always-present loopback interface
-        (named "lo0") with a MTU value "65536", a default IPv4 address of
+        (named "lo0") with an MTU value "65536", a default IPv4 address of
         "127.0.0.1", and a default IPv6 address of "::1". The configuration of
         "lo0" interface is present in &lt;system&gt; as follows:<figure>
               <artwork><![CDATA[
@@ -687,7 +691,7 @@ INSERT_TEXT_FROM_FILE(examples/interface-system.xml)
               ]]></artwork>
           </figure></t>
 
-        <t>A client modifies the value of MTU to 9216 and adds the following
+        <t>A client modifies the value of MTU to 9216 by adding the following
         configuration into &lt;running&gt; using a "merge" operation:</t>
 
         <figure>
@@ -696,19 +700,22 @@ INSERT_TEXT_FROM_FILE(examples/interface-running-overridden.xml)
               ]]></artwork>
         </figure>
 
-        <t>Then the configuration of interfaces is present in
-        &lt;operational&gt; as follows:<figure>
+        <t>Since the MTU value provided by the client takes precedence over
+        the system-provided value, and the "origin" value of configuration
+        provided by the client is set to "intended", the configuration of
+        interfaces that is present in &lt;operational&gt; is as
+        follows:<figure>
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/interface-operational-overridden.xml)
               ]]></artwork>
-            </figure></t>
+          </figure></t>
       </section>
 
       <section anchor="configure-example"
                title="Configuring Descendant Nodes of a System-defined Node">
-        <t>In the above example, imagine the client further configures the
-        description node of a "lo0" interface in &lt;running&gt; using a
-        "merge" operation as follows:</t>
+        <t>Based on the example in <xref target="modify-example"/>, imagine
+        the client further configures the description node of a "lo0"
+        interface in &lt;running&gt; using a "merge" operation as follows:</t>
 
         <figure>
               <artwork><![CDATA[
