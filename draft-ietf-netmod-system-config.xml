@@ -644,7 +644,7 @@ INSERT_TEXT_FROM_FILE(examples/applications-system.xml)
               ]]></artwork>
         </figure>
 
-        <t>The client may also define its customized applications. Those
+        <t>The client may also define customized applications. Those
         applications may be present in &lt;running&gt; as follows:<figure>
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/applications-running.xml)
@@ -660,7 +660,7 @@ INSERT_TEXT_FROM_FILE(examples/applications-referenced.xml)
           </figure></t>
 
         <t>As different entries of application configuration in &lt;system&gt;
-        and &lt;running&gt; are merged to create &lt;intended&gt; and there
+        and &lt;running&gt; are merged to create &lt;intended&gt;, and there
         are no merging conflicts in the contents between &lt;system&gt; and
         &lt;running&gt;, &lt;operational&gt; might contain the configuration
         of applications with the values of origin reflecting the source of
@@ -683,14 +683,14 @@ INSERT_TEXT_FROM_FILE(examples/example-interface.yang)
         <t>Suppose the system provides an always-present loopback interface
         (named "lo0") with an MTU value "65536", a default IPv4 address of
         "127.0.0.1", and a default IPv6 address of "::1". The configuration of
-        "lo0" interface is present in &lt;system&gt; as follows:<figure>
+        "lo0" interface may be present in &lt;system&gt; as follows:<figure>
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/interface-system.xml)
               ]]></artwork>
           </figure></t>
 
         <t>A client modifies the value of MTU to 9216 by adding the following
-        configuration into &lt;running&gt; using a "merge" operation:</t>
+        configuration into &lt;running&gt;:</t>
 
         <figure>
               <artwork><![CDATA[
@@ -701,7 +701,7 @@ INSERT_TEXT_FROM_FILE(examples/interface-running-overridden.xml)
         <t>Since the MTU value provided by the client takes precedence over
         the system-provided value, and the "origin" value of configuration
         provided by the client is set to "intended", the configuration of
-        interfaces that is present in &lt;operational&gt; is as
+        interfaces that is present in &lt;operational&gt; may be as
         follows:<figure>
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/interface-operational-overridden.xml)
