@@ -387,9 +387,10 @@ boxes denote named datastores</artwork>
       approximated using &lt;factory-default&gt; (<xref target="RFC8808"/>).
       If system initializes a value for a particular leaf which is overridden
       by the client with a different value in &lt;running&gt; (<xref
-      target="modifying"/>), the node in &lt;running&gt; may be removed later,
-      in which case system-initialized value defined in &lt;system&gt; may
-      still be in use and appear in &lt;operational&gt;.</t>
+      target="modifying"/>), and if the node in &lt;running&gt; is removed at
+      a later time, the system-initialized value defined in &lt;system&gt;
+      appears in &lt;intended&gt; and may come into use eventually if applied
+      successfully.</t>
     </section>
 
     <section title="Static Characteristics">
@@ -615,7 +616,9 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
       for illustration purposes. Note this section does not show the contents
       of &lt;intended&gt; as they are related to the configuration in
       &lt;operational&gt; assuming the intended configuration is applied
-      successfully.</t>
+      successfully. Also note that if the "origin" metadata annotation for
+      configuration is unspecified in snippets, it is inherited from its
+      parent node.</t>
 
       <t/>
 
@@ -719,7 +722,7 @@ INSERT_TEXT_FROM_FILE(examples/interface-operational-overridden.xml)
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/interface-running-addition.xml)
               ]]></artwork>
-          </figure>
+        </figure>
 
         <t>The configuration of interface "lo0" is present in
         &lt;operational&gt; as follows:<figure>
