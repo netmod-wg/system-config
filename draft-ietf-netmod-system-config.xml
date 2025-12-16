@@ -381,15 +381,24 @@ boxes denote named datastores</artwork>
         </figure></t>
 
       <t>Configuration in &lt;system&gt; is undeletable to clients (e.g., a
-      system-defined list entry can never be removed), even though a node
-      defined in &lt;system&gt; may be overridden in &lt;running&gt;. If it is
-      desired to enable a client to delete system configuration, it can be
-      approximated using &lt;factory-default&gt; (<xref target="RFC8808"/>).
-      If system initializes a value for a particular leaf which is overridden
-      by the client with a different value in &lt;running&gt; (<xref
-      target="modifying"/>), the node in &lt;running&gt; may be removed later,
-      in which case system-initialized value defined in &lt;system&gt; may
-      still be in use and appear in &lt;operational&gt;.</t>
+      list entry can never be removed from &lt;system&gt; through protocol
+      operations), even though a node defined in &lt;system&gt; may be
+      overridden in &lt;running&gt;. If it is desired to enable a client to
+      delete system configuration, it can be approximated using
+      &lt;factory-default&gt; (<xref target="RFC8808"/>). If system
+      initializes a value for a particular leaf which is overridden by the
+      client with a different value in &lt;running&gt; (<xref
+      target="modifying"/>), and if the node in &lt;running&gt; is removed at
+      a later time, the system-initialized value defined in &lt;system&gt;
+      appears in &lt;intended&gt; and may come into use eventually if applied
+      successfully.</t>
+
+      <t>Configuration may disappear from &lt;system&gt; due to, e.g.,
+      resources no longer available. In such cases, configuration for missing
+      resources can still remain in &lt;running&gt; and &lt;intended&gt;, but
+      it will not be applied and appear in &lt;operational&gt;. This is
+      further clarified in <xref section="5.3.2" sectionFormat="of"
+      target="RFC8342"/>.</t>
     </section>
 
     <section title="Static Characteristics">
@@ -615,7 +624,9 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
       for illustration purposes. Note this section does not show the contents
       of &lt;intended&gt; as they are related to the configuration in
       &lt;operational&gt; assuming the intended configuration is applied
-      successfully.</t>
+      successfully. Also note that if the "origin" metadata annotation for
+      configuration is unspecified in snippets, it is inherited from its
+      parent node.</t>
 
       <t/>
 
@@ -649,7 +660,7 @@ INSERT_TEXT_FROM_FILE(examples/applications-system.xml)
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/applications-running.xml)
               ]]></artwork>
-            </figure></t>
+          </figure></t>
 
         <t>If a client configures an ACL rule referencing some system-provided
         or customized applications, the configuration of ACL rule may be shown
@@ -712,14 +723,14 @@ INSERT_TEXT_FROM_FILE(examples/interface-operational-overridden.xml)
       <section anchor="configure-example"
                title="Configuring Descendant Nodes of a System-defined Node">
         <t>Based on the example in <xref target="modify-example"/>, imagine
-        the client further configures the description node of a "lo0"
-        interface in &lt;running&gt; using a "merge" operation as follows:</t>
+        the client further adds the description node of a "lo0" interface in
+        &lt;running&gt; as follows:</t>
 
         <figure>
               <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(examples/interface-running-addition.xml)
               ]]></artwork>
-          </figure>
+        </figure>
 
         <t>The configuration of interface "lo0" is present in
         &lt;operational&gt; as follows:<figure>
@@ -942,7 +953,7 @@ INSERT_TEXT_FROM_FILE(examples/example-interface-management.yang)
 
       <section title="Client further Commits Configuration">
         <t>If the client further sets the speed of interface "et-0/0/0" in
-        &lt;running&gt; using a "merge" operation:<figure>
+        &lt;running&gt;:<figure>
             <artwork>&lt;interfaces xmlns="urn:example:interfacemgmt"&gt; 
   &lt;interface&gt; 
     &lt;name&gt;et-0/0/0&lt;/name&gt;
