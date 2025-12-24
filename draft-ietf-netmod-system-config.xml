@@ -532,7 +532,9 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
     &lt;/subtree-filter&gt; 
   &lt;/get-data&gt; 
 &lt;/rpc&gt;</artwork>
-          </figure></t>
+          </figure>When using the RESTCONF protocol, the system configuration
+        datastore can be accessed via the resource:
+        {+restconf}/ds/ietf-system-datastore:system.</t>
       </section>
     </section>
 
