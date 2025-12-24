@@ -524,16 +524,16 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
         <xref target="declare-example"/>.</t>
 
         <figure>
-          <artwork>&lt;rpc message-id="101"
-     xmlns="urn:ietf:params:xml:ns:netconf:base:1.0"&gt;  
-  &lt;get-data xmlns="urn:ietf:params:xml:ns:yang:ietf-netconf-nmda"
-            xmlns:sysds="urn:ietf:params:xml:ns:yang:ietf-system-datastore"&gt;  
-    &lt;datastore&gt;sysds:system&lt;/datastore&gt;  
-    &lt;subtree-filter&gt; 
-      &lt;applications xmlns="urn:example:application"/&gt; 
-    &lt;/subtree-filter&gt; 
-  &lt;/get-data&gt; 
-&lt;/rpc&gt;</artwork>
+          <artwork>   &lt;rpc message-id="101"
+        xmlns="urn:ietf:params:xml:ns:netconf:base:1.0"&gt;  
+     &lt;get-data xmlns="urn:ietf:params:xml:ns:yang:ietf-netconf-nmda"
+               xmlns:sysds="urn:ietf:params:xml:ns:yang:ietf-system-datastore"&gt;  
+       &lt;datastore&gt;sysds:system&lt;/datastore&gt;  
+       &lt;subtree-filter&gt; 
+         &lt;applications xmlns="urn:example:application"/&gt; 
+       &lt;/subtree-filter&gt; 
+     &lt;/get-data&gt; 
+   &lt;/rpc&gt;</artwork>
         </figure>
 
         <t>When using the RESTCONF protocol, the system configuration
