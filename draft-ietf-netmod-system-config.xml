@@ -516,6 +516,38 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
           <postamble>&lt;CODE ENDS&gt;</postamble>
         </figure>
       </section>
+
+      <section title="Example Usage">
+        <t>The following example shows how the configuration in &lt;system&gt;
+        could be reterieved in an NETCONF &lt;get-data&gt; RPC operation. The
+        example uses the "example-application" fictional data model defined in
+        <xref target="declare-example"/>.</t>
+
+        <figure>
+          <artwork>   &lt;rpc message-id="101"
+        xmlns="urn:ietf:params:xml:ns:netconf:base:1.0"&gt;  
+     &lt;get-data xmlns="urn:ietf:params:xml:ns:yang:ietf-netconf-nmda"
+        xmlns:sysds="urn:ietf:params:xml:ns:yang:ietf-system-datastore"&gt;  
+       &lt;datastore&gt;sysds:system&lt;/datastore&gt;  
+       &lt;subtree-filter&gt; 
+         &lt;applications xmlns="urn:example:application"/&gt; 
+       &lt;/subtree-filter&gt; 
+     &lt;/get-data&gt; 
+   &lt;/rpc&gt;</artwork>
+        </figure>
+
+        <t>When using the RESTCONF protocol, the system configuration
+        datastore can be accessed via the resource:
+        {+restconf}/ds/ietf-system-datastore:system. The following example
+        uses an HTTP GET method to request "applications" configuration:</t>
+
+        <figure>
+          <artwork>GET /restconf/ds/ietf-system-datastore:system/\
+   example-application:applications
+Host: example.com
+Accept: application/yang-data+xml</artwork>
+        </figure>
+      </section>
     </section>
 
     <section anchor="IANA" title="IANA Considerations">
