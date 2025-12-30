@@ -380,12 +380,12 @@ rw = read-write; ro = read-only
 boxes denote named datastores</artwork>
         </figure></t>
 
-      <t>Configuration in &lt;system&gt; is undeletable to clients (e.g., a
+      <t>Configuration in &lt;system&gt; cannot be deleted by clients (e.g., a
       list entry can never be removed from &lt;system&gt; through protocol
       operations), even though a node defined in &lt;system&gt; may be
       overridden in &lt;running&gt;. If it is desired to enable a client to
       delete system configuration, it can be approximated using
-      &lt;factory-default&gt; (<xref target="RFC8808"/>). If system
+      &lt;factory-default&gt; (<xref target="RFC8808"/>). If the system
       initializes a value for a particular leaf which is overridden by the
       client with a different value in &lt;running&gt; (<xref
       target="modifying"/>), and if the node in &lt;running&gt; is removed at
