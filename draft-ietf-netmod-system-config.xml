@@ -588,8 +588,8 @@ Accept: application/yang-data+xml</artwork>
         as NETCONF <xref target="RFC6241"/> and RESTCONF <xref
         target="RFC8040"/>. These protocols have to use a secure transport
         layer (e.g., SSH <xref target="RFC4252"/>, TLS <xref
-        target="I-D.ietf-tls-rfc8446bis"/>, and QUIC <xref
-        target="RFC9000"/>) and have to use mutual authentication.</t>
+        target="I-D.ietf-tls-rfc8446bis"/>, and QUIC <xref target="RFC9000"/>)
+        and have to use mutual authentication.</t>
 
         <t>The Network Configuration Access Control Model (NACM) <xref
         target="RFC8341"/> provides the means to restrict access for
@@ -613,12 +613,13 @@ Accept: application/yang-data+xml</artwork>
         purposes.</t>
 
         <t>Furthermore, while &lt;system&gt; cannot be modified directly,
-        system configuration may be overridden due to precedence rules. An
-        attacker may configure a leaf that shadows a sensitive node in
-        &lt;system&gt;. Misconfiguration in &lt;running&gt; could lead to
-        unintended system behavior including security policy bypass and
-        availability risks. Unauthorized modification to sensitive contents
-        MUST be prevented to avoid those negative effects on the network.</t>
+        system configuration may be overridden as a merging result <xref
+        target="modifying"/>. An attacker may configure a leaf that shadows a
+        sensitive node in &lt;system&gt;. Misconfiguration in &lt;running&gt;
+        could lead to unintended system behavior including security policy
+        bypass and availability risks. Unauthorized modification to sensitive
+        contents MUST be prevented to avoid those negative effects on the
+        network.</t>
       </section>
     </section>
   </middle>
