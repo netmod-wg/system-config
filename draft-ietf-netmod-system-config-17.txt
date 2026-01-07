@@ -772,8 +772,8 @@ Internet-Draft        System-defined Configuration          January 2026
    for audit purposes.
 
    Furthermore, while <system> cannot be modified directly, system
-   configuration may be overridden as a merging result Section 6.3.  An
-   attacker may configure a leaf that shadows a sensitive node in
+   configuration may be overridden as a merging result (Section 6.3).
+   An attacker may configure a leaf that shadows a sensitive node in
    <system>.  Misconfiguration in <running> could lead to unintended
    system behavior including security policy bypass and availability
    risks.  Unauthorized modification to sensitive contents MUST be

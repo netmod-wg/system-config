@@ -613,8 +613,8 @@ Accept: application/yang-data+xml</artwork>
         purposes.</t>
 
         <t>Furthermore, while &lt;system&gt; cannot be modified directly,
-        system configuration may be overridden as a merging result <xref
-        target="modifying"/>. An attacker may configure a leaf that shadows a
+        system configuration may be overridden as a merging result (<xref
+        target="modifying"/>). An attacker may configure a leaf that shadows a
         sensitive node in &lt;system&gt;. Misconfiguration in &lt;running&gt;
         could lead to unintended system behavior including security policy
         bypass and availability risks. Unauthorized modification to sensitive
