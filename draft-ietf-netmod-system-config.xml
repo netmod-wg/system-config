@@ -96,7 +96,7 @@
       </address>
     </author>
 
-    <date year="2025"/>
+    <date year="2026"/>
 
     <area>ops</area>
 
@@ -578,27 +578,48 @@ Accept: application/yang-data+xml</artwork>
     </section>
 
     <section anchor="scecurity" title="Security Considerations">
-      <t>This section is modeled after the template described in <xref
-      section="3.7" sectionFormat="of"
-      target="I-D.ietf-netmod-rfc8407bis"/>.</t>
+      <section title="Considerations for the &quot;ietf-system-datastore&quot; YANG Module">
+        <t>This section is modeled after the template described in <xref
+        section="3.7" sectionFormat="of"
+        target="I-D.ietf-netmod-rfc8407bis"/>.</t>
 
-      <t>The "ietf-system-datastore" YANG module defines a data model that is
-      designed to be accessed via YANG-based management protocols, such as
-      NETCONF <xref target="RFC6241"/> and RESTCONF <xref target="RFC8040"/>.
-      These protocols have to use a secure transport layer (e.g., SSH <xref
-      target="RFC4252"/>, TLS <xref target="RFC8446"/>, and QUIC <xref
-      target="RFC9000"/>) and have to use mutual authentication.</t>
+        <t>The "ietf-system-datastore" YANG module defines a data model that
+        is designed to be accessed via YANG-based management protocols, such
+        as NETCONF <xref target="RFC6241"/> and RESTCONF <xref
+        target="RFC8040"/>. These protocols have to use a secure transport
+        layer (e.g., SSH <xref target="RFC4252"/>, TLS <xref
+        target="I-D.ietf-tls-rfc8446bis"/>, and QUIC <xref
+        target="RFC9000"/>) and have to use mutual authentication.</t>
 
-      <t>The Network Configuration Access Control Model (NACM) <xref
-      target="RFC8341"/> provides the means to restrict access for particular
-      NETCONF or RESTCONF users to a preconfigured subset of all available
-      NETCONF or RESTCONF protocol operations and content.</t>
+        <t>The Network Configuration Access Control Model (NACM) <xref
+        target="RFC8341"/> provides the means to restrict access for
+        particular NETCONF or RESTCONF users to a preconfigured subset of all
+        available NETCONF or RESTCONF protocol operations and content.</t>
 
-      <t>The YANG module only defines an identity that uses the
-      "ds:conventional" identity as its base. The module by itself does not
-      expose any data nodes that are writable, data nodes that contain
-      read-only state, or RPCs. As such, there are no additional security
-      issues related to the YANG module that need to be considered.</t>
+        <t>The YANG module only defines an identity that uses the
+        "ds:conventional" identity as its base. The module by itself does not
+        expose any data nodes that are writable, data nodes that contain
+        read-only state, or RPCs. As such, there are no additional security
+        issues related to the YANG module that need to be considered.</t>
+      </section>
+
+      <section title="Considerations for System Configuration">
+        <t>The system datastore, while read-only to clients, may contain
+        sensitive information such as hardware identifiers, security policies,
+        and critical system resources. Read access to sensitive system nodes
+        and subtrees within the datastore MUST be controlled to prevent
+        unauthorized disclosure. Implementations are strongly advised to log
+        all access attempts to sensitive system configuration for audit
+        purposes.</t>
+
+        <t>Furthermore, while &lt;system&gt; cannot be modified directly,
+        system configuration may be overridden due to precedence rules. An
+        attacker may configure a leaf that shadows a sensitive node in
+        &lt;system&gt;. Misconfiguration in &lt;running&gt; could lead to
+        unintended system behavior including security policy bypass and
+        availability risks. Unauthorized modification to sensitive contents
+        MUST be prevented to avoid those negative effects on the network.</t>
+      </section>
     </section>
   </middle>
 
@@ -634,13 +655,14 @@ Accept: application/yang-data+xml</artwork>
 
       <?rfc include="reference.RFC.8340.xml"?>
 
-      <?rfc include="reference.RFC.8446.xml"?>
-
       <?rfc include="reference.RFC.8525.xml"?>
 
       <?rfc include="reference.RFC.8808.xml"?>
 
       <?rfc include="reference.RFC.9000.xml"?>
+
+      <xi:include href="https://datatracker.ietf.org/doc/bibxml3/reference.I-D.ietf-tls-rfc8446bis.xml"
+                  xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
       <xi:include href="https://datatracker.ietf.org/doc/bibxml3/reference.I-D.ietf-netmod-immutable-flag.xml"
                   xmlns:xi="http://www.w3.org/2001/XInclude"/>
