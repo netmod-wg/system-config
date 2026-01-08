@@ -96,7 +96,7 @@
       </address>
     </author>
 
-    <date year="2025"/>
+    <date year="2026"/>
 
     <area>ops</area>
 
@@ -126,7 +126,7 @@
 
       <t>However, there is a desire to enable a server to better expose the
       system configuration, regardless of whether it is in use. For example,
-      some implementations defines the system configuration which must be
+      some implementations define the system configuration which must be
       referenced to be active. NETCONF/RESTCONF clients can benefit from a
       standard mechanism to retrieve what system configuration is available on
       a server.</t>
@@ -181,7 +181,10 @@
             &lt;intended&gt;. These datastores share a common datastore
             schema, and protocol operations allow copying data between these
             datastores. The term "conventional" is chosen as a generic
-            umbrella term for these datastores.</t>
+            umbrella term for these datastores. Note while protocol operations
+            allow copying data between conventional datastores, the read-only
+            nature of datastores such as &lt;system&gt; and &lt;intended&gt;
+            restricts copying data into them.</t>
 
             <t hangText="system node: ">An instance in the data tree that is
             provided by the system itself. System node may also be called
@@ -260,10 +263,10 @@
 
       <section anchor="immediate" title="Always-Present">
         <t>Always-present refers to system configuration which is generated in
-        &lt;system&gt; when the device is powered on, irrespective of physical
-        resource present or not, a special functionality enabled or not. An
-        example of always-present system configuration is an always-existing
-        loopback interface.</t>
+        &lt;system&gt; when the device is powered on, irrespective of whether
+        physical resources are present or whether a special functionality is
+        enabled. An example of always-present system configuration is an
+        always-existing loopback interface.</t>
       </section>
 
       <section anchor="conditional" title="Conditionally-Present">
@@ -298,7 +301,7 @@
 
           <t>Management operations: The datastore can be read using network
           management protocols such as NETCONF and RESTCONF, but its contents
-          cannot be changed by manage operations via NETCONF and RESTCONF
+          cannot be changed by management operations via NETCONF and RESTCONF
           protocols.</t>
 
           <t>Origin: This document does not define any new origin identity.
@@ -332,8 +335,8 @@
       configuration that requires further transformation (e.g., template
       expansion, removal of inactive configuration defined in <xref
       target="RFC8342"/>) before it can be applied, configuration
-      transformations MUST be performed before &lt;running&gt; is merged with
-      &lt;system&gt;.</t>
+      transformations MUST be performed independently to each datastore before
+      &lt;running&gt; is merged with &lt;system&gt;.</t>
 
       <t>Whenever configuration in &lt;system&gt; changes, the server MUST
       also immediately update and validate &lt;intended&gt;.</t>
@@ -456,8 +459,9 @@ boxes denote named datastores</artwork>
         Configurations defined in &lt;running&gt; take precedence over system
         configuration nodes in &lt;system&gt; if the server allows the nodes
         to be modified (some implementations may have immutable system
-        configuration as per <xref
-        target="I-D.ietf-netmod-immutable-flag"/>).</t>
+        configuration which is identified by the server using immutable
+        metadata annotation, see <xref
+        target="I-D.ietf-netmod-immutable-flag"/> for details).</t>
 
         <t><xref target="modify-example"/> provides an example of a client
         overriding a system-instantiated leaf's value.</t>
@@ -570,7 +574,7 @@ Accept: application/yang-data+xml</artwork>
         <figure>
           <artwork>      name: ietf-system-datastore
       prefix: sysds
-      namespace: urn:ietf:params:xml:ns:yang:ietf-system-datatstore
+      namespace: urn:ietf:params:xml:ns:yang:ietf-system-datastore
       maintained by IANA? N
       RFC: XXXX // RFC Ed.: replace XXXX and remove this comment</artwork>
         </figure>
@@ -578,27 +582,49 @@ Accept: application/yang-data+xml</artwork>
     </section>
 
     <section anchor="scecurity" title="Security Considerations">
-      <t>This section is modeled after the template described in <xref
-      section="3.7" sectionFormat="of"
-      target="I-D.ietf-netmod-rfc8407bis"/>.</t>
+      <section title="Considerations for the &quot;ietf-system-datastore&quot; YANG Module">
+        <t>This section is modeled after the template described in <xref
+        section="3.7" sectionFormat="of"
+        target="I-D.ietf-netmod-rfc8407bis"/>.</t>
 
-      <t>The "ietf-system-datastore" YANG module defines a data model that is
-      designed to be accessed via YANG-based management protocols, such as
-      NETCONF <xref target="RFC6241"/> and RESTCONF <xref target="RFC8040"/>.
-      These protocols have to use a secure transport layer (e.g., SSH <xref
-      target="RFC4252"/>, TLS <xref target="RFC8446"/>, and QUIC <xref
-      target="RFC9000"/>) and have to use mutual authentication.</t>
+        <t>The "ietf-system-datastore" YANG module defines a data model that
+        is designed to be accessed via YANG-based management protocols, such
+        as NETCONF <xref target="RFC6241"/> and RESTCONF <xref
+        target="RFC8040"/>. These protocols have to use a secure transport
+        layer (e.g., SSH <xref target="RFC4252"/>, TLS <xref
+        target="I-D.ietf-tls-rfc8446bis"/>, and QUIC <xref target="RFC9000"/>)
+        and have to use mutual authentication.</t>
 
-      <t>The Network Configuration Access Control Model (NACM) <xref
-      target="RFC8341"/> provides the means to restrict access for particular
-      NETCONF or RESTCONF users to a preconfigured subset of all available
-      NETCONF or RESTCONF protocol operations and content.</t>
+        <t>The Network Configuration Access Control Model (NACM) <xref
+        target="RFC8341"/> provides the means to restrict access for
+        particular NETCONF or RESTCONF users to a preconfigured subset of all
+        available NETCONF or RESTCONF protocol operations and content.</t>
 
-      <t>The YANG module only defines an identity that uses the
-      "ds:conventional" identity as its base. The module by itself does not
-      expose any data nodes that are writable, data nodes that contain
-      read-only state, or RPCs. As such, there are no additional security
-      issues related to the YANG module that need to be considered.</t>
+        <t>The YANG module only defines an identity that uses the
+        "ds:conventional" identity as its base. The module by itself does not
+        expose any data nodes that are writable, data nodes that contain
+        read-only state, or RPCs. As such, there are no additional security
+        issues related to the YANG module that need to be considered.</t>
+      </section>
+
+      <section title="Considerations for System Configuration">
+        <t>The system datastore, while read-only to clients, may contain
+        sensitive information such as hardware identifiers, security policies,
+        and critical system resources. Read access to sensitive system nodes
+        and subtrees within the datastore MUST be controlled to prevent
+        unauthorized disclosure. Implementations are strongly advised to log
+        all access attempts to sensitive system configuration for audit
+        purposes.</t>
+
+        <t>Furthermore, while &lt;system&gt; cannot be modified directly,
+        system configuration may be overridden as a merging result (<xref
+        target="modifying"/>). An attacker may configure a leaf that shadows a
+        sensitive node in &lt;system&gt;. Misconfiguration in &lt;running&gt;
+        could lead to unintended system behavior including security policy
+        bypass and availability risks. Unauthorized modification to sensitive
+        contents MUST be prevented to avoid those negative effects on the
+        network.</t>
+      </section>
     </section>
   </middle>
 
@@ -634,13 +660,14 @@ Accept: application/yang-data+xml</artwork>
 
       <?rfc include="reference.RFC.8340.xml"?>
 
-      <?rfc include="reference.RFC.8446.xml"?>
-
       <?rfc include="reference.RFC.8525.xml"?>
 
       <?rfc include="reference.RFC.8808.xml"?>
 
       <?rfc include="reference.RFC.9000.xml"?>
+
+      <xi:include href="https://datatracker.ietf.org/doc/bibxml3/reference.I-D.ietf-tls-rfc8446bis.xml"
+                  xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
       <xi:include href="https://datatracker.ietf.org/doc/bibxml3/reference.I-D.ietf-netmod-immutable-flag.xml"
                   xmlns:xi="http://www.w3.org/2001/XInclude"/>
