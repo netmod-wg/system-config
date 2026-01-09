@@ -126,7 +126,7 @@
 
       <t>However, there is a desire to enable a server to better expose the
       system configuration, regardless of whether it is in use. For example,
-      some implementations defines the system configuration which must be
+      some implementations define the system configuration which must be
       referenced to be active. NETCONF/RESTCONF clients can benefit from a
       standard mechanism to retrieve what system configuration is available on
       a server.</t>
@@ -181,7 +181,10 @@
             &lt;intended&gt;. These datastores share a common datastore
             schema, and protocol operations allow copying data between these
             datastores. The term "conventional" is chosen as a generic
-            umbrella term for these datastores.</t>
+            umbrella term for these datastores. Note while protocol operations
+            allow copying data between conventional datastores, the read-only
+            nature of datastores such as &lt;system&gt; and &lt;intended&gt;
+            restricts clients from copying data into them.</t>
 
             <t hangText="system node: ">An instance in the data tree that is
             provided by the system itself. System node may also be called
@@ -260,10 +263,10 @@
 
       <section anchor="immediate" title="Always-Present">
         <t>Always-present refers to system configuration which is generated in
-        &lt;system&gt; when the device is powered on, irrespective of physical
-        resource present or not, a special functionality enabled or not. An
-        example of always-present system configuration is an always-existing
-        loopback interface.</t>
+        &lt;system&gt; when the device is powered on, irrespective of whether
+        physical resources are present or whether a special functionality is
+        enabled. An example of always-present system configuration is an
+        always-existing loopback interface.</t>
       </section>
 
       <section anchor="conditional" title="Conditionally-Present">
@@ -298,7 +301,7 @@
 
           <t>Management operations: The datastore can be read using network
           management protocols such as NETCONF and RESTCONF, but its contents
-          cannot be changed by manage operations via NETCONF and RESTCONF
+          cannot be changed by management operations via NETCONF and RESTCONF
           protocols.</t>
 
           <t>Origin: This document does not define any new origin identity.
@@ -332,8 +335,8 @@
       configuration that requires further transformation (e.g., template
       expansion, removal of inactive configuration defined in <xref
       target="RFC8342"/>) before it can be applied, configuration
-      transformations MUST be performed before &lt;running&gt; is merged with
-      &lt;system&gt;.</t>
+      transformations MUST be performed independently to each datastore before
+      &lt;running&gt; is merged with &lt;system&gt;.</t>
 
       <t>Whenever configuration in &lt;system&gt; changes, the server MUST
       also immediately update and validate &lt;intended&gt;.</t>
@@ -456,8 +459,9 @@ boxes denote named datastores</artwork>
         Configurations defined in &lt;running&gt; take precedence over system
         configuration nodes in &lt;system&gt; if the server allows the nodes
         to be modified (some implementations may have immutable system
-        configuration as per <xref
-        target="I-D.ietf-netmod-immutable-flag"/>).</t>
+        configuration which is identified by the server using immutable
+        metadata annotation, see <xref
+        target="I-D.ietf-netmod-immutable-flag"/> for details).</t>
 
         <t><xref target="modify-example"/> provides an example of a client
         overriding a system-instantiated leaf's value.</t>
@@ -570,7 +574,7 @@ Accept: application/yang-data+xml</artwork>
         <figure>
           <artwork>      name: ietf-system-datastore
       prefix: sysds
-      namespace: urn:ietf:params:xml:ns:yang:ietf-system-datatstore
+      namespace: urn:ietf:params:xml:ns:yang:ietf-system-datastore
       maintained by IANA? N
       RFC: XXXX // RFC Ed.: replace XXXX and remove this comment</artwork>
         </figure>
