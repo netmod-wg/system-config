@@ -184,7 +184,7 @@
             umbrella term for these datastores. Note while protocol operations
             allow copying data between conventional datastores, the read-only
             nature of datastores such as &lt;system&gt; and &lt;intended&gt;
-            restricts copying data into them.</t>
+            restricts clients from copying data into them.</t>
 
             <t hangText="system node: ">An instance in the data tree that is
             provided by the system itself. System node may also be called
