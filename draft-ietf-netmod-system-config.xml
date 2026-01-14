@@ -336,7 +336,7 @@
       configuration that requires further transformation (e.g., template
       expansion, removal of inactive configuration defined in <xref
       target="RFC8342"/>) before it can be applied, configuration
-      transformations MUST be performed independently to each datastore before
+      transformations MUST be performed independently on each datastore before
       &lt;running&gt; is merged with &lt;system&gt;.</t>
 
       <t>Whenever configuration in &lt;system&gt; changes, the server MUST
@@ -431,10 +431,9 @@ boxes denote named datastores</artwork>
         notifications (e.g., on-change notification) <xref
         target="RFC8639"/><xref target="RFC8641"/>.</t>
 
-        <t>If system configuration changes (e.g., during the software
-        upgrade), &lt;running&gt; SHOULD remain a valid configuration data
-        tree. Any mechanisms to achieve this are outside the scope of this
-        document.</t>
+        <t>If system configuration changes (e.g., during a software upgrade),
+        &lt;running&gt; SHOULD remain a valid configuration data tree. Any
+        mechanisms to achieve this are outside the scope of this document.</t>
       </section>
 
       <section anchor="declare" title="Referencing System Configuration">
@@ -582,7 +581,7 @@ Accept: application/yang-data+xml</artwork>
 
     <section title="Operational Considerations">
       <t>System configuration exists regardless of whether the server
-      implements &lt;system&gt; or not. The introduction of &lt;sytem&gt;
+      implements &lt;system&gt; or not. The introduction of &lt;system&gt;
       provides a standardized way to expose system configuration within
       NMDA.</t>
 
@@ -593,7 +592,7 @@ Accept: application/yang-data+xml</artwork>
       change the fundamental behavior for such legacy clients. Operators
       should be aware that to fully leverage the capabilities defined in this
       document, client applications need to be updated to recognize and
-      interact with &lt;system&gt;.</t>
+      interact with system configuration.</t>
     </section>
 
     <section anchor="scecurity" title="Security Considerations">

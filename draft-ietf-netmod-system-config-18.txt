@@ -355,7 +355,7 @@ Internet-Draft        System-defined Configuration          January 2026
    configuration that requires further transformation (e.g., template
    expansion, removal of inactive configuration defined in [RFC8342])
    before it can be applied, configuration transformations MUST be
-   performed independently to each datastore before <running> is merged
+   performed independently on each datastore before <running> is merged
    with <system>.
 
    Whenever configuration in <system> changes, the server MUST also
@@ -486,7 +486,7 @@ Internet-Draft        System-defined Configuration          January 2026
    configuration may be obtained through YANG notifications (e.g., on-
    change notification) [RFC8639][RFC8641].
 
-   If system configuration changes (e.g., during the software upgrade),
+   If system configuration changes (e.g., during a software upgrade),
    <running> SHOULD remain a valid configuration data tree.  Any
    mechanisms to achieve this are outside the scope of this document.
 
@@ -709,7 +709,7 @@ Internet-Draft        System-defined Configuration          January 2026
 9.  Operational Considerations
 
    System configuration exists regardless of whether the server
-   implements <system> or not.  The introduction of <sytem> provides a
+   implements <system> or not.  The introduction of <system> provides a
    standardized way to expose system configuration within NMDA.
 
    NMDA clients that are not aware of <system> will continue to operate
@@ -718,8 +718,8 @@ Internet-Draft        System-defined Configuration          January 2026
    presence of <system> does not change the fundamental behavior for
    such legacy clients.  Operators should be aware that to fully
    leverage the capabilities defined in this document, client
-   applications need to be updated to recognize and interact with
-   <system>.
+   applications need to be updated to recognize and interact with system
+   configuration.
 
 
 

@@ -25,7 +25,7 @@ module ietf-system-datastore {
     "This module defines a new YANG identity that uses the
      ds:conventional identity defined in [RFC8342].
 
-     Copyright (c) 2025 IETF Trust and the persons identified
+     Copyright (c) 2026 IETF Trust and the persons identified
      as authors of the code. All rights reserved.
 
      Redistribution and use in source and binary forms, with
