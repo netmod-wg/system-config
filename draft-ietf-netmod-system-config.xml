@@ -155,7 +155,8 @@
         <t>This document assumes that the reader is familiar with the contents
         of <xref target="RFC6241"/>, <xref target="RFC7950"/>, <xref
         target="RFC8342"/>, and <xref target="RFC8525"/> and uses
-        terminologies from those documents.</t>
+        terminologies from those documents. The terms "device" and "server"
+        are used interchangeably in this document.</t>
 
         <t>The following terms are defined in this document:<list
             style="hanging">
@@ -277,8 +278,8 @@
         loads the associated configuration; when the physical resource is not
         present (an interface card is removed), the system configuration will
         automatically be removed from &lt;system&gt;. Another example is when
-        a special functionality is enabled, e.g., when a license or feature is
-        enabled, specific configuration may be created by the system.</t>
+        a special functionality (e.g., a license or feature) is enabled,
+        specific configuration may be created by the system.</t>
       </section>
     </section>
 
@@ -386,15 +387,12 @@ boxes denote named datastores</artwork>
       <t>Configuration in &lt;system&gt; cannot be deleted by clients (e.g., a
       list entry can never be removed from &lt;system&gt; through protocol
       operations), even though a node defined in &lt;system&gt; may be
-      overridden in &lt;running&gt;. If it is desired to enable a client to
-      delete system configuration, it can be approximated using
-      &lt;factory-default&gt; (<xref target="RFC8808"/>). If the system
-      initializes a value for a particular leaf which is overridden by the
-      client with a different value in &lt;running&gt; (<xref
-      target="modifying"/>), and if the node in &lt;running&gt; is removed at
-      a later time, the system-initialized value defined in &lt;system&gt;
-      appears in &lt;intended&gt; and may come into use eventually if applied
-      successfully.</t>
+      overridden in &lt;running&gt;. If the system initializes a value for a
+      particular leaf which is overridden by the client with a different value
+      in &lt;running&gt; (<xref target="modifying"/>), and if the node in
+      &lt;running&gt; is removed at a later time, the system-initialized value
+      defined in &lt;system&gt; appears in &lt;intended&gt; and may come into
+      use eventually if applied successfully.</t>
 
       <t>Configuration may disappear from &lt;system&gt; due to, e.g.,
       resources no longer available. In such cases, configuration for missing
@@ -433,9 +431,10 @@ boxes denote named datastores</artwork>
         notifications (e.g., on-change notification) <xref
         target="RFC8639"/><xref target="RFC8641"/>.</t>
 
-        <t>If system configuration changes, &lt;running&gt; SHOULD remain a
-        valid configuration data tree. Any mechanisms to achieve this are
-        outside the scope of this document.</t>
+        <t>If system configuration changes (e.g., during the software
+        upgrade), &lt;running&gt; SHOULD remain a valid configuration data
+        tree. Any mechanisms to achieve this are outside the scope of this
+        document.</t>
       </section>
 
       <section anchor="declare" title="Referencing System Configuration">
@@ -523,7 +522,7 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
 
       <section title="Example Usage">
         <t>The following example shows how the configuration in &lt;system&gt;
-        could be reterieved in an NETCONF &lt;get-data&gt; RPC operation. The
+        could be retrieved in a NETCONF &lt;get-data&gt; RPC operation. The
         example uses the "example-application" fictional data model defined in
         <xref target="declare-example"/>.</t>
 
@@ -547,7 +546,7 @@ INSERT_TEXT_FROM_FILE(yang/ietf-system-datastore@YYYY-MM-DD.yang)
 
         <figure>
           <artwork>GET /restconf/ds/ietf-system-datastore:system/\
-   example-application:applications
+   example-application:applications HTTP/1.1
 Host: example.com
 Accept: application/yang-data+xml</artwork>
         </figure>
@@ -579,6 +578,22 @@ Accept: application/yang-data+xml</artwork>
       RFC: XXXX // RFC Ed.: replace XXXX and remove this comment</artwork>
         </figure>
       </section>
+    </section>
+
+    <section title="Operational Considerations">
+      <t>System configuration exists regardless of whether the server
+      implements &lt;system&gt; or not. The introduction of &lt;sytem&gt;
+      provides a standardized way to expose system configuration within
+      NMDA.</t>
+
+      <t>NMDA clients that are not aware of &lt;system&gt; will continue to
+      operate correctly. They will interact only with datastores such as
+      &lt;running&gt;, &lt;candidate&gt;, &lt;intended&gt;, and
+      &lt;operational&gt; as before. The presence of &lt;system&gt; does not
+      change the fundamental behavior for such legacy clients. Operators
+      should be aware that to fully leverage the capabilities defined in this
+      document, client applications need to be updated to recognize and
+      interact with &lt;system&gt;.</t>
     </section>
 
     <section anchor="scecurity" title="Security Considerations">
@@ -661,8 +676,6 @@ Accept: application/yang-data+xml</artwork>
       <?rfc include="reference.RFC.8340.xml"?>
 
       <?rfc include="reference.RFC.8525.xml"?>
-
-      <?rfc include="reference.RFC.8808.xml"?>
 
       <?rfc include="reference.RFC.9000.xml"?>
 
@@ -874,8 +887,8 @@ INSERT_TEXT_FROM_FILE(examples/example-interface-management.yang)
         </figure>
 
         <t>And the contents of &lt;system&gt; remain unchanged, only
-        containing the "lo" loopback interface, since the interface "et-0/0/0"
-        is not physically present:</t>
+        containing the "lo0" loopback interface, since the interface
+        "et-0/0/0" is not physically present:</t>
 
         <figure>
           <artwork>&lt;interfaces xmlns="urn:example:interfacemgmt"&gt; 
