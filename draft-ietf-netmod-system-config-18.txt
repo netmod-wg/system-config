@@ -6,11 +6,11 @@ NETMOD                                                        Q. Ma, Ed.
 Internet-Draft                                                     Q. Wu
 Updates: 8342 (if approved)                                       Huawei
 Intended status: Standards Track                                 C. Feng
-Expires: 28 June 2026                                   25 December 2025
+Expires: 18 July 2026                                    14 January 2026
 
 
                       System-defined Configuration
-                   draft-ietf-netmod-system-config-16
+                   draft-ietf-netmod-system-config-18
 
 Abstract
 
@@ -39,11 +39,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 28 June 2026.
+   This Internet-Draft will expire on 18 July 2026.
 
 Copyright Notice
 
-   Copyright (c) 2025 IETF Trust and the persons identified as the
+   Copyright (c) 2026 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Ma, et al.                Expires 28 June 2026                  [Page 1]
+Ma, et al.                Expires 18 July 2026                  [Page 1]
 
-Internet-Draft        System-defined Configuration         December 2025
+Internet-Draft        System-defined Configuration          January 2026
 
 
    and restrictions with respect to this document.  Code Components
@@ -67,10 +67,10 @@ Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   3
      1.1.  Terminology . . . . . . . . . . . . . . . . . . . . . . .   3
-     1.2.  Requirements Language . . . . . . . . . . . . . . . . . .   4
+     1.2.  Requirements Language . . . . . . . . . . . . . . . . . .   5
      1.3.  Updates to RFC 8342 . . . . . . . . . . . . . . . . . . .   5
    2.  Kinds of System Configuration . . . . . . . . . . . . . . . .   5
-     2.1.  Always-Present  . . . . . . . . . . . . . . . . . . . . .   5
+     2.1.  Always-Present  . . . . . . . . . . . . . . . . . . . . .   6
      2.2.  Conditionally-Present . . . . . . . . . . . . . . . . . .   6
    3.  The System Configuration Datastore (<system>) . . . . . . . .   6
    4.  Conceptual Model of Datastores  . . . . . . . . . . . . . . .   7
@@ -79,40 +79,44 @@ Table of Contents
      5.2.  No Changes to <operational> . . . . . . . . . . . . . . .   9
    6.  Dynamic Behaviors . . . . . . . . . . . . . . . . . . . . . .   9
      6.1.  May Change via Software Upgrades or Resource Changes  . .   9
-     6.2.  Referencing System Configuration  . . . . . . . . . . . .  10
+     6.2.  Referencing System Configuration  . . . . . . . . . . . .   9
      6.3.  Modifying (Overriding) System Configuration . . . . . . .  10
      6.4.  Configuring Descendant nodes of System Configuration  . .  10
    7.  The "ietf-system-datastore" Module  . . . . . . . . . . . . .  10
-     7.1.  Data Model Overview . . . . . . . . . . . . . . . . . . .  11
+     7.1.  Data Model Overview . . . . . . . . . . . . . . . . . . .  10
      7.2.  YANG Module . . . . . . . . . . . . . . . . . . . . . . .  11
-     7.3.  Example Usage . . . . . . . . . . . . . . . . . . . . . .  13
+     7.3.  Example Usage . . . . . . . . . . . . . . . . . . . . . .  12
    8.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  13
      8.1.  The "IETF XML" Registry . . . . . . . . . . . . . . . . .  13
      8.2.  The "YANG Module Names" Registry  . . . . . . . . . . . .  13
-   9.  Security Considerations . . . . . . . . . . . . . . . . . . .  14
-   10. References  . . . . . . . . . . . . . . . . . . . . . . . . .  14
-     10.1.  Normative References . . . . . . . . . . . . . . . . . .  14
-     10.2.  Informative References . . . . . . . . . . . . . . . . .  15
-   Appendix A.  Example of Dynamic Behaviors . . . . . . . . . . . .  16
+   9.  Operational Considerations  . . . . . . . . . . . . . . . . .  13
+   10. Security Considerations . . . . . . . . . . . . . . . . . . .  14
+     10.1.  Considerations for the "ietf-system-datastore" YANG
+            Module . . . . . . . . . . . . . . . . . . . . . . . . .  14
+     10.2.  Considerations for System Configuration  . . . . . . . .  14
+   11. References  . . . . . . . . . . . . . . . . . . . . . . . . .  14
+     11.1.  Normative References . . . . . . . . . . . . . . . . . .  14
+     11.2.  Informative References . . . . . . . . . . . . . . . . .  15
+   Appendix A.  Example of Dynamic Behaviors . . . . . . . . . . . .  17
      A.1.  Referencing System-defined Nodes  . . . . . . . . . . . .  17
-     A.2.  Modifying a System-instantiated Leaf's Value  . . . . . .  22
-     A.3.  Configuring Descendant Nodes of a System-defined Node . .  23
-   Appendix B.  Key Use Cases  . . . . . . . . . . . . . . . . . . .  24
-     B.1.  Device Powers On  . . . . . . . . . . . . . . . . . . . .  26
-     B.2.  Client Commits Configuration  . . . . . . . . . . . . . .  26
-     B.3.  Operator Installs Card into a Chassis . . . . . . . . . .  28
-     B.4.  Client further Commits Configuration  . . . . . . . . . .  29
-   Acknowledgements  . . . . . . . . . . . . . . . . . . . . . . . .  31
-   Contributors  . . . . . . . . . . . . . . . . . . . . . . . . . .  31
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  32
+     A.2.  Modifying a System-instantiated Leaf's Value  . . . . . .  23
+     A.3.  Configuring Descendant Nodes of a System-defined Node . .  24
+   Appendix B.  Key Use Cases  . . . . . . . . . . . . . . . . . . .  25
+     B.1.  Device Powers On  . . . . . . . . . . . . . . . . . . . .  27
+     B.2.  Client Commits Configuration  . . . . . . . . . . . . . .  27
+     B.3.  Operator Installs Card into a Chassis . . . . . . . . . .  29
+     B.4.  Client further Commits Configuration  . . . . . . . . . .  30
 
 
 
-
-Ma, et al.                Expires 28 June 2026                  [Page 2]
+Ma, et al.                Expires 18 July 2026                  [Page 2]
 
-Internet-Draft        System-defined Configuration         December 2025
+Internet-Draft        System-defined Configuration          January 2026
 
+
+   Acknowledgements  . . . . . . . . . . . . . . . . . . . . . . . .  32
+   Contributors  . . . . . . . . . . . . . . . . . . . . . . . . . .  32
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  33
 
 1.  Introduction
 
@@ -123,7 +127,7 @@ Internet-Draft        System-defined Configuration         December 2025
 
    However, there is a desire to enable a server to better expose the
    system configuration, regardless of whether it is in use.  For
-   example, some implementations defines the system configuration which
+   example, some implementations define the system configuration which
    must be referenced to be active.  NETCONF/RESTCONF clients can
    benefit from a standard mechanism to retrieve what system
    configuration is available on a server.
@@ -153,23 +157,20 @@ Internet-Draft        System-defined Configuration         December 2025
 
    This document assumes that the reader is familiar with the contents
    of [RFC6241], [RFC7950], [RFC8342], and [RFC8525] and uses
-   terminologies from those documents.
+   terminologies from those documents.  The terms "device" and "server"
+   are used interchangeably in this document.
 
    The following terms are defined in this document:
 
-   system configuration:  RFC 8342 defines it as "Configuration that is
 
 
 
-
-
-
-
-Ma, et al.                Expires 28 June 2026                  [Page 3]
+Ma, et al.                Expires 18 July 2026                  [Page 3]
 
-Internet-Draft        System-defined Configuration         December 2025
+Internet-Draft        System-defined Configuration          January 2026
 
 
+   system configuration:  RFC 8342 defines it as "Configuration that is
       supplied by the device itself."  The definition herein refines
       that definition of system configuration to represent configuration
       present in the system configuration datastore (regardless of
@@ -190,7 +191,10 @@ Internet-Draft        System-defined Configuration         December 2025
       <system>, and <intended>.  These datastores share a common
       datastore schema, and protocol operations allow copying data
       between these datastores.  The term "conventional" is chosen as a
-      generic umbrella term for these datastores.
+      generic umbrella term for these datastores.  Note while protocol
+      operations allow copying data between conventional datastores, the
+      read-only nature of datastores such as <system> and <intended>
+      restricts clients from copying data into them.
 
    system node:  An instance in the data tree that is provided by the
       system itself.  System node may also be called "system-defined
@@ -210,6 +214,18 @@ Internet-Draft        System-defined Configuration         December 2025
 
       *  Nodes defined to satisfy the "min-elements" constraints.
 
+
+
+
+
+
+
+
+Ma, et al.                Expires 18 July 2026                  [Page 4]
+
+Internet-Draft        System-defined Configuration          January 2026
+
+
 1.2.  Requirements Language
 
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
@@ -217,14 +233,6 @@ Internet-Draft        System-defined Configuration         December 2025
    "OPTIONAL" in this document are to be interpreted as described in BCP
    14 [RFC2119] [RFC8174] when, and only when, they appear in all
    capitals, as shown here.
-
-
-
-
-Ma, et al.                Expires 28 June 2026                  [Page 4]
-
-Internet-Draft        System-defined Configuration         December 2025
-
 
 1.3.  Updates to RFC 8342
 
@@ -261,26 +269,26 @@ Internet-Draft        System-defined Configuration         December 2025
    conditionally-present.  These types of system configuration are
    described in Section 2.1 and Section 2.2, respectively.
 
+
+
+
+
+
+
+
+
+Ma, et al.                Expires 18 July 2026                  [Page 5]
+
+Internet-Draft        System-defined Configuration          January 2026
+
+
 2.1.  Always-Present
 
    Always-present refers to system configuration which is generated in
-   <system> when the device is powered on, irrespective of physical
-   resource present or not, a special functionality enabled or not.  An
-   example of always-present system configuration is an always-existing
-   loopback interface.
-
-
-
-
-
-
-
-
-
-Ma, et al.                Expires 28 June 2026                  [Page 5]
-
-Internet-Draft        System-defined Configuration         December 2025
-
+   <system> when the device is powered on, irrespective of whether
+   physical resources are present or whether a special functionality is
+   enabled.  An example of always-present system configuration is an
+   always-existing loopback interface.
 
 2.2.  Conditionally-Present
 
@@ -291,8 +299,8 @@ Internet-Draft        System-defined Configuration         December 2025
    loads the associated configuration; when the physical resource is not
    present (an interface card is removed), the system configuration will
    automatically be removed from <system>.  Another example is when a
-   special functionality is enabled, e.g., when a license or feature is
-   enabled, specific configuration may be created by the system.
+   special functionality (e.g., a license or feature) is enabled,
+   specific configuration may be created by the system.
 
 3.  The System Configuration Datastore (<system>)
 
@@ -311,8 +319,8 @@ Internet-Draft        System-defined Configuration         December 2025
 
    *  Management operations: The datastore can be read using network
       management protocols such as NETCONF and RESTCONF, but its
-      contents cannot be changed by manage operations via NETCONF and
-      RESTCONF protocols.
+      contents cannot be changed by management operations via NETCONF
+      and RESTCONF protocols.
 
    *  Origin: This document does not define any new origin identity.
       The "system" identity of origin metadata annotation [RFC7952] is
@@ -323,20 +331,14 @@ Internet-Draft        System-defined Configuration         December 2025
 
    *  Defining YANG module: "ietf-system-datastore" (Section 7).
 
-   The system configuration datastore doesn't persist across reboots.
 
 
-
-
-
-
-
-
-
-Ma, et al.                Expires 28 June 2026                  [Page 6]
+Ma, et al.                Expires 18 July 2026                  [Page 6]
 
-Internet-Draft        System-defined Configuration         December 2025
+Internet-Draft        System-defined Configuration          January 2026
 
+
+   The system configuration datastore doesn't persist across reboots.
 
 4.  Conceptual Model of Datastores
 
@@ -353,7 +355,8 @@ Internet-Draft        System-defined Configuration         December 2025
    configuration that requires further transformation (e.g., template
    expansion, removal of inactive configuration defined in [RFC8342])
    before it can be applied, configuration transformations MUST be
-   performed before <running> is merged with <system>.
+   performed independently to each datastore before <running> is merged
+   with <system>.
 
    Whenever configuration in <system> changes, the server MUST also
    immediately update and validate <intended>.
@@ -386,12 +389,9 @@ Internet-Draft        System-defined Configuration         December 2025
 
 
 
-
-
-
-Ma, et al.                Expires 28 June 2026                  [Page 7]
+Ma, et al.                Expires 18 July 2026                  [Page 7]
 
-Internet-Draft        System-defined Configuration         December 2025
+Internet-Draft        System-defined Configuration          January 2026
 
 
                 +-------------+                 +-----------+
@@ -433,33 +433,22 @@ Internet-Draft        System-defined Configuration         December 2025
 
               Figure 1: Architectural Model of Datastores
 
-
-
-
-
-
-
-
-
-
-
-
-
-Ma, et al.                Expires 28 June 2026                  [Page 8]
-
-Internet-Draft        System-defined Configuration         December 2025
-
-
-   Configuration in <system> is undeletable to clients (e.g., a list
+   Configuration in <system> cannot be deleted by clients (e.g., a list
    entry can never be removed from <system> through protocol
    operations), even though a node defined in <system> may be overridden
-   in <running>.  If it is desired to enable a client to delete system
-   configuration, it can be approximated using <factory-default>
-   ([RFC8808]).  If system initializes a value for a particular leaf
-   which is overridden by the client with a different value in <running>
-   (Section 6.3), and if the node in <running> is removed at a later
-   time, the system-initialized value defined in <system> appears in
-   <intended> and may come into use eventually if applied successfully.
+   in <running>.  If the system initializes a value for a particular
+   leaf which is overridden by the client with a different value in
+   <running> (Section 6.3), and if the node in <running> is removed at a
+   later time, the system-initialized value defined in <system> appears
+   in <intended> and may come into use eventually if applied
+   successfully.
+
+
+
+Ma, et al.                Expires 18 July 2026                  [Page 8]
+
+Internet-Draft        System-defined Configuration          January 2026
+
 
    Configuration may disappear from <system> due to, e.g., resources no
    longer available.  In such cases, configuration for missing resources
@@ -497,18 +486,9 @@ Internet-Draft        System-defined Configuration         December 2025
    configuration may be obtained through YANG notifications (e.g., on-
    change notification) [RFC8639][RFC8641].
 
-
-
-
-
-Ma, et al.                Expires 28 June 2026                  [Page 9]
-
-Internet-Draft        System-defined Configuration         December 2025
-
-
-   If system configuration changes, <running> SHOULD remain a valid
-   configuration data tree.  Any mechanisms to achieve this are outside
-   the scope of this document.
+   If system configuration changes (e.g., during the software upgrade),
+   <running> SHOULD remain a valid configuration data tree.  Any
+   mechanisms to achieve this are outside the scope of this document.
 
 6.2.  Referencing System Configuration
 
@@ -517,6 +497,14 @@ Internet-Draft        System-defined Configuration         December 2025
    solely as a convenience for clients to reference.  It is also
    possible for the clients to define their customized nodes for
    reference.
+
+
+
+
+Ma, et al.                Expires 18 July 2026                  [Page 9]
+
+Internet-Draft        System-defined Configuration          January 2026
+
 
    Appendix A.1 provides an example of a client referencing system-
    defined nodes.
@@ -530,8 +518,9 @@ Internet-Draft        System-defined Configuration         December 2025
    the corresponding level in <system>.  Configurations defined in
    <running> take precedence over system configuration nodes in <system>
    if the server allows the nodes to be modified (some implementations
-   may have immutable system configuration as per
-   [I-D.ietf-netmod-immutable-flag]).
+   may have immutable system configuration which is identified by the
+   server using immutable metadata annotation, see
+   [I-D.ietf-netmod-immutable-flag] for details).
 
    Appendix A.2 provides an example of a client overriding a system-
    instantiated leaf's value.
@@ -547,20 +536,6 @@ Internet-Draft        System-defined Configuration         December 2025
    nodes of a system-defined node.
 
 7.  The "ietf-system-datastore" Module
-
-
-
-
-
-
-
-
-
-
-Ma, et al.                Expires 28 June 2026                 [Page 10]
-
-Internet-Draft        System-defined Configuration         December 2025
-
 
 7.1.  Data Model Overview
 
@@ -578,6 +553,15 @@ Internet-Draft        System-defined Configuration         December 2025
    "identity" statements defined in the "ietf-system-datastore" and
    "ietf-datastores" YANG modules:
 
+
+
+
+
+Ma, et al.                Expires 18 July 2026                 [Page 10]
+
+Internet-Draft        System-defined Configuration          January 2026
+
+
    Identities:
        +--- datastore
        |  +--- conventional
@@ -594,7 +578,7 @@ Internet-Draft        System-defined Configuration         December 2025
 
 7.2.  YANG Module
 
-   <CODE BEGINS> file "ietf-system-datastore@2025-12-25.yang"
+   <CODE BEGINS> file "ietf-system-datastore@2026-01-14.yang"
 
    module ietf-system-datastore {
      yang-version 1.1;
@@ -610,14 +594,6 @@ Internet-Draft        System-defined Configuration         December 2025
      organization
        "IETF NETMOD (Network Modeling) Working Group";
      contact
-
-
-
-Ma, et al.                Expires 28 June 2026                 [Page 11]
-
-Internet-Draft        System-defined Configuration         December 2025
-
-
        "WG Web:   <https://datatracker.ietf.org/wg/netmod/>
         WG List:  <mailto:netmod@ietf.org>
 
@@ -631,8 +607,16 @@ Internet-Draft        System-defined Configuration         December 2025
        "This module defines a new YANG identity that uses the
         ds:conventional identity defined in [RFC8342].
 
-        Copyright (c) 2025 IETF Trust and the persons identified
+        Copyright (c) 2026 IETF Trust and the persons identified
         as authors of the code. All rights reserved.
+
+
+
+
+Ma, et al.                Expires 18 July 2026                 [Page 11]
+
+Internet-Draft        System-defined Configuration          January 2026
+
 
         Redistribution and use in source and binary forms, with
         or without modification, is permitted pursuant to, and
@@ -645,7 +629,7 @@ Internet-Draft        System-defined Configuration         December 2025
         (https://www.rfc-editor.org/info/rfcXXXX); see the RFC
         itself for full legal notices.";
 
-     revision 2025-12-25 {
+     revision 2026-01-14 {
        description
          "Initial version.";
        reference
@@ -662,23 +646,11 @@ Internet-Draft        System-defined Configuration         December 2025
 
    <CODE ENDS>
 
-
-
-
-
-
-
-
-Ma, et al.                Expires 28 June 2026                 [Page 12]
-
-Internet-Draft        System-defined Configuration         December 2025
-
-
 7.3.  Example Usage
 
    The following example shows how the configuration in <system> could
-   be reterieved in an NETCONF <get-data> RPC operation.  The example
-   uses the "example-application" fictional data model defined in
+   be retrieved in a NETCONF <get-data> RPC operation.  The example uses
+   the "example-application" fictional data model defined in
    Appendix A.1.
 
    <rpc message-id="101"
@@ -692,13 +664,23 @@ Internet-Draft        System-defined Configuration         December 2025
      </get-data>
    </rpc>
 
+
+
+
+
+
+Ma, et al.                Expires 18 July 2026                 [Page 12]
+
+Internet-Draft        System-defined Configuration          January 2026
+
+
    When using the RESTCONF protocol, the system configuration datastore
    can be accessed via the resource: {+restconf}/ds/ietf-system-
    datastore:system.  The following example uses an HTTP GET method to
    request "applications" configuration:
 
    GET /restconf/ds/ietf-system-datastore:system/\
-      example-application:applications
+      example-application:applications HTTP/1.1
    Host: example.com
    Accept: application/yang-data+xml
 
@@ -718,25 +700,39 @@ Internet-Draft        System-defined Configuration         December 2025
    This document registers one YANG module in the 'YANG Module Names'
    registry, defined in [RFC6020].
 
-
-
-
-
-
-
-
-Ma, et al.                Expires 28 June 2026                 [Page 13]
-
-Internet-Draft        System-defined Configuration         December 2025
-
-
          name: ietf-system-datastore
          prefix: sysds
-         namespace: urn:ietf:params:xml:ns:yang:ietf-system-datatstore
+         namespace: urn:ietf:params:xml:ns:yang:ietf-system-datastore
          maintained by IANA? N
          RFC: XXXX // RFC Ed.: replace XXXX and remove this comment
 
-9.  Security Considerations
+9.  Operational Considerations
+
+   System configuration exists regardless of whether the server
+   implements <system> or not.  The introduction of <sytem> provides a
+   standardized way to expose system configuration within NMDA.
+
+   NMDA clients that are not aware of <system> will continue to operate
+   correctly.  They will interact only with datastores such as
+   <running>, <candidate>, <intended>, and <operational> as before.  The
+   presence of <system> does not change the fundamental behavior for
+   such legacy clients.  Operators should be aware that to fully
+   leverage the capabilities defined in this document, client
+   applications need to be updated to recognize and interact with
+   <system>.
+
+
+
+
+
+Ma, et al.                Expires 18 July 2026                 [Page 13]
+
+Internet-Draft        System-defined Configuration          January 2026
+
+
+10.  Security Considerations
+
+10.1.  Considerations for the "ietf-system-datastore" YANG Module
 
    This section is modeled after the template described in Section 3.7
    of [I-D.ietf-netmod-rfc8407bis].
@@ -744,8 +740,9 @@ Internet-Draft        System-defined Configuration         December 2025
    The "ietf-system-datastore" YANG module defines a data model that is
    designed to be accessed via YANG-based management protocols, such as
    NETCONF [RFC6241] and RESTCONF [RFC8040].  These protocols have to
-   use a secure transport layer (e.g., SSH [RFC4252], TLS [RFC8446], and
-   QUIC [RFC9000]) and have to use mutual authentication.
+   use a secure transport layer (e.g., SSH [RFC4252], TLS
+   [I-D.ietf-tls-rfc8446bis], and QUIC [RFC9000]) and have to use mutual
+   authentication.
 
    The Network Configuration Access Control Model (NACM) [RFC8341]
    provides the means to restrict access for particular NETCONF or
@@ -758,9 +755,36 @@ Internet-Draft        System-defined Configuration         December 2025
    read-only state, or RPCs.  As such, there are no additional security
    issues related to the YANG module that need to be considered.
 
-10.  References
+10.2.  Considerations for System Configuration
 
-10.1.  Normative References
+   The system datastore, while read-only to clients, may contain
+   sensitive information such as hardware identifiers, security
+   policies, and critical system resources.  Read access to sensitive
+   system nodes and subtrees within the datastore MUST be controlled to
+   prevent unauthorized disclosure.  Implementations are strongly
+   advised to log all access attempts to sensitive system configuration
+   for audit purposes.
+
+   Furthermore, while <system> cannot be modified directly, system
+   configuration may be overridden as a merging result (Section 6.3).
+   An attacker may configure a leaf that shadows a sensitive node in
+   <system>.  Misconfiguration in <running> could lead to unintended
+   system behavior including security policy bypass and availability
+   risks.  Unauthorized modification to sensitive contents MUST be
+   prevented to avoid those negative effects on the network.
+
+11.  References
+
+11.1.  Normative References
+
+
+
+
+
+Ma, et al.                Expires 18 July 2026                 [Page 14]
+
+Internet-Draft        System-defined Configuration          January 2026
+
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -776,16 +800,6 @@ Internet-Draft        System-defined Configuration         December 2025
               DOI 10.17487/RFC8341, March 2018,
               <https://www.rfc-editor.org/info/rfc8341>.
 
-
-
-
-
-
-Ma, et al.                Expires 28 June 2026                 [Page 14]
-
-Internet-Draft        System-defined Configuration         December 2025
-
-
    [RFC8342]  Bjorklund, M., Schoenwaelder, J., Shafer, P., Watsen, K.,
               and R. Wilton, "Network Management Datastore Architecture
               (NMDA)", RFC 8342, DOI 10.17487/RFC8342, March 2018,
@@ -800,14 +814,14 @@ Internet-Draft        System-defined Configuration         December 2025
               for Datastore Updates", RFC 8641, DOI 10.17487/RFC8641,
               September 2019, <https://www.rfc-editor.org/info/rfc8641>.
 
-10.2.  Informative References
+11.2.  Informative References
 
    [I-D.ietf-netmod-immutable-flag]
               Ma, Q., Wu, Q., Lengyel, B., and H. Li, "YANG Metadata
               Annotation for Immutable Flag", Work in Progress,
-              Internet-Draft, draft-ietf-netmod-immutable-flag-06, 27
-              November 2025, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-netmod-immutable-flag-06>.
+              Internet-Draft, draft-ietf-netmod-immutable-flag-07, 12
+              January 2026, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-netmod-immutable-flag-07>.
 
    [I-D.ietf-netmod-rfc8407bis]
               Bierman, A., Boucadair, M., and Q. Wu, "Guidelines for
@@ -816,6 +830,21 @@ Internet-Draft        System-defined Configuration         December 2025
               netmod-rfc8407bis-28, 5 June 2025,
               <https://datatracker.ietf.org/doc/html/draft-ietf-netmod-
               rfc8407bis-28>.
+
+   [I-D.ietf-tls-rfc8446bis]
+              Rescorla, E., "The Transport Layer Security (TLS) Protocol
+              Version 1.3", Work in Progress, Internet-Draft, draft-
+
+
+
+Ma, et al.                Expires 18 July 2026                 [Page 15]
+
+Internet-Draft        System-defined Configuration          January 2026
+
+
+              ietf-tls-rfc8446bis-14, 13 September 2025,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-tls-
+              rfc8446bis-14>.
 
    [RFC3688]  Mealling, M., "The IETF XML Registry", BCP 81, RFC 3688,
               DOI 10.17487/RFC3688, January 2004,
@@ -835,13 +864,6 @@ Internet-Draft        System-defined Configuration         December 2025
               (NETCONF)", RFC 6241, DOI 10.17487/RFC6241, June 2011,
               <https://www.rfc-editor.org/info/rfc6241>.
 
-
-
-Ma, et al.                Expires 28 June 2026                 [Page 15]
-
-Internet-Draft        System-defined Configuration         December 2025
-
-
    [RFC7952]  Lhotka, L., "Defining and Using Metadata with YANG",
               RFC 7952, DOI 10.17487/RFC7952, August 2016,
               <https://www.rfc-editor.org/info/rfc7952>.
@@ -858,23 +880,23 @@ Internet-Draft        System-defined Configuration         December 2025
               BCP 215, RFC 8340, DOI 10.17487/RFC8340, March 2018,
               <https://www.rfc-editor.org/info/rfc8340>.
 
-   [RFC8446]  Rescorla, E., "The Transport Layer Security (TLS) Protocol
-              Version 1.3", RFC 8446, DOI 10.17487/RFC8446, August 2018,
-              <https://www.rfc-editor.org/info/rfc8446>.
-
    [RFC8525]  Bierman, A., Bjorklund, M., Schoenwaelder, J., Watsen, K.,
               and R. Wilton, "YANG Library", RFC 8525,
               DOI 10.17487/RFC8525, March 2019,
               <https://www.rfc-editor.org/info/rfc8525>.
 
-   [RFC8808]  Wu, Q., Lengyel, B., and Y. Niu, "A YANG Data Model for
-              Factory Default Settings", RFC 8808, DOI 10.17487/RFC8808,
-              August 2020, <https://www.rfc-editor.org/info/rfc8808>.
-
    [RFC9000]  Iyengar, J., Ed. and M. Thomson, Ed., "QUIC: A UDP-Based
               Multiplexed and Secure Transport", RFC 9000,
               DOI 10.17487/RFC9000, May 2021,
               <https://www.rfc-editor.org/info/rfc9000>.
+
+
+
+
+Ma, et al.                Expires 18 July 2026                 [Page 16]
+
+Internet-Draft        System-defined Configuration          January 2026
+
 
 Appendix A.  Example of Dynamic Behaviors
 
@@ -889,18 +911,48 @@ Appendix A.  Example of Dynamic Behaviors
    parent node.
 
 
-
-
-
-
-Ma, et al.                Expires 28 June 2026                 [Page 16]
-
-Internet-Draft        System-defined Configuration         December 2025
-
-
 A.1.  Referencing System-defined Nodes
 
    In this subsection, the following fictional module is used:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Ma, et al.                Expires 18 July 2026                 [Page 17]
+
+Internet-Draft        System-defined Configuration          January 2026
+
 
    module example-application {
      yang-version 1.1;
@@ -947,16 +999,16 @@ A.1.  Referencing System-defined Nodes
      }
    }
 
-
-
-Ma, et al.                Expires 28 June 2026                 [Page 17]
-
-Internet-Draft        System-defined Configuration         December 2025
-
-
    A fictional ACL YANG module is used as follows, which defines a
    leafref for the leaf-list "application" data node to refer to an
    existing application name.
+
+
+
+Ma, et al.                Expires 18 July 2026                 [Page 18]
+
+Internet-Draft        System-defined Configuration          January 2026
+
 
    module example-acl {
      yang-version 1.1;
@@ -1002,18 +1054,18 @@ Internet-Draft        System-defined Configuration         December 2025
              enum forward;
              enum drop;
              enum redirect;
-
-
-
-Ma, et al.                Expires 28 June 2026                 [Page 18]
-
-Internet-Draft        System-defined Configuration         December 2025
-
-
            }
          }
        }
      }
+
+
+
+Ma, et al.                Expires 18 July 2026                 [Page 19]
+
+Internet-Draft        System-defined Configuration          January 2026
+
+
    }
 
    The server may predefine some applications as a convenience for
@@ -1061,9 +1113,13 @@ Internet-Draft        System-defined Configuration         December 2025
 
 
 
-Ma, et al.                Expires 28 June 2026                 [Page 19]
+
+
+
+
+Ma, et al.                Expires 18 July 2026                 [Page 20]
 
-Internet-Draft        System-defined Configuration         December 2025
+Internet-Draft        System-defined Configuration          January 2026
 
 
    <applications xmlns="urn:example:application">
@@ -1117,9 +1173,9 @@ Internet-Draft        System-defined Configuration         December 2025
 
 
 
-Ma, et al.                Expires 28 June 2026                 [Page 20]
+Ma, et al.                Expires 18 July 2026                 [Page 21]
 
-Internet-Draft        System-defined Configuration         December 2025
+Internet-Draft        System-defined Configuration          January 2026
 
 
    <applications xmlns="urn:example:application"
@@ -1173,9 +1229,9 @@ Internet-Draft        System-defined Configuration         December 2025
 
 
 
-Ma, et al.                Expires 28 June 2026                 [Page 21]
+Ma, et al.                Expires 18 July 2026                 [Page 22]
 
-Internet-Draft        System-defined Configuration         December 2025
+Internet-Draft        System-defined Configuration          January 2026
 
 
 A.2.  Modifying a System-instantiated Leaf's Value
@@ -1229,9 +1285,9 @@ A.2.  Modifying a System-instantiated Leaf's Value
 
 
 
-Ma, et al.                Expires 28 June 2026                 [Page 22]
+Ma, et al.                Expires 18 July 2026                 [Page 23]
 
-Internet-Draft        System-defined Configuration         December 2025
+Internet-Draft        System-defined Configuration          January 2026
 
 
    A client modifies the value of MTU to 9216 by adding the following
@@ -1285,9 +1341,9 @@ A.3.  Configuring Descendant Nodes of a System-defined Node
 
 
 
-Ma, et al.                Expires 28 June 2026                 [Page 23]
+Ma, et al.                Expires 18 July 2026                 [Page 24]
 
-Internet-Draft        System-defined Configuration         December 2025
+Internet-Draft        System-defined Configuration          January 2026
 
 
    <interfaces xmlns="urn:example:interface"
@@ -1341,9 +1397,9 @@ Appendix B.  Key Use Cases
 
 
 
-Ma, et al.                Expires 28 June 2026                 [Page 24]
+Ma, et al.                Expires 18 July 2026                 [Page 25]
 
-Internet-Draft        System-defined Configuration         December 2025
+Internet-Draft        System-defined Configuration          January 2026
 
 
    module example-interface-management {
@@ -1397,9 +1453,9 @@ Internet-Draft        System-defined Configuration         December 2025
 
 
 
-Ma, et al.                Expires 28 June 2026                 [Page 25]
+Ma, et al.                Expires 18 July 2026                 [Page 26]
 
-Internet-Draft        System-defined Configuration         December 2025
+Internet-Draft        System-defined Configuration          January 2026
 
 
 B.1.  Device Powers On
@@ -1453,9 +1509,9 @@ B.2.  Client Commits Configuration
 
 
 
-Ma, et al.                Expires 28 June 2026                 [Page 26]
+Ma, et al.                Expires 18 July 2026                 [Page 27]
 
-Internet-Draft        System-defined Configuration         December 2025
+Internet-Draft        System-defined Configuration          January 2026
 
 
    <interfaces xmlns="urn:example:interfacemgmt">
@@ -1467,7 +1523,7 @@ Internet-Draft        System-defined Configuration         December 2025
    </interfaces>
 
    And the contents of <system> remain unchanged, only containing the
-   "lo" loopback interface, since the interface "et-0/0/0" is not
+   "lo0" loopback interface, since the interface "et-0/0/0" is not
    physically present:
 
    <interfaces xmlns="urn:example:interfacemgmt">
@@ -1509,9 +1565,9 @@ Internet-Draft        System-defined Configuration         December 2025
 
 
 
-Ma, et al.                Expires 28 June 2026                 [Page 27]
+Ma, et al.                Expires 18 July 2026                 [Page 28]
 
-Internet-Draft        System-defined Configuration         December 2025
+Internet-Draft        System-defined Configuration          January 2026
 
 
    <interfaces xmlns="urn:example:interfacemgmt"
@@ -1565,9 +1621,9 @@ B.3.  Operator Installs Card into a Chassis
 
 
 
-Ma, et al.                Expires 28 June 2026                 [Page 28]
+Ma, et al.                Expires 18 July 2026                 [Page 29]
 
-Internet-Draft        System-defined Configuration         December 2025
+Internet-Draft        System-defined Configuration          January 2026
 
 
    <interfaces xmlns="urn:example:interfacemgmt">
@@ -1621,9 +1677,9 @@ B.4.  Client further Commits Configuration
 
 
 
-Ma, et al.                Expires 28 June 2026                 [Page 29]
+Ma, et al.                Expires 18 July 2026                 [Page 30]
 
-Internet-Draft        System-defined Configuration         December 2025
+Internet-Draft        System-defined Configuration          January 2026
 
 
    <interfaces xmlns="urn:example:interfacemgmt">
@@ -1677,9 +1733,9 @@ Internet-Draft        System-defined Configuration         December 2025
 
 
 
-Ma, et al.                Expires 28 June 2026                 [Page 30]
+Ma, et al.                Expires 18 July 2026                 [Page 31]
 
-Internet-Draft        System-defined Configuration         December 2025
+Internet-Draft        System-defined Configuration          January 2026
 
 
    <interfaces xmlns="urn:example:interfacemgmt"
@@ -1733,9 +1789,9 @@ Contributors
 
 
 
-Ma, et al.                Expires 28 June 2026                 [Page 31]
+Ma, et al.                Expires 18 July 2026                 [Page 32]
 
-Internet-Draft        System-defined Configuration         December 2025
+Internet-Draft        System-defined Configuration          January 2026
 
 
 Authors' Addresses
@@ -1789,4 +1845,4 @@ Authors' Addresses
 
 
 
-Ma, et al.                Expires 28 June 2026                 [Page 32]
+Ma, et al.                Expires 18 July 2026                 [Page 33]
