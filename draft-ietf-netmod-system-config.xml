@@ -833,6 +833,8 @@ INSERT_TEXT_FROM_FILE(examples/interface-operational-addition.xml)
       <t>This section updates the "Interface Example" supplied in <xref
       section="C.3" sectionFormat="of" target="RFC8342"/></t>
 
+      <t>.</t>
+
       <t>This section provides several use cases related to how &lt;system&gt;
       interacts with other datastores (e.g., &lt;candidate&gt;,
       &lt;running&gt;, &lt;intended&gt;, and &lt;operational&gt;). The
