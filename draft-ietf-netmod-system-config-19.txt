@@ -1361,14 +1361,14 @@ Internet-Draft        System-defined Configuration          January 2026
 Appendix B.  Key Use Cases
 
    This section updates the "Interface Example" supplied in Appendix C.3
-   of [RFC8342]
-
-   .
+   of [RFC8342].
 
    This section provides several use cases related to how <system>
    interacts with other datastores (e.g., <candidate>, <running>,
    <intended>, and <operational>).  The following fictional interface
    data model is used:
+
+
 
 
 
