@@ -79,23 +79,23 @@ Table of Contents
      5.2.  No Changes to <operational> . . . . . . . . . . . . . . .   9
    6.  Dynamic Behaviors . . . . . . . . . . . . . . . . . . . . . .   9
      6.1.  May Change via Software Upgrades or Resource Changes  . .   9
-     6.2.  Referencing System Configuration  . . . . . . . . . . . .  10
+     6.2.  Referencing System Configuration  . . . . . . . . . . . .   9
      6.3.  Modifying (Overriding) System Configuration . . . . . . .  10
      6.4.  Configuring Descendant nodes of System Configuration  . .  10
    7.  The "ietf-system-datastore" Module  . . . . . . . . . . . . .  10
-     7.1.  Data Model Overview . . . . . . . . . . . . . . . . . . .  11
+     7.1.  Data Model Overview . . . . . . . . . . . . . . . . . . .  10
      7.2.  YANG Module . . . . . . . . . . . . . . . . . . . . . . .  11
-     7.3.  Example Usage . . . . . . . . . . . . . . . . . . . . . .  13
+     7.3.  Example Usage . . . . . . . . . . . . . . . . . . . . . .  12
    8.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  13
      8.1.  The "IETF XML" Registry . . . . . . . . . . . . . . . . .  13
      8.2.  The "YANG Module Names" Registry  . . . . . . . . . . . .  13
-   9.  Operational Considerations  . . . . . . . . . . . . . . . . .  14
+   9.  Operational Considerations  . . . . . . . . . . . . . . . . .  13
    10. Security Considerations . . . . . . . . . . . . . . . . . . .  14
      10.1.  Considerations for the "ietf-system-datastore" YANG
             Module . . . . . . . . . . . . . . . . . . . . . . . . .  14
-     10.2.  Considerations for System Configuration  . . . . . . . .  15
-   11. References  . . . . . . . . . . . . . . . . . . . . . . . . .  15
-     11.1.  Normative References . . . . . . . . . . . . . . . . . .  15
+     10.2.  Considerations for System Configuration  . . . . . . . .  14
+   11. References  . . . . . . . . . . . . . . . . . . . . . . . . .  14
+     11.1.  Normative References . . . . . . . . . . . . . . . . . .  14
      11.2.  Informative References . . . . . . . . . . . . . . . . .  15
    Appendix A.  Example of Dynamic Behaviors . . . . . . . . . . . .  17
      A.1.  Referencing System-defined Nodes  . . . . . . . . . . . .  17
@@ -467,17 +467,15 @@ Internet-Draft        System-defined Configuration          January 2026
 
 5.2.  No Changes to <operational>
 
-   This work does not change the definition of <operational>, which
-   contains system state and all configuration actually used by the
-   system.  The contents of <operational> is independent of the
-   implementation of <system>.  This document clarifies origin
-   reporting, i.e., the origin of nodes sourced from <system> is
-   reported as "system" unless explicitly configured or overridden in
-   <running>. <system> enables system-defined nodes to be defined like
-   configuration, i.e., made visible to clients in order for being
-   referenced or configurable prior to present in <operational>. "config
-   false" nodes are out of scope, hence existing "config false" nodes
-   are not impacted by this work.
+   This work does not change the definition of <operational>, nor does
+   it impact the contents of <operational>, as specified in [RFC8342].
+   It clarifies origin reporting, i.e., the origin of nodes sourced from
+   <system> is reported as "system" unless explicitly configured or
+   overridden in <running>.  <system> enables system-defined nodes to be
+   defined like configuration, i.e., made visible to clients in order
+   for being referenced or configurable prior to present in
+   <operational>.  "config false" nodes are out of scope, hence existing
+   "config false" nodes are not impacted by this work.
 
 6.  Dynamic Behaviors
 
@@ -493,19 +491,6 @@ Internet-Draft        System-defined Configuration          January 2026
    <running> SHOULD remain a valid configuration data tree.  Any
    mechanisms to achieve this are outside the scope of this document.
 
-
-
-
-
-
-
-
-
-Ma, et al.                Expires 25 July 2026                  [Page 9]
-
-Internet-Draft        System-defined Configuration          January 2026
-
-
 6.2.  Referencing System Configuration
 
    Clients may create configuration data in <running> that references
@@ -513,6 +498,13 @@ Internet-Draft        System-defined Configuration          January 2026
    solely as a convenience for clients to reference.  It is also
    possible for the clients to define their customized nodes for
    reference.
+
+
+
+Ma, et al.                Expires 25 July 2026                  [Page 9]
+
+Internet-Draft        System-defined Configuration          January 2026
+
 
    Appendix A.1 provides an example of a client referencing system-
    defined nodes.
@@ -548,20 +540,6 @@ Internet-Draft        System-defined Configuration          January 2026
 
 7.  The "ietf-system-datastore" Module
 
-
-
-
-
-
-
-
-
-
-Ma, et al.                Expires 25 July 2026                 [Page 10]
-
-Internet-Draft        System-defined Configuration          January 2026
-
-
 7.1.  Data Model Overview
 
    This YANG module defines a new YANG identity named "system" that uses
@@ -573,6 +551,16 @@ Internet-Draft        System-defined Configuration          January 2026
    The system datastore is defined as a conventional configuration
    datastore and shares a common datastore schema with other
    conventional datastores.
+
+
+
+
+
+
+Ma, et al.                Expires 25 July 2026                 [Page 10]
+
+Internet-Draft        System-defined Configuration          January 2026
+
 
    The following diagram illustrates the relationship amongst the
    "identity" statements defined in the "ietf-system-datastore" and
@@ -610,14 +598,6 @@ Internet-Draft        System-defined Configuration          January 2026
      organization
        "IETF NETMOD (Network Modeling) Working Group";
      contact
-
-
-
-Ma, et al.                Expires 25 July 2026                 [Page 11]
-
-Internet-Draft        System-defined Configuration          January 2026
-
-
        "WG Web:   <https://datatracker.ietf.org/wg/netmod/>
         WG List:  <mailto:netmod@ietf.org>
 
@@ -630,6 +610,13 @@ Internet-Draft        System-defined Configuration          January 2026
      description
        "This module defines a new YANG identity that uses the
         ds:conventional identity defined in [RFC8342].
+
+
+
+Ma, et al.                Expires 25 July 2026                 [Page 11]
+
+Internet-Draft        System-defined Configuration          January 2026
+
 
         Copyright (c) 2026 IETF Trust and the persons identified
         as authors of the code. All rights reserved.
@@ -662,18 +649,6 @@ Internet-Draft        System-defined Configuration          January 2026
 
    <CODE ENDS>
 
-
-
-
-
-
-
-
-Ma, et al.                Expires 25 July 2026                 [Page 12]
-
-Internet-Draft        System-defined Configuration          January 2026
-
-
 7.3.  Example Usage
 
    The following example shows how the configuration in <system> could
@@ -691,6 +666,13 @@ Internet-Draft        System-defined Configuration          January 2026
        </subtree-filter>
      </get-data>
    </rpc>
+
+
+
+Ma, et al.                Expires 25 July 2026                 [Page 12]
+
+Internet-Draft        System-defined Configuration          January 2026
+
 
    When using the RESTCONF protocol, the system configuration datastore
    can be accessed via the resource: {+restconf}/ds/ietf-system-
@@ -718,18 +700,6 @@ Internet-Draft        System-defined Configuration          January 2026
    IANA is requested to register the following YANG module in the 'YANG
    Module Names' registry, defined in [RFC6020].
 
-
-
-
-
-
-
-
-Ma, et al.                Expires 25 July 2026                 [Page 13]
-
-Internet-Draft        System-defined Configuration          January 2026
-
-
          name: ietf-system-datastore
          prefix: sysds
          namespace: urn:ietf:params:xml:ns:yang:ietf-system-datastore
@@ -750,6 +720,15 @@ Internet-Draft        System-defined Configuration          January 2026
    leverage the capabilities defined in this document, client
    applications need to be updated to recognize and interact with
    <system>.
+
+
+
+
+
+Ma, et al.                Expires 25 July 2026                 [Page 13]
+
+Internet-Draft        System-defined Configuration          January 2026
+
 
 10.  Security Considerations
 
@@ -776,16 +755,6 @@ Internet-Draft        System-defined Configuration          January 2026
    read-only state, or RPCs.  As such, there are no additional security
    issues related to the YANG module that need to be considered.
 
-
-
-
-
-
-Ma, et al.                Expires 25 July 2026                 [Page 14]
-
-Internet-Draft        System-defined Configuration          January 2026
-
-
 10.2.  Considerations for System Configuration
 
    The system datastore, while read-only to clients, may contain
@@ -807,6 +776,15 @@ Internet-Draft        System-defined Configuration          January 2026
 11.  References
 
 11.1.  Normative References
+
+
+
+
+
+Ma, et al.                Expires 25 July 2026                 [Page 14]
+
+Internet-Draft        System-defined Configuration          January 2026
+
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -833,15 +811,6 @@ Internet-Draft        System-defined Configuration          January 2026
 
 11.2.  Informative References
 
-
-
-
-
-Ma, et al.                Expires 25 July 2026                 [Page 15]
-
-Internet-Draft        System-defined Configuration          January 2026
-
-
    [I-D.ietf-netmod-immutable-flag]
               Ma, Q., Wu, Q., Lengyel, B., and H. Li, "YANG Metadata
               Annotation for Immutable Flag", Work in Progress,
@@ -863,6 +832,15 @@ Internet-Draft        System-defined Configuration          January 2026
               ietf-tls-rfc8446bis-14, 13 September 2025,
               <https://datatracker.ietf.org/doc/html/draft-ietf-tls-
               rfc8446bis-14>.
+
+
+
+
+
+Ma, et al.                Expires 25 July 2026                 [Page 15]
+
+Internet-Draft        System-defined Configuration          January 2026
+
 
    [RFC3688]  Mealling, M., "The IETF XML Registry", BCP 81, RFC 3688,
               DOI 10.17487/RFC3688, January 2004,
@@ -890,14 +868,6 @@ Internet-Draft        System-defined Configuration          January 2026
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/info/rfc8174>.
 
-
-
-
-Ma, et al.                Expires 25 July 2026                 [Page 16]
-
-Internet-Draft        System-defined Configuration          January 2026
-
-
    [RFC8340]  Bjorklund, M. and L. Berger, Ed., "YANG Tree Diagrams",
               BCP 215, RFC 8340, DOI 10.17487/RFC8340, March 2018,
               <https://www.rfc-editor.org/info/rfc8340>.
@@ -921,6 +891,13 @@ Internet-Draft        System-defined Configuration          January 2026
               DOI 10.17487/RFC9000, May 2021,
               <https://www.rfc-editor.org/info/rfc9000>.
 
+
+
+Ma, et al.                Expires 25 July 2026                 [Page 16]
+
+Internet-Draft        System-defined Configuration          January 2026
+
+
 Appendix A.  Example of Dynamic Behaviors
 
    This section presents some sample data models and corresponding
@@ -937,6 +914,29 @@ Appendix A.  Example of Dynamic Behaviors
 A.1.  Referencing System-defined Nodes
 
    In this subsection, the following fictional module is used:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -423,16 +423,15 @@ boxes denote named datastores</artwork>
 
       <section title="No Changes to &lt;operational&gt;">
         <t>This work does not change the definition of &lt;operational&gt;,
-        which contains system state and all configuration actually used by the
-        system. The contents of &lt;operational&gt; is independent of the
-        implementation of &lt;system&gt;. This document clarifies origin
-        reporting, i.e., the origin of nodes sourced from &lt;system&gt; is
-        reported as "system" unless explicitly configured or overridden in
-        &lt;running&gt;. &lt;system&gt; enables system-defined nodes to be
-        defined like configuration, i.e., made visible to clients in order for
-        being referenced or configurable prior to present in
-        &lt;operational&gt;. "config false" nodes are out of scope, hence
-        existing "config false" nodes are not impacted by this work.</t>
+        nor does it impact the contents of &lt;operational&gt;, as specified
+        in <xref target="RFC8342"/>. It clarifies origin reporting, i.e., the
+        origin of nodes sourced from &lt;system&gt; is reported as "system"
+        unless explicitly configured or overridden in &lt;running&gt;.
+        &lt;system&gt; enables system-defined nodes to be defined like
+        configuration, i.e., made visible to clients in order for being
+        referenced or configurable prior to present in &lt;operational&gt;.
+        "config false" nodes are out of scope, hence existing "config false"
+        nodes are not impacted by this work.</t>
       </section>
     </section>
 
