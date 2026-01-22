@@ -226,11 +226,12 @@
       </section>
 
       <section title="Updates to RFC 8342">
-        <t>This document updates <xref target="RFC8342"/> to define a configuration datastore
-        called "system" that holds system configuration (<xref
-        target="system-ds-def"/>). The document also redefines the term "conventional
-        configuration datastore" from <xref format="none"
-        target="RFC8342">RFC8342</xref> to include "system" in the list.</t>
+        <t>This document updates <xref target="RFC8342"/> to define a
+        configuration datastore called "system" that holds system
+        configuration (<xref target="system-ds-def"/>). The document also
+        redefines the term "conventional configuration datastore" from <xref
+        format="none" target="RFC8342">RFC8342</xref> to include "system" in
+        the list.</t>
 
         <t>To ensure the validity of &lt;intended&gt; when clients interact
         with system configuration (e.g., configuration provided by clients
@@ -248,19 +249,19 @@
         <t>Additionally, this document also updates the definition of
         "intended" origin metadata annotation identity defined in <xref
         section="5.3.4" sectionFormat="of" target="RFC8342"/>. The "intended"
-        identity of origin value defined in <xref target="RFC8342"/> represents the origin of configuration
-        provided by &lt;intended&gt. This document updates that definition as
-        the origin source of configuration explicitly provided by clients, and
-        allows a subset of configuration in &lt;intended&gt; that flows from
-        &lt;system&gt; yet is not configured or overridden explicitly in
-        &lt;running&gt; to use "system" as its origin value. As per <xref
-        section="5.3.4" sectionFormat="of" target="RFC8342"/>, all
-        configuration with origin value being reported as "intended" MUST
-        originate from &lt;running&gt;, which includes any configuration in
-        &lt;system&gt; that has been copied into &lt;running&gt;.
-        Configuration that is in &lt;system&gt; and not also present in
-        &lt;running&gt; MUST be reported as origin "system" in
-        &lt;operational&gt;.</t>
+        identity of origin value defined in <xref target="RFC8342"/>
+        represents the origin of configuration provided by &lt;intended&gt;.
+        This document updates that definition as the origin source of
+        configuration explicitly provided by clients, and allows a subset of
+        configuration in &lt;intended&gt; that flows from &lt;system&gt; yet
+        is not configured or overridden explicitly in &lt;running&gt; to use
+        "system" as its origin value. As per <xref section="5.3.4"
+        sectionFormat="of" target="RFC8342"/>, all configuration with origin
+        value being reported as "intended" MUST originate from
+        &lt;running&gt;, which includes any configuration in &lt;system&gt;
+        that has been copied into &lt;running&gt;. Configuration that is in
+        &lt;system&gt; and not also present in &lt;running&gt; MUST be
+        reported as origin "system" in &lt;operational&gt;.</t>
       </section>
     </section>
 
@@ -353,13 +354,21 @@
 
       <t>As a result, Figure 2 in <xref section="5" sectionFormat="of"
       target="RFC8342"/> is updated with the below conceptual model of
-      datastores which incorporates the system configuration datastore.<figure
-          align="center" title="Architectural Model of Datastores">
-          <artwork>               +-------------+                 +-----------+
-               | &lt;candidate&gt; |                 | &lt;startup&gt; |
-               |  (ct, rw)   |&lt;---+      +----&gt;| (ct, rw)  |
-               +-------------+    |      |     +-----------+
-                      |           |      |           |
+      datastores which incorporates the system configuration datastore. For
+      completeness, this model also include &lt;factory-default&gt; introduced
+      in <xref target="RFC8808"/>. <figure align="center"
+          title="Architectural Model of Datastores">
+          <artwork>                             +-----------------+
+                             |&lt;factory-default&gt;|
+                       +-----|    (ct, ro)     |-----+
+                       |     +-----------------+     |
+  //"factory-reset" RPC|             |               |
+                       v             |               v
+               +-------------+       |         +-----------+
+               | &lt;candidate&gt; |       |         | &lt;startup&gt; |
+               |  (ct, rw)   |&lt;---+  |   +----&gt;| (ct, rw)  |
+               +-------------+    |  |   |     +-----------+
+                      |           |  v   |           |
 +-----------+         |        +-----------+         |
 | &lt;system&gt;  |         +-------&gt;| &lt;running&gt; |&lt;--------+
 | (ct, ro)  |                  | (ct, rw)  |
@@ -458,22 +467,20 @@ boxes denote named datastores</artwork>
         referencing system-defined nodes.</t>
       </section>
 
-      <section anchor="modifying"
-               title="Overriding System Configuration">
+      <section anchor="modifying" title="Overriding System Configuration">
         <t>Although &lt;system&gt; is read-only, in some cases, a server may
         allow some parts of system configuration (e.g., a leaf's value) to be
         overridden, (note the distinction between &lt;system&gt; and system
-        configuration). Overriding system configuration is achieved by
-        the client writing configuration data in &lt;running&gt; that
-        overrides the values of matched configuration nodes at the
-        corresponding level in &lt;system&gt;. Configurations defined in
-        &lt;running&gt; take precedence over system configuration nodes in
-        &lt;system&gt; if the server allows the nodes to be modified (some
-        implementations may have immutable system configuration which is
-        identified by the server using an immutable metadata annotation, see
-        <xref target="I-D.ietf-netmod-immutable-flag"/> for details),
-        regardless of whether a system-instantiated value changes
-        subsequently.</t>
+        configuration). Overriding of system configuration is achieved by the
+        client writing configuration data in &lt;running&gt; that overrides
+        the values of matched configuration nodes at the corresponding level
+        in &lt;system&gt;. Configurations defined in &lt;running&gt; take
+        precedence over system configuration nodes in &lt;system&gt; if the
+        server allows the nodes to be overridden (some implementations may
+        have immutable system configuration which is identified by the server
+        using an immutable metadata annotation, see <xref
+        target="I-D.ietf-netmod-immutable-flag"/> for details), regardless of
+        whether a system-instantiated value changes subsequently.</t>
 
         <t><xref target="modify-example"/> provides an example of a client
         overriding a system-instantiated leaf's value.</t>
@@ -690,6 +697,8 @@ Accept: application/yang-data+xml</artwork>
 
       <?rfc include="reference.RFC.8641.xml"?>
 
+      <?rfc include="reference.RFC.8808.xml"?>
+
       <?rfc include="reference.RFC.9000.xml"?>
 
       <xi:include href="https://datatracker.ietf.org/doc/bibxml3/reference.I-D.ietf-tls-rfc8446bis.xml"
@@ -828,7 +837,9 @@ INSERT_TEXT_FROM_FILE(examples/interface-operational-addition.xml)
 
     <section title="Key Use Cases">
       <t>This section updates the "Interface Example" supplied in <xref
-      section="C.3" sectionFormat="of" target="RFC8342"/>.</t>
+      section="C.3" sectionFormat="of" target="RFC8342"/></t>
+
+      <t>.</t>
 
       <t>This section provides several use cases related to how &lt;system&gt;
       interacts with other datastores (e.g., &lt;candidate&gt;,
