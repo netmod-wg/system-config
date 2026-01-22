@@ -461,11 +461,11 @@ boxes denote named datastores</artwork>
       </section>
 
       <section anchor="modifying"
-               title="Modifying (Overriding) System Configuration">
+               title="Overriding System Configuration">
         <t>Although &lt;system&gt; is read-only, in some cases, a server may
         allow some parts of system configuration (e.g., a leaf's value) to be
-        modified (note the distinction between &lt;system&gt; and system
-        configuration). Modification of system configuration is achieved by
+        overridden, (note the distinction between &lt;system&gt; and system
+        configuration). Overriding system configuration is achieved by
         the client writing configuration data in &lt;running&gt; that
         overrides the values of matched configuration nodes at the
         corresponding level in &lt;system&gt;. Configurations defined in
