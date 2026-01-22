@@ -226,10 +226,9 @@
       </section>
 
       <section title="Updates to RFC 8342">
-        <t>This document updates <xref format="none"
-        target="RFC8342">RFC8342</xref> to define a configuration datastore
+        <t>This document updates <xref target="RFC8342"/> to define a configuration datastore
         called "system" that holds system configuration (<xref
-        target="system-ds-def"/>), it also redefines the term "conventional
+        target="system-ds-def"/>). The document also redefines the term "conventional
         configuration datastore" from <xref format="none"
         target="RFC8342">RFC8342</xref> to include "system" in the list.</t>
 
@@ -249,9 +248,8 @@
         <t>Additionally, this document also updates the definition of
         "intended" origin metadata annotation identity defined in <xref
         section="5.3.4" sectionFormat="of" target="RFC8342"/>. The "intended"
-        identity of origin value defined in <xref format="none"
-        target="RFC8342">RFC8342</xref> represents the origin of configuration
-        provided by &lt;intended&gt;, this document updates its definition as
+        identity of origin value defined in <xref target="RFC8342"/> represents the origin of configuration
+        provided by &lt;intended&gt. This document updates that definition as
         the origin source of configuration explicitly provided by clients, and
         allows a subset of configuration in &lt;intended&gt; that flows from
         &lt;system&gt; yet is not configured or overridden explicitly in
