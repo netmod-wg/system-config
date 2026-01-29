@@ -711,7 +711,7 @@ Accept: application/yang-data+xml</artwork>
                   xmlns:xi="http://www.w3.org/2001/XInclude"/>
     </references>
 
-    <section title="Example of Dynamic Behaviors">
+    <section title="Example of Dynamic Behaviors (Informative)">
       <t>This section presents some sample data models and corresponding
       contents of various datastores with different dynamic behaviors
       described in <xref target="dynamic"/>. The XML snippets are used only
@@ -835,9 +835,9 @@ INSERT_TEXT_FROM_FILE(examples/interface-operational-addition.xml)
       </section>
     </section>
 
-    <section title="Key Use Cases">
-      <t>This informative section updates the "Interface Example" supplied in
-      <xref section="C.3" sectionFormat="of" target="RFC8342"/>.</t>
+    <section title="Key Use Cases (Informative)">
+      <t>This section updates the "Interface Example" supplied in <xref
+      section="C.3" sectionFormat="of" target="RFC8342"/>.</t>
 
       <t>This section provides several use cases related to how &lt;system&gt;
       interacts with other datastores (e.g., &lt;candidate&gt;,
